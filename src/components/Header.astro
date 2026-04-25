@@ -6,7 +6,7 @@ const currentPath = Astro.url.pathname;
 ---
 
 <header
-  class="sticky top-0 z-50 h-16 border-b border-border bg-surface/95 backdrop-blur-sm"
+  class="sticky top-0 z-50 h-16 border-b border-border bg-surface"
   x-data="{ open: false }"
 >
   <div class="mx-auto flex h-full max-w-7xl items-center justify-between px-4 md:px-6">
@@ -59,7 +59,7 @@ const currentPath = Astro.url.pathname;
         aria-label="Buscar"
         data-search-trigger
       >
-        <Icon name="lucide:search" class="h-5 w-5" />
+        <Icon name="lucide:search" class="h-5 w-5" aria-hidden="true" />
       </button>
 
       <!-- Hamburger mobile -->
@@ -71,8 +71,8 @@ const currentPath = Astro.url.pathname;
         aria-controls="mobile-menu"
         id="menu-toggle"
       >
-        <Icon name="lucide:menu" class="h-5 w-5" id="icon-open" />
-        <Icon name="lucide:x" class="hidden h-5 w-5" id="icon-close" />
+        <Icon name="lucide:menu" class="h-5 w-5" aria-hidden="true" id="icon-open" />
+        <Icon name="lucide:x" class="hidden h-5 w-5" aria-hidden="true" id="icon-close" />
       </button>
     </div>
   </div>
