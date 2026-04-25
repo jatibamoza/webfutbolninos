@@ -1,5 +1,4 @@
 ---
-import { Image } from 'astro:assets';
 import type { CollectionEntry } from 'astro:content';
 
 interface Props {
@@ -16,7 +15,7 @@ const {
   loading = 'lazy',
 } = Astro.props;
 
-const { title, description, cover, coverAlt, coverWidth, coverHeight, pubDate, edadMin, edadMax, tiempoLectura, categoria } = article.data;
+const { title, description, cover, coverAlt, coverWidth, coverHeight, pubDate, edadMin, edadMax, tiempoLectura } = article.data;
 const slug = `/articulos/${article.id}/`;
 
 const colorMap: Record<string, string> = {
