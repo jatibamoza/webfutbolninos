@@ -8,9 +8,9 @@
 ## 📍 Estado actual
 
 - **Fecha:** 2026-04-25
-- **Fase:** 0 — Pre-bootstrap (planificación cerrada, código sin empezar)
-- **Sprint activo:** ninguno (próximo: **Sprint 1 — Bootstrap**, arranca al confirmar plan)
-- **Bloqueantes:** ninguno
+- **Fase:** 1 — Esqueleto (sistema editorial en marcha)
+- **Sprint activo:** **Sprint 2 — Content collections + primer artículo** (PR #10, pendiente de CI verde)
+- **Bloqueantes:** CI pasando (pnpm fix aplicado), falta merge de PR #10 a main
 
 ---
 
@@ -26,16 +26,18 @@
 | 2026-04-25 | Sistema de diseño v1 definido (`DisenoUI.md`) |
 | 2026-04-25 | Posicionamiento de marca v1 definido (`MarcaPosicionamiento.md`) |
 | 2026-04-25 | Backlog 6 meses + 20 artículos núcleo (`PlanTrabajo.md`) |
+| 2026-04-25 | **Sprint 1 cerrado:** bootstrap Astro 5 + Tailwind 4, CI + Lighthouse, repo GitHub público, branch protection, labels, milestones |
+| 2026-04-25 | **Sprint 2 en PR #10:** sistema editorial completo (ver detalle abajo) |
 
 ---
 
 ## 🎯 Próximos pasos inmediatos (top 5)
 
-1. **Comprar dominio** `futbolparaninos.club` en Hostinger o Cloudflare Registrar
-2. **Crear repo GitHub** `webfutbolninos` (privado al inicio, público al lanzar)
-3. **Inicializar Astro 5 + Tailwind 4** con tokens de `DisenoUI.md`
-4. **Diseñar logo MiniGol Club** (2-3 propuestas, decidir antes de fin de sprint 1)
-5. **Conectar repo a Cloudflare Pages** y obtener primer deploy verde
+1. **Esperar CI verde** en PR #10 → mergear a `main`
+2. **Conectar repo a Cloudflare Pages** (tarea 1.10 aplazada del Sprint 1)
+3. **Comprar dominio** `futbolparaninos.club`
+4. **Diseñar logo MiniGol Club** (afecta E-E-A-T y branding)
+5. **Publicar OG image por defecto** `/og-default.jpg` (referenciada en BaseLayout, aún falta el asset)
 
 ---
 
@@ -43,7 +45,7 @@
 
 | Métrica | Objetivo año 1 | Actual | Última medición |
 |---------|----------------|--------|-----------------|
-| Artículos publicados | 50 | 0 | — |
+| Artículos publicados | 50 | 1 (en PR) | 2026-04-25 |
 | Visitas/mes (GA4) | 30.000 | 0 | — |
 | Suscriptores newsletter | 1.000 | 0 | — |
 | Ingresos AdSense ($) | 200/mes | 0 | — |
@@ -53,33 +55,42 @@
 
 ---
 
-## 🔄 Sprint actual — (sin sprint activo)
-
-> Cuando empiece Sprint 1, sustituir esta sección con el detalle del sprint en curso usando el template inferior.
-
-### Template de sprint en curso
-
-```
-## 🔄 Sprint N — [nombre] (semanas X-Y)
+## 🔄 Sprint actual — Sprint 2 (semanas 3-4)
 
 ### Objetivo
-[1 frase]
-
-### En progreso
-- [ ] N.X tarea (PR #XX) — owner
+Sistema editorial funcionando: crear un `.mdx` = artículo publicado con SEO completo.
 
 ### Cerradas en este sprint
-- [x] N.X tarea (PR #XX, mergeado YYYY-MM-DD)
+- [x] 2.1 `content/config.ts` — schemas Zod (PR #10)
+- [x] 2.2 Seed 6 categorías (PR #10)
+- [x] 2.3 Seed 1 autor (PR #10)
+- [x] 2.4 `<ArticleCard>` (PR #10)
+- [x] 2.6 `<Breadcrumb>` con JSON-LD BreadcrumbList (PR #10)
+- [x] 2.7 `<Header>` — logo, nav desktop, drawer mobile (PR #10)
+- [x] 2.8 `<Footer>` (PR #10)
+- [x] 2.9 `ArticleLayout` con prose + TOC sticky desktop + accordion mobile (PR #10)
+- [x] 2.10 `CategoryLayout` con hero + grid + paginación (PR #10)
+- [x] 2.11 Página `[categoria]/index.astro` (PR #10)
+- [x] 2.12 Página `[categoria]/[slug].astro` (PR #10)
+- [x] 2.13 `lib/seo.ts` — JSON-LD Article + BreadcrumbList + Organization (PR #10)
+- [x] 2.15 RSS `/rss.xml.ts` (PR #10)
+- [x] 2.16 `<RelatedArticles>` (PR #10)
+- [x] 2.17 Artículo de prueba: *5 ejercicios de fútbol para niños de 6 años* (PR #10)
 
-### Bloqueadas / paradas
-- N.X — motivo
+### Diferidas a Sprint 3
+- [ ] 2.5 `<CategoryHero>` como componente independiente — inline en `CategoryLayout` es suficiente por ahora
+- [ ] 2.14 OG image dinámica (Satori) — prioridad media, complejidad alta; entra en Sprint 3
+
+### Bloqueantes actuales
+- PR #10 pendiente de CI verde (fix de pnpm ya pusheado, esperando re-run)
 
 ### Notas / aprendizajes
-- ...
+- Astro 5 cambió la API de render: `render(entry)` importado desde `astro:content`, no `entry.render()`
+- `pnpm/action-setup@v4` no acepta `version` si `packageManager` está en `package.json` — usar sin `version`
+- En TypeScript strict, los callbacks de `getCollection` necesitan tipo explícito `CollectionEntry<'nombre'>`
 
 ### Siguiente sprint planificado
-[Link a sección PlanTrabajo.md]
-```
+Sprint 3 — SEO técnico + AdSense submit (ver `PlanTrabajo.md`)
 
 ---
 
@@ -94,6 +105,7 @@
 | ADR-003 | Markdown + content collections sobre headless CMS | 2026-04-25 |
 | ADR-004 | Pagefind sobre Algolia | 2026-04-25 |
 | ADR-005 | TypeScript strict desde día 1 | 2026-04-25 |
+| ADR-006 | Repo público desde el inicio (desbloquea branch protection sin GitHub Pro) | 2026-04-25 |
 
 ---
 
@@ -103,8 +115,9 @@
 |--------|------------|--------|
 | AdSense rechazo inicial (contenido insuficiente) | Tener 10+ artículos antes de solicitar | Plan en sprint 3 |
 | Mundial 2026 (jun-jul) — perdemos pico si no llegamos a tiempo | Bloque 3 (5 artículos Mundial) prioritario en sprints 4-5 | Tracking |
-| Identidad de autor pendiente — afecta E-E-A-T | Decidir en sprint 1 (persona real recomendada) | Abierto |
-| Dependencia única de SEO orgánico | Pinterest activo desde mes 2, newsletter desde mes 5 | Plan |
+| Imagen OG por defecto `/og-default.jpg` no existe aún | Crear asset o placeholder antes de deploy | Abierto |
+| Logo MiniGol Club sin diseñar — afecta E-E-A-T | Decidir antes de lanzamiento público | Abierto |
+| 3 vulnerabilidades moderadas en dependencias (Dependabot alerts) | Revisar y mergear PRs de Dependabot | Abierto |
 
 ---
 
