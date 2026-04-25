@@ -15,7 +15,6 @@ const currentPath = Astro.url.pathname;
     <a
       href="/"
       class="flex items-center gap-2 font-display text-xl font-bold text-primary transition-opacity hover:opacity-80"
-      aria-label={`${SITE.name} — Inicio`}
     >
       <span class="flex h-8 w-8 items-center justify-center rounded-full bg-primary text-white text-sm font-bold">
         MG
@@ -36,7 +35,7 @@ const currentPath = Astro.url.pathname;
                   class:list={[
                     'rounded-button px-3 py-2 text-sm font-semibold transition-colors',
                     isActive
-                      ? 'bg-primary/10 text-primary'
+                      ? 'text-primary'
                       : 'text-foreground-muted hover:bg-surface-alt hover:text-foreground',
                   ]}
                   aria-current={isActive ? 'page' : undefined}
@@ -97,7 +96,7 @@ const currentPath = Astro.url.pathname;
                   class:list={[
                     'flex items-center rounded-button px-3 py-3 text-base font-semibold transition-colors',
                     isActive
-                      ? 'bg-primary/10 text-primary'
+                      ? 'text-primary hover:bg-surface-alt'
                       : 'text-foreground hover:bg-surface-alt',
                   ]}
                   aria-current={isActive ? 'page' : undefined}

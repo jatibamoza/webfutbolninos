@@ -19,12 +19,12 @@ const { title, description, cover, coverAlt, coverWidth, coverHeight, pubDate, e
 const slug = `/articulos/${article.id}/`;
 
 const colorMap: Record<string, string> = {
-  primary: 'bg-primary/10 text-primary',
-  secondary: 'bg-secondary/10 text-secondary',
-  accent: 'bg-accent/10 text-accent-foreground',
-  fun: 'bg-fun/10 text-fun',
-  energy: 'bg-energy/10 text-energy',
-  info: 'bg-info/10 text-info',
+  primary: 'bg-primary/10 text-foreground',
+  secondary: 'bg-secondary/10 text-foreground',
+  accent: 'bg-accent/10 text-foreground',
+  fun: 'bg-fun/10 text-foreground',
+  energy: 'bg-energy/10 text-foreground',
+  info: 'bg-info/10 text-foreground',
 };
 
 const badgeClass = colorMap[categoriaColor] ?? colorMap.secondary;
@@ -40,7 +40,6 @@ const dateFormatted = pubDate.toLocaleDateString('es-ES', {
   <a
     href={slug}
     class="block overflow-hidden rounded-card bg-surface shadow-card transition-all duration-200 hover:-translate-y-0.5 hover:shadow-card-hover focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2"
-    aria-label={title}
   >
     <!-- Cover -->
     <div class="overflow-hidden" style="aspect-ratio: 16/10;">
