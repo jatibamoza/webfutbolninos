@@ -1,0 +1,112 @@
+name: Nuevo artículo
+description: Brief para publicar un nuevo artículo en MiniGol Club
+labels: ["content"]
+body:
+  - type: input
+    id: titulo
+    attributes:
+      label: Título del artículo (≤70 caracteres)
+      placeholder: "Ejercicios de fútbol para niños de 6 años: guía completa"
+    validations:
+      required: true
+
+  - type: input
+    id: slug
+    attributes:
+      label: Slug (kebab-case en español)
+      placeholder: ejercicios-futbol-ninos-6-anos
+    validations:
+      required: true
+
+  - type: input
+    id: keyword
+    attributes:
+      label: Keyword principal (long-tail)
+      placeholder: "ejercicios futbol niños 6 años"
+    validations:
+      required: true
+
+  - type: textarea
+    id: keywords_secundarias
+    attributes:
+      label: Keywords secundarias / LSI
+      placeholder: "entrenamiento niños 6 años, habilidades fútbol infantil..."
+
+  - type: dropdown
+    id: categoria
+    attributes:
+      label: Categoría
+      options:
+        - entrenamiento
+        - equipamiento
+        - nutricion
+        - psicologia
+        - escuelas-futbol
+        - mundial-2026
+        - guias-padres
+    validations:
+      required: true
+
+  - type: input
+    id: edad_min
+    attributes:
+      label: Edad mínima
+      placeholder: "4"
+    validations:
+      required: true
+
+  - type: input
+    id: edad_max
+    attributes:
+      label: Edad máxima
+      placeholder: "12"
+    validations:
+      required: true
+
+  - type: textarea
+    id: intencion
+    attributes:
+      label: Intención de búsqueda
+      description: ¿Qué quiere saber / hacer / comprar el lector?
+    validations:
+      required: true
+
+  - type: textarea
+    id: estructura
+    attributes:
+      label: Estructura propuesta (H2/H3)
+      description: Esquema de secciones principales
+      value: |
+        ## H2:
+        ### H3:
+        ## H2:
+    validations:
+      required: true
+
+  - type: textarea
+    id: internal_links
+    attributes:
+      label: Internal links planificados (mínimo 2)
+      placeholder: |
+        - /entrenamiento/ejercicios-4-6-anos
+        - /equipamiento/balon-talla-3
+
+  - type: checkboxes
+    id: monetizacion
+    attributes:
+      label: Monetización
+      options:
+        - label: Lleva links de Amazon Afiliados (requiere `<AffiliateDisclosure />`)
+        - label: Lleva `<AdSlot>` planificado
+
+  - type: dropdown
+    id: prioridad
+    attributes:
+      label: Prioridad editorial
+      options:
+        - P0 — Artículo núcleo (primeros 10)
+        - P1 — Sprint activo
+        - P2 — Backlog próximo trimestre
+        - P3 — Algún día
+    validations:
+      required: true

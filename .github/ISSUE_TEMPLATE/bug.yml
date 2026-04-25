@@ -1,0 +1,50 @@
+name: Bug
+description: Algo no funciona como debería
+labels: ["fix"]
+body:
+  - type: markdown
+    attributes:
+      value: "Gracias por reportar el bug. Completa los campos para que podamos reproducirlo."
+
+  - type: textarea
+    id: descripcion
+    attributes:
+      label: Descripción del problema
+      description: Qué ocurre vs. qué debería ocurrir
+    validations:
+      required: true
+
+  - type: textarea
+    id: pasos
+    attributes:
+      label: Pasos para reproducir
+      value: |
+        1.
+        2.
+        3.
+    validations:
+      required: true
+
+  - type: textarea
+    id: esperado
+    attributes:
+      label: Comportamiento esperado
+    validations:
+      required: true
+
+  - type: textarea
+    id: contexto
+    attributes:
+      label: Contexto adicional
+      description: Capturas de pantalla, URL afectada, navegador/dispositivo, logs de consola
+
+  - type: dropdown
+    id: prioridad
+    attributes:
+      label: Prioridad
+      options:
+        - Alta (rompe funcionalidad crítica o afecta SEO/CWV)
+        - Media (afecta UX pero hay workaround)
+        - Baja (cosmético o edge case)
+    validations:
+      required: true

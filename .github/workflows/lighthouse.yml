@@ -1,0 +1,32 @@
+name: Lighthouse CI
+
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  lighthouse:
+    name: Lighthouse
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm build
+
+      - name: Instalar Lighthouse CI
+        run: npm install -g @lhci/cli@0.14.x
+
+      - name: Ejecutar Lighthouse CI
+        run: lhci autorun
+        env:
+          LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
