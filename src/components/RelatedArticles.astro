@@ -1,0 +1,31 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import ArticleCard from './ArticleCard.astro';
+
+interface Props {
+  articles: CollectionEntry<'articulos'>[];
+  categoriaColor?: string;
+  categoriaNombre?: string;
+}
+
+const { articles, categoriaColor, categoriaNombre } = Astro.props;
+
+if (articles.length === 0) return;
+---
+
+<section aria-labelledby="related-heading" class="mt-12 border-t border-border pt-10">
+  <h2 id="related-heading" class="mb-6 font-display text-2xl font-bold text-foreground">
+    Artículos relacionados
+  </h2>
+  <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+    {
+      articles.slice(0, 3).map((article) => (
+        <ArticleCard
+          article={article}
+          categoriaColor={categoriaColor}
+          categoriaNombre={categoriaNombre}
+        />
+      ))
+    }
+  </div>
+</section>

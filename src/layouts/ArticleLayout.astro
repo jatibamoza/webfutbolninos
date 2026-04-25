@@ -1,0 +1,239 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import Breadcrumb from '@/components/Breadcrumb.astro';
+import Header from '@/components/Header.astro';
+import Footer from '@/components/Footer.astro';
+import RelatedArticles from '@/components/RelatedArticles.astro';
+import { articleJsonLd } from '@/lib/seo';
+import { SITE_URL, AUTHOR } from '@/consts';
+import type { CollectionEntry } from 'astro:content';
+import type { MarkdownHeading } from 'astro';
+
+interface Props {
+  article: CollectionEntry<'articulos'>;
+  categoriaNombre: string;
+  categoriaSlug: string;
+  categoriaColor?: string;
+  relatedArticles?: CollectionEntry<'articulos'>[];
+  headings?: MarkdownHeading[];
+}
+
+const {
+  article,
+  categoriaNombre,
+  categoriaSlug,
+  categoriaColor = 'secondary',
+  relatedArticles = [],
+  headings = [],
+} = Astro.props;
+
+const { title, description, cover, coverAlt, coverWidth, coverHeight, pubDate, updatedDate, tieneAfiliados } = article.data;
+
+const canonicalUrl = new URL(`/articulos/${article.id}/`, SITE_URL).toString();
+const ogImageUrl = new URL(cover, SITE_URL).toString();
+
+const jsonLd = articleJsonLd({
+  title,
+  description,
+  url: canonicalUrl,
+  image: ogImageUrl,
+  pubDate,
+  updatedDate,
+  authorName: AUTHOR.name,
+  authorUrl: AUTHOR.url,
+  categoria: categoriaNombre,
+});
+
+const dateFormatted = pubDate.toLocaleDateString('es-ES', {
+  day: 'numeric',
+  month: 'long',
+  year: 'numeric',
+});
+
+const tocHeadings = headings.filter((h) => h.depth === 2 || h.depth === 3);
+const hasToc = tocHeadings.length >= 2;
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  canonical={canonicalUrl}
+  ogImage={cover}
+  ogType="article"
+>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={jsonLd} />
+  </Fragment>
+
+  <Header />
+
+  <div class="mx-auto max-w-5xl px-4 md:px-6">
+    <Breadcrumb
+      items={[
+        { label: categoriaNombre, href: `/${categoriaSlug}/` },
+        { label: title },
+      ]}
+    />
+  </div>
+
+  <main id="main" class="mx-auto max-w-5xl px-4 pb-16 md:px-6">
+    <div class:list={['gap-10', hasToc ? 'lg:grid lg:grid-cols-[1fr_220px]' : '']}>
+
+      <!-- Columna principal -->
+      <article class="min-w-0">
+        <!-- Article header -->
+        <header class="mb-8">
+          <div class="mb-4 flex flex-wrap items-center gap-3">
+            <a
+              href={`/${categoriaSlug}/`}
+              class="rounded-sm bg-secondary/10 px-2 py-0.5 text-xs font-semibold text-foreground transition-colors hover:bg-secondary/20"
+            >
+              {categoriaNombre}
+            </a>
+            <span class="text-sm text-foreground-muted">
+              {article.data.edadMin}–{article.data.edadMax} años
+            </span>
+            {article.data.tiempoLectura && (
+              <span class="text-sm text-foreground-muted">
+                · {article.data.tiempoLectura} min de lectura
+              </span>
+            )}
+          </div>
+
+          <h1 class="mb-4 font-display text-3xl font-bold leading-tight text-foreground md:text-4xl">
+            {title}
+          </h1>
+
+          <p class="mb-6 text-lg leading-relaxed text-foreground-muted">
+            {description}
+          </p>
+
+          <div class="flex flex-wrap items-center gap-2 text-sm text-foreground-muted">
+            <span>Por <strong class="text-foreground">{AUTHOR.name}</strong></span>
+            <span>·</span>
+            <time datetime={pubDate.toISOString()}>{dateFormatted}</time>
+            {updatedDate && (
+              <>
+                <span>·</span>
+                <span>Actualizado <time datetime={updatedDate.toISOString()}>
+                  {updatedDate.toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' })}
+                </time></span>
+              </>
+            )}
+          </div>
+        </header>
+
+        <!-- Cover image -->
+        <div class="mb-8 overflow-hidden rounded-card" style="aspect-ratio: 16/9;">
+          <img
+            src={cover}
+            alt={coverAlt}
+            width={coverWidth}
+            height={coverHeight}
+            fetchpriority="high"
+            loading="eager"
+            decoding="async"
+            class="h-full w-full object-cover"
+          />
+        </div>
+
+        {tieneAfiliados && (
+          <div class="mb-8 rounded-card border border-border bg-surface-alt p-4 text-sm text-foreground-muted">
+            <strong class="text-foreground">Aviso de afiliados:</strong> Este artículo contiene enlaces de Amazon Afiliados. Si realizas una compra a través de ellos, recibimos una pequeña comisión sin coste adicional para ti.
+          </div>
+        )}
+
+        <!-- TOC mobile (accordion) -->
+        {hasToc && (
+          <details class="mb-8 rounded-card border border-border bg-surface lg:hidden">
+            <summary class="cursor-pointer px-4 py-3 text-sm font-semibold text-foreground">
+              Índice del artículo
+            </summary>
+            <nav class="px-4 pb-4 pt-2" aria-label="Tabla de contenidos">
+              <ol class="space-y-1">
+                {tocHeadings.map((h) => (
+                  <li class:list={['text-sm', h.depth === 3 ? 'pl-4' : '']}>
+                    <a
+                      href={`#${h.slug}`}
+                      class="text-foreground-muted transition-colors hover:text-primary"
+                    >
+                      {h.text}
+                    </a>
+                  </li>
+                ))}
+              </ol>
+            </nav>
+          </details>
+        )}
+
+        <!-- MDX content -->
+        <div class="prose prose-lg max-w-none" id="article-content">
+          <slot />
+        </div>
+
+        {relatedArticles.length > 0 && (
+          <RelatedArticles
+            articles={relatedArticles}
+            categoriaColor={categoriaColor}
+            categoriaNombre={categoriaNombre}
+          />
+        )}
+      </article>
+
+      <!-- TOC sidebar sticky desktop -->
+      {hasToc && (
+        <aside class="hidden lg:block" aria-label="Tabla de contenidos">
+          <div class="sticky top-24">
+            <p class="mb-3 text-xs font-bold uppercase tracking-wider text-foreground-muted">
+              En este artículo
+            </p>
+            <nav>
+              <ol class="space-y-2" id="toc-list">
+                {tocHeadings.map((h) => (
+                  <li class:list={['text-sm', h.depth === 3 ? 'pl-3' : '']}>
+                    <a
+                      href={`#${h.slug}`}
+                      data-toc-link={h.slug}
+                      class="block text-foreground-muted transition-colors hover:text-primary"
+                    >
+                      {h.text}
+                    </a>
+                  </li>
+                ))}
+              </ol>
+            </nav>
+          </div>
+        </aside>
+      )}
+    </div>
+  </main>
+
+  <Footer />
+</BaseLayout>
+
+<script>
+  // Resalta el enlace del TOC activo según el scroll
+  const links = document.querySelectorAll<HTMLAnchorElement>('[data-toc-link]');
+  if (links.length > 0) {
+    const headingEls = Array.from(links)
+      .map((l) => document.getElementById(l.dataset.tocLink ?? ''))
+      .filter(Boolean) as HTMLElement[];
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            links.forEach((l) => l.classList.remove('text-primary', 'font-semibold'));
+            const active = document.querySelector<HTMLAnchorElement>(
+              `[data-toc-link="${entry.target.id}"]`
+            );
+            active?.classList.add('text-primary', 'font-semibold');
+          }
+        }
+      },
+      { rootMargin: '-20% 0px -70% 0px' }
+    );
+
+    headingEls.forEach((el) => observer.observe(el));
+  }
+</script>

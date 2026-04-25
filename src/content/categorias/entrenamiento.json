@@ -1,0 +1,11 @@
+{
+  "nombre": "Entrenamiento",
+  "slug": "entrenamiento",
+  "descripcion": "Guías paso a paso, rutinas y ejercicios técnicos de fútbol para niños de 4 a 12 años. Desde control de balón hasta táctica básica, todo explicado para que cualquier padre pueda entrenar con su hijo.",
+  "descripcionCorta": "Ejercicios y rutinas de fútbol para practicar en casa o en el parque.",
+  "color": "secondary",
+  "icono": "dumbbell",
+  "edadMin": 4,
+  "edadMax": 12,
+  "orden": 1
+}

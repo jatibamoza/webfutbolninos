@@ -1,0 +1,11 @@
+{
+  "nombre": "Equipamiento",
+  "slug": "equipamiento",
+  "descripcion": "Guías de compra y comparativas de material de fútbol infantil: balones, botas, porterías, conos y más. Selección honesta pensada para padres, con opciones para todos los presupuestos.",
+  "descripcionCorta": "Guías de compra de material de fútbol infantil: balones, botas y más.",
+  "color": "accent",
+  "icono": "shopping-bag",
+  "edadMin": 4,
+  "edadMax": 12,
+  "orden": 3
+}

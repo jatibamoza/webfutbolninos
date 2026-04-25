@@ -204,3 +204,33 @@ Instalados desde [wshobson/agents](https://github.com/wshobson/agents) el 2026-0
 | Widget resultados en directo (Mundial/LaLiga/Champions) | `docs/seo/ResultadosEnDirecto.md` |
 
 **Regla:** si hay conflicto entre código y doc, gana el doc — y el PR debe ajustar el código. Si el doc está obsoleto, el PR debe ajustar el doc.
+
+---
+
+## 10. Modelo Claude por tipo de tarea
+
+**Regla general:** Opus para decisiones estratégicas irrepetibles; Sonnet para implementación; Haiku para tareas mecánicas repetitivas.
+
+Cambiar modelo antes de invocar un skill: `/model haiku`, `/model sonnet`, `/model opus`.
+
+| Tipo de tarea | Skill | Modelo |
+|---------------|-------|--------|
+| Bootstrap infra, CI, deploy, componentes UI | `web-developer` | Sonnet |
+| Setup GitHub, branch protection, workflows | `github-expert` | Sonnet |
+| Schemas Zod, content collections, rutas Astro | `web-developer` | Sonnet |
+| Diseño de componentes nuevos | `ui-ux-pro-max` + `web-developer` | Sonnet |
+| **Redactar cada artículo nuevo** (brief claro) | `seo-content-writer` | **Haiku** |
+| Keyword validation por artículo | `seo-keyword-strategist` | Haiku |
+| Meta title + description por artículo | `seo-meta-optimizer` | Haiku |
+| Featured snippets por artículo | `seo-snippet-hunter` | Haiku |
+| Auditoría SEO pre-PR de cada artículo | `seo-content-auditor` | Haiku |
+| Refresh de artículos viejos | `seo-content-refresher` | Haiku |
+| Auditoría SEO completa del sitio | `seo-content-auditor` | Sonnet |
+| Internal linking y silos del sitio | `seo-structure-architect` | Sonnet |
+| Revisión de canibalización (mensual) | `seo-cannibalization-detector` | Sonnet |
+| Implementación AdSense, consent, MonetIzación | `web-developer` | Sonnet |
+| **Cambio de stack, ADR nuevo** | `system-architect` | **Opus** |
+| **Estrategia de contenido nueva, pivote editorial** | `content-marketer` | **Opus** |
+| **Decisión de producto de alto impacto** | — | **Opus** |
+
+> Haiku es 20× más barato que Opus y suficiente para tareas con brief bien definido. La mayoría del trabajo de contenido (redactar, auditar, optimizar meta) es Haiku.

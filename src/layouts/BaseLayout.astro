@@ -7,6 +7,7 @@ interface Props {
   description?: string;
   canonical?: string;
   ogImage?: string;
+  ogType?: 'website' | 'article';
   noindex?: boolean;
 }
 
@@ -15,6 +16,7 @@ const {
   description = SITE.description,
   canonical,
   ogImage = SITE.defaultOgImage,
+  ogType = 'website',
   noindex = false,
 } = Astro.props;
 
@@ -36,7 +38,7 @@ const fullTitle = title === SITE.name ? title : `${title} · ${SITE.name}`;
     <link rel="canonical" href={canonicalURL} />
     {noindex && <meta name="robots" content="noindex, nofollow" />}
 
-    <meta property="og:type" content="website" />
+    <meta property="og:type" content={ogType} />
     <meta property="og:site_name" content={SITE.name} />
     <meta property="og:title" content={fullTitle} />
     <meta property="og:description" content={description} />
@@ -60,6 +62,7 @@ const fullTitle = title === SITE.name ? title : `${title} · ${SITE.name}`;
       rel="stylesheet"
       href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700&display=swap"
     />
+    <slot name="head" />
   </head>
   <body class="min-h-screen bg-background text-foreground">
     <a
@@ -68,8 +71,6 @@ const fullTitle = title === SITE.name ? title : `${title} · ${SITE.name}`;
     >
       Saltar al contenido
     </a>
-    <main id="main">
-      <slot />
-    </main>
+    <slot />
   </body>
 </html>
