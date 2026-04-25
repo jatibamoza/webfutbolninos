@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /buscar
+Disallow: /buscar/
+
+Sitemap: https://futbolparaninos.club/sitemap-index.xml

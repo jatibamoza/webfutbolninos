@@ -1,0 +1,26 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="Página no encontrada"
+  description="La página que buscas no existe o se ha movido."
+  noindex
+>
+  <section class="mx-auto max-w-2xl px-6 py-20 text-center">
+    <p class="font-display text-7xl font-bold text-primary md:text-8xl">404</p>
+    <h1 class="mt-6 font-display text-3xl font-bold md:text-4xl">
+      Esta jugada no existe
+    </h1>
+    <p class="mt-4 text-lg text-foreground-muted">
+      La página que buscas se ha ido a calentar al banquillo. Vuelve al inicio
+      para encontrar lo que necesitas.
+    </p>
+    <a
+      href="/"
+      class="mt-10 inline-block rounded-button bg-primary px-6 py-3 font-semibold text-white shadow-card transition hover:bg-primary-hover hover:shadow-card-hover"
+    >
+      Volver al inicio
+    </a>
+  </section>
+</BaseLayout>
