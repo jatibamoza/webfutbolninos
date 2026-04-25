@@ -1,0 +1,11 @@
+{
+  "nombre": "Recursos",
+  "slug": "recursos",
+  "descripcion": "Descargables gratuitos para entrenar mejor: plantillas de ejercicios, calendarios del Mundial, cuadernos de jugadas y fichas de entrenamiento. Todo en PDF listo para imprimir.",
+  "descripcionCorta": "PDFs gratuitos para descargar: plantillas, calendarios y fichas de entrenamiento.",
+  "color": "accent",
+  "icono": "download",
+  "edadMin": 4,
+  "edadMax": 12,
+  "orden": 6
+}

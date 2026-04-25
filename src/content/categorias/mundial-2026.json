@@ -1,0 +1,11 @@
+{
+  "nombre": "Mundial 2026",
+  "slug": "mundial-2026",
+  "descripcion": "El Mundial de fútbol 2026 explicado para niños y sus padres. Calendario, selecciones, jugadores estrella y actividades para vivir el torneo en familia de una forma educativa y divertida.",
+  "descripcionCorta": "El Mundial 2026 explicado para niños: calendarios, jugadores y actividades.",
+  "color": "energy",
+  "icono": "trophy",
+  "edadMin": 5,
+  "edadMax": 12,
+  "orden": 5
+}

@@ -1,0 +1,93 @@
+---
+import { Image } from 'astro:assets';
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+  article: CollectionEntry<'articulos'>;
+  categoriaColor?: string;
+  categoriaNombre?: string;
+  loading?: 'lazy' | 'eager';
+}
+
+const {
+  article,
+  categoriaColor = 'secondary',
+  categoriaNombre,
+  loading = 'lazy',
+} = Astro.props;
+
+const { title, description, cover, coverAlt, coverWidth, coverHeight, pubDate, edadMin, edadMax, tiempoLectura, categoria } = article.data;
+const slug = `/articulos/${article.id}/`;
+
+const colorMap: Record<string, string> = {
+  primary: 'bg-primary/10 text-primary',
+  secondary: 'bg-secondary/10 text-secondary',
+  accent: 'bg-accent/10 text-accent-foreground',
+  fun: 'bg-fun/10 text-fun',
+  energy: 'bg-energy/10 text-energy',
+  info: 'bg-info/10 text-info',
+};
+
+const badgeClass = colorMap[categoriaColor] ?? colorMap.secondary;
+
+const dateFormatted = pubDate.toLocaleDateString('es-ES', {
+  day: 'numeric',
+  month: 'long',
+  year: 'numeric',
+});
+---
+
+<article class="group">
+  <a
+    href={slug}
+    class="block overflow-hidden rounded-card bg-surface shadow-card transition-all duration-200 hover:-translate-y-0.5 hover:shadow-card-hover focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2"
+    aria-label={title}
+  >
+    <!-- Cover -->
+    <div class="overflow-hidden" style="aspect-ratio: 16/10;">
+      <img
+        src={cover}
+        alt={coverAlt}
+        width={coverWidth}
+        height={coverHeight}
+        loading={loading}
+        decoding="async"
+        class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.02]"
+      />
+    </div>
+
+    <!-- Content -->
+    <div class="p-5">
+      <!-- Badge + meta -->
+      <div class="mb-3 flex items-center gap-3">
+        {categoriaNombre && (
+          <span class:list={['rounded-sm px-2 py-0.5 text-xs font-semibold', badgeClass]}>
+            {categoriaNombre}
+          </span>
+        )}
+        <span class="text-xs text-foreground-muted">
+          {edadMin}–{edadMax} años
+          {tiempoLectura && <> · {tiempoLectura} min</>}
+        </span>
+      </div>
+
+      <!-- Title -->
+      <h3 class="mb-2 font-display text-xl font-semibold leading-snug text-foreground line-clamp-2">
+        {title}
+      </h3>
+
+      <!-- Excerpt -->
+      <p class="mb-4 text-sm leading-relaxed text-foreground-muted line-clamp-2">
+        {description}
+      </p>
+
+      <!-- Date -->
+      <time
+        datetime={pubDate.toISOString()}
+        class="text-xs text-foreground-muted/70"
+      >
+        {dateFormatted}
+      </time>
+    </div>
+  </a>
+</article>

@@ -1,0 +1,11 @@
+{
+  "nombre": "Iniciación",
+  "slug": "iniciacion",
+  "descripcion": "Todo lo que necesitas saber antes de apuntar a tu hijo a fútbol: a qué edad empezar, cómo elegir escuela, qué esperar en cada etapa y cómo acompañarle desde la grada con la actitud correcta.",
+  "descripcionCorta": "Consejos para padres sobre cómo iniciar a los niños en el fútbol.",
+  "color": "primary",
+  "icono": "flag",
+  "edadMin": 4,
+  "edadMax": 8,
+  "orden": 4
+}
