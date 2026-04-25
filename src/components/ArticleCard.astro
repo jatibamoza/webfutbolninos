@@ -16,7 +16,7 @@ const {
 } = Astro.props;
 
 const { title, description, cover, coverAlt, coverWidth, coverHeight, pubDate, edadMin, edadMax, tiempoLectura } = article.data;
-const slug = `/articulos/${article.id}/`;
+const slug = `/${article.id.replace('.mdx', '')}/`;
 
 const colorMap: Record<string, string> = {
   primary: 'bg-primary/10 text-foreground',
