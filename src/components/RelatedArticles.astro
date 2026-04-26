@@ -13,19 +13,23 @@ const { articles, categoriaColor, categoriaNombre } = Astro.props;
 if (articles.length === 0) return;
 ---
 
-<section aria-labelledby="related-heading" class="mt-12 border-t border-border pt-10">
-  <h2 id="related-heading" class="mb-6 font-display text-2xl font-bold text-foreground">
-    Artículos relacionados
-  </h2>
-  <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-    {
-      articles.slice(0, 3).map((article) => (
-        <ArticleCard
-          article={article}
-          categoriaColor={categoriaColor}
-          categoriaNombre={categoriaNombre}
-        />
-      ))
-    }
+<section aria-labelledby="related-heading" class="mt-14">
+  <div class="mb-6 flex items-baseline gap-3" style="border-bottom: 2px solid var(--color-foreground); padding-bottom: 10px;">
+    <span class="hand" style="font-size: 20px; color: var(--color-handwritten); transform: rotate(-3deg); display: inline-block;">
+      continuar leyendo
+    </span>
+    <h2 id="related-heading" class="display m-0" style="font-size: 24px; line-height: 1;">
+      Sigue por aquí
+    </h2>
+  </div>
+
+  <div class="grid gap-4 md:grid-cols-3 md:gap-5">
+    {articles.slice(0, 3).map((article) => (
+      <ArticleCard
+        article={article}
+        categoriaColor={categoriaColor}
+        categoriaNombre={categoriaNombre}
+      />
+    ))}
   </div>
 </section>
