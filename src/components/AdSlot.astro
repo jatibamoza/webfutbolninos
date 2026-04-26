@@ -47,15 +47,7 @@ const minH = reservedHeight[format];
 </aside>
 
 {adSenseEnabled && (
-  <Fragment>
-    <script
-      is:inline
-      async
-      src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${ADSENSE_CLIENT}`}
-      crossorigin="anonymous"
-    ></script>
-    <script is:inline>
-      (window.adsbygoogle = window.adsbygoogle || []).push({});
-    </script>
-  </Fragment>
+  <script is:inline>
+    (window.adsbygoogle = window.adsbygoogle || []).push({});
+  </script>
 )}

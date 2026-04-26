@@ -1,6 +1,6 @@
 ---
 import '@/styles/global.css';
-import { SITE, SITE_URL, GA_ID } from '@/consts';
+import { SITE, SITE_URL, GA_ID, ADSENSE_CLIENT } from '@/consts';
 import CookieBanner from '@/components/CookieBanner.astro';
 import StickyNewsletter from '@/components/ui/StickyNewsletter.astro';
 
@@ -83,6 +83,15 @@ const fullTitle = title === SITE.name ? title : `${title} · ${SITE.name}`;
       gtag('js', new Date());
       gtag('config', GA_ID, { anonymize_ip: true });
     </script>
+
+    {ADSENSE_CLIENT && (
+      <script
+        is:inline
+        async
+        src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${ADSENSE_CLIENT}`}
+        crossorigin="anonymous"
+      ></script>
+    )}
   </head>
   <body class="min-h-screen bg-background text-foreground">
     <a

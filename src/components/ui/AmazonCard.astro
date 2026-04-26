@@ -38,58 +38,54 @@ const isLive = Boolean(asin || query);
 <aside class="amazon-card card-paper" data-affiliate="amazon">
   {badge && <span class="amazon-card__badge mono">{badge}</span>}
 
-  <div class="amazon-card__body">
-    <div class="amazon-card__media img-ph" aria-hidden="true">
-      <span>imagen producto</span>
+  <header class="amazon-card__head">
+    <div class="amazon-card__title-wrap">
+      <h3 class="amazon-card__title display">{title}</h3>
+      {subtitle && <p class="amazon-card__subtitle mono">{subtitle}</p>}
     </div>
+    {priceRange && <span class="amazon-card__price mono">{priceRange}</span>}
+  </header>
 
-    <div class="amazon-card__content">
-      <header class="amazon-card__head">
-        <h3 class="amazon-card__title display">{title}</h3>
-        {subtitle && <p class="amazon-card__subtitle mono">{subtitle}</p>}
-      </header>
+  {pros.length > 0 && (
+    <ul class="amazon-card__pros">
+      {pros.map((p) => <li>{p}</li>)}
+    </ul>
+  )}
 
-      {pros.length > 0 && (
-        <ul class="amazon-card__pros">
-          {pros.map((p) => <li>{p}</li>)}
-        </ul>
-      )}
-
-      <div class="amazon-card__footer">
-        {priceRange && <span class="amazon-card__price mono">{priceRange}</span>}
-        {isLive ? (
-          <a
-            class="btn btn-accent amazon-card__cta"
-            href={href}
-            target="_blank"
-            rel="sponsored noopener nofollow"
-          >
-            {ctaLabel} <span aria-hidden="true">→</span>
-          </a>
-        ) : (
-          <span class="amazon-card__cta amazon-card__cta--soon mono">
-            Próximamente
-          </span>
-        )}
-      </div>
-    </div>
-  </div>
-
-  <p class="amazon-card__disclosure mono">
-    Enlace afiliado · MiniGol Club recibe comisión sin coste para ti
-  </p>
+  <footer class="amazon-card__footer">
+    <span class="amazon-card__disclosure mono">
+      Enlace afiliado · sin coste extra para ti
+    </span>
+    {isLive ? (
+      <a
+        class="btn btn-accent amazon-card__cta"
+        href={href}
+        target="_blank"
+        rel="sponsored noopener nofollow"
+      >
+        {ctaLabel} <span aria-hidden="true">→</span>
+      </a>
+    ) : (
+      <span class="amazon-card__cta amazon-card__cta--soon mono">
+        Próximamente
+      </span>
+    )}
+  </footer>
 </aside>
 
 <style>
   .amazon-card {
     position: relative;
-    padding: 18px;
+    padding: 22px 22px 18px;
     margin: 1.6em 0;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
   }
   .amazon-card__badge {
     position: absolute;
     top: -10px;
-    left: 14px;
+    left: 18px;
     background: var(--color-accent);
     color: #1c1917;
     font-size: 10px;
@@ -101,37 +97,25 @@ const isLive = Boolean(asin || query);
     box-shadow: var(--shadow-sm);
   }
 
-  .amazon-card__body {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 16px;
-    align-items: stretch;
-  }
-
-  .amazon-card__media {
-    aspect-ratio: 4/3;
-    min-height: 120px;
-    font-size: 11px;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-  }
-
-  .amazon-card__content {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-  }
   .amazon-card__head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 14px;
+  }
+  .amazon-card__title-wrap {
     display: flex;
     flex-direction: column;
     gap: 4px;
+    min-width: 0;
   }
   .amazon-card__title {
     font-family: var(--font-display);
     font-weight: 700;
-    font-size: 1.2rem;
+    font-size: 1.15rem;
     line-height: 1.15;
     margin: 0;
+    color: var(--color-foreground);
   }
   .amazon-card__subtitle {
     font-size: 11px;
@@ -139,6 +123,18 @@ const isLive = Boolean(asin || query);
     text-transform: uppercase;
     color: var(--color-foreground-muted);
     margin: 0;
+  }
+  .amazon-card__price {
+    flex-shrink: 0;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    color: var(--color-foreground);
+    background: var(--color-surface-alt);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    padding: 4px 10px;
+    white-space: nowrap;
   }
 
   .amazon-card__pros {
@@ -170,44 +166,31 @@ const isLive = Boolean(asin || query);
     flex-wrap: wrap;
     align-items: center;
     justify-content: space-between;
-    gap: 12px;
-    margin-top: auto;
-    padding-top: 4px;
+    gap: 10px;
+    padding-top: 12px;
+    border-top: 1px dashed var(--color-border);
   }
-  .amazon-card__price {
-    font-size: 13px;
-    font-weight: 500;
-    letter-spacing: 0.04em;
-    color: var(--color-foreground);
+  .amazon-card__disclosure {
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-foreground-subtle);
   }
   .amazon-card__cta {
     text-decoration: none;
+    font-size: 14px;
+    padding: 10px 18px;
+    min-height: 40px;
   }
   .amazon-card__cta--soon {
     display: inline-flex;
     align-items: center;
-    padding: 10px 16px;
+    padding: 8px 14px;
     border: 1.5px dashed var(--color-border-strong);
     border-radius: var(--radius-md);
     font-size: 11px;
     letter-spacing: 0.1em;
     text-transform: uppercase;
     color: var(--color-foreground-subtle);
-  }
-
-  .amazon-card__disclosure {
-    margin: 14px 0 0;
-    font-size: 10px;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--color-foreground-subtle);
-    text-align: right;
-  }
-
-  @media (min-width: 640px) {
-    .amazon-card__body {
-      grid-template-columns: 200px 1fr;
-      gap: 22px;
-    }
   }
 </style>

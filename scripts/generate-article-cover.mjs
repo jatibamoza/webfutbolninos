@@ -38,8 +38,8 @@ if (!slug || !categoria || !title) {
 const accentColor = categoryColors[categoria] ?? '#2563EB';
 const categoryLabel = categoryLabels[categoria] ?? categoria.toUpperCase();
 
-// Word-wrap manual para que el título quepa en máximo 3 líneas a 56pt
-function wrapTitle(text, maxCharsPerLine = 30) {
+// Word-wrap manual para que el título quepa en máximo 3 líneas a 50pt
+function wrapTitle(text, maxCharsPerLine = 32) {
   const words = text.split(' ');
   const lines = [];
   let current = '';
@@ -56,8 +56,11 @@ function wrapTitle(text, maxCharsPerLine = 30) {
 }
 
 const titleLines = wrapTitle(title);
+// Centramos verticalmente el bloque de título según el número de líneas para
+// repartir el espacio entre la cabecera y el footer y eliminar el "vacío" inferior.
+const titleStartY = 380 - (titleLines.length - 1) * 30;
 const titleSvg = titleLines
-  .map((line, i) => `<text x="80" y="${410 + i * 78}" font-family="'Fredoka','Trebuchet MS',sans-serif" font-size="62" font-weight="700" fill="#1A1F2C" letter-spacing="-0.02em">${line.replace(/&/g, '&amp;').replace(/</g, '&lt;')}</text>`)
+  .map((line, i) => `<text x="80" y="${titleStartY + i * 60}" font-family="'Fredoka','Trebuchet MS',sans-serif" font-size="50" font-weight="700" fill="#1A1F2C" letter-spacing="-0.02em">${line.replace(/&/g, '&amp;').replace(/</g, '&lt;')}</text>`)
   .join('\n  ');
 
 const svg = `<?xml version="1.0" encoding="UTF-8"?>
@@ -95,10 +98,10 @@ const svg = `<?xml version="1.0" encoding="UTF-8"?>
   <text x="190" y="160" font-family="'JetBrains Mono',ui-monospace,monospace" font-size="13" font-weight="500" fill="#4D5468" letter-spacing="0.18em">FÚTBOL · PARA · PADRES</text>
 
   <!-- Dorsal decorativo -->
-  <text x="1130" y="280" text-anchor="end" font-family="'Fredoka',system-ui,sans-serif" font-size="220" font-weight="700" fill="${accentColor}" opacity="0.10" letter-spacing="-0.04em">${String(Math.floor(Math.random() * 99) + 1).padStart(2, '0')}</text>
+  <text x="1130" y="270" text-anchor="end" font-family="'Fredoka',system-ui,sans-serif" font-size="200" font-weight="700" fill="${accentColor}" opacity="0.10" letter-spacing="-0.04em">${String(Math.floor(Math.random() * 99) + 1).padStart(2, '0')}</text>
 
   <!-- Categoría chip mono -->
-  <g transform="translate(80, 320)">
+  <g transform="translate(80, 290)">
     <rect x="0" y="0" width="28" height="4" rx="2" fill="${accentColor}"/>
     <text x="40" y="4" font-family="'JetBrains Mono',ui-monospace,monospace" font-size="14" font-weight="500" fill="#1A1F2C" letter-spacing="0.12em">${categoryLabel}</text>
   </g>
@@ -107,13 +110,13 @@ const svg = `<?xml version="1.0" encoding="UTF-8"?>
   ${titleSvg}
 
   <!-- Marker amarillo decorativo en bottom -->
-  <rect x="80" y="660" width="180" height="14" fill="#FFD45E" opacity="0.85"/>
+  <rect x="80" y="635" width="180" height="14" fill="#FFD45E" opacity="0.85"/>
 
   <!-- Dominio mono -->
-  <text x="80" y="715" font-family="'JetBrains Mono',ui-monospace,monospace" font-size="16" font-weight="500" fill="#1A1F2C" letter-spacing="0.15em">MINIGOLCLUB.COM</text>
+  <text x="80" y="688" font-family="'JetBrains Mono',ui-monospace,monospace" font-size="16" font-weight="500" fill="#1A1F2C" letter-spacing="0.15em">MINIGOLCLUB.COM</text>
 
   <!-- Sello bottom-right rotado -->
-  <g transform="translate(1010, 680) rotate(-2)">
+  <g transform="translate(1010, 660) rotate(-2)">
     <rect x="0" y="0" width="100" height="28" rx="4" fill="none" stroke="#C9BC91" stroke-width="1.5"/>
     <text x="50" y="18" text-anchor="middle" font-family="'JetBrains Mono',ui-monospace,monospace" font-size="10" letter-spacing="0.18em" fill="#4D5468">EST · 2026</text>
   </g>
