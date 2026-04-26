@@ -4,7 +4,12 @@
 
   declare function gtag(...args: unknown[]): void;
 
-  CookieConsent.run({
+  console.log('[CookieBanner] start');
+
+  const runResult = CookieConsent.run({
+    autoShow: true,
+    hideFromBots: false,
+    disablePageInteraction: false,
     guiOptions: {
       consentModal: {
         layout: 'box',
@@ -75,6 +80,22 @@
       },
     },
   });
+
+  Promise.resolve(runResult)
+    .then(() => {
+      const ccMain = document.getElementById('cc-main');
+      console.log('[CookieBanner] resolved. cc-main:', ccMain);
+      console.log('[CookieBanner] body last child:', document.body.lastElementChild);
+      if (!ccMain) {
+        console.warn('[CookieBanner] cc-main missing — forcing show');
+        try {
+          CookieConsent.show(true);
+        } catch (e) {
+          console.error('[CookieBanner] show() failed:', e);
+        }
+      }
+    })
+    .catch((err: unknown) => console.error('[CookieBanner] run rejected:', err));
 </script>
 
 <style is:global>
