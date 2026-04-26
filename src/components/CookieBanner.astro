@@ -4,11 +4,7 @@
 
   declare function gtag(...args: unknown[]): void;
 
-  console.log('[CookieBanner] script loaded, CookieConsent:', CookieConsent);
-
   CookieConsent.run({
-    autoShow: true,
-    hideFromBots: false,
     guiOptions: {
       consentModal: {
         layout: 'box',
@@ -45,11 +41,11 @@
       translations: {
         es: {
           consentModal: {
-            title: 'Usamos cookies 🍪',
+            title: 'Usamos cookies',
             description:
               'Usamos cookies analíticas para entender cómo usas el sitio y mejorarlo. No compartimos datos con terceros ni usamos cookies de publicidad invasiva.',
             acceptAllBtn: 'Aceptar todo',
-            rejectAllBtn: 'Solo necesarias',
+            acceptNecessaryBtn: 'Solo necesarias',
             showPreferencesBtn: 'Gestionar',
             footer:
               '<a href="/politica-privacidad/">Política de privacidad</a> · <a href="/politica-cookies/">Política de cookies</a>',
@@ -79,17 +75,6 @@
       },
     },
   });
-
-  console.log('[CookieBanner] run() invoked, _ccRun:', (window as unknown as { _ccRun?: boolean })._ccRun);
-
-  setTimeout(() => {
-    const ccMain = document.getElementById('cc-main');
-    console.log('[CookieBanner] cc-main element after 500ms:', ccMain);
-    if (ccMain) {
-      console.log('[CookieBanner] cc-main innerHTML length:', ccMain.innerHTML.length);
-      console.log('[CookieBanner] cc-main computed style:', window.getComputedStyle(ccMain).display);
-    }
-  }, 500);
 </script>
 
 <style is:global>
