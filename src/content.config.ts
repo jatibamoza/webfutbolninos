@@ -13,6 +13,7 @@ const categoriasCollection = defineCollection({
     edadMin: z.number().int().min(3).max(18),
     edadMax: z.number().int().min(3).max(18),
     orden: z.number().int(),
+    tagline: z.string().optional(),
   }),
 });
 

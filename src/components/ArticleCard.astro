@@ -42,7 +42,12 @@ const dateFormatted = pubDate.toLocaleDateString('es-ES', {
 });
 ---
 
-<article class="group h-full">
+<article
+  class="group h-full"
+  data-article-card
+  data-edad-min={edadMin}
+  data-edad-max={edadMax}
+>
   <a
     href={slug}
     class="card-paper flex h-full flex-col overflow-hidden"

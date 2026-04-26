@@ -88,7 +88,7 @@ body:
     attributes:
       label: Internal links planificados (mínimo 2)
       placeholder: |
-        - /entrenamiento/ejercicios-4-6-anos
+        - /ejercicios/ejercicios-4-6-anos
         - /equipamiento/balon-talla-3
 
   - type: checkboxes

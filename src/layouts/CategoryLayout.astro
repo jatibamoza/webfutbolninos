@@ -5,6 +5,7 @@ import Header from '@/components/Header.astro';
 import Footer from '@/components/Footer.astro';
 import ArticleCard from '@/components/ArticleCard.astro';
 import AdSlot from '@/components/AdSlot.astro';
+import { Icon } from 'astro-icon/components';
 import { SITE_URL } from '@/consts';
 import { categoryColorVar } from '@/lib/categories';
 import type { CollectionEntry } from 'astro:content';
@@ -20,30 +21,44 @@ interface Props {
 }
 
 const { categoria, articles, page } = Astro.props;
-const { nombre, slug, descripcion, color, orden } = categoria.data;
+const { nombre, slug, descripcion, descripcionCorta, color, orden, tagline } = categoria.data;
 
 const canonicalUrl = new URL(`/${slug}/`, SITE_URL).toString();
 const colorVar = categoryColorVar(color);
 const dorsalNumber = String(orden).padStart(2, '0');
 
-// Inserta un AdSlot in-feed cada 6 artículos (no al inicio).
-const FEED_AD_EVERY = 6;
-type GridItem =
-  | { type: 'article'; article: CollectionEntry<'articulos'>; index: number }
-  | { type: 'ad'; key: string };
+// Última actualización: la fecha de publicación más reciente del listado.
+const sortedArticles = [...articles].sort(
+  (a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime(),
+);
+const lastDate = sortedArticles[0]?.data.pubDate;
+const lastUpdated = lastDate
+  ? lastDate
+      .toLocaleDateString('es-ES', { day: 'numeric', month: 'short' })
+      .replace('.', '')
+  : null;
 
-const gridItems: GridItem[] = [];
-articles.forEach((article, index) => {
-  if (index > 0 && index % FEED_AD_EVERY === 0) {
-    gridItems.push({ type: 'ad', key: `ad-${index}` });
-  }
-  gridItems.push({ type: 'article', article, index });
-});
+// Filtros de edad: rangos canónicos del proyecto.
+const ageRanges = [
+  { id: 'todas', label: 'todas', min: 0, max: 99 },
+  { id: '4-6', label: '4-6', min: 4, max: 6 },
+  { id: '7-8', label: '7-8', min: 7, max: 8 },
+  { id: '9-10', label: '9-10', min: 9, max: 10 },
+  { id: '11-12', label: '11-12', min: 11, max: 12 },
+];
+
+// Niveles: placeholder visual hasta que el schema de articulos incluya `nivel`.
+const levelChips = [
+  { id: 'todas', label: 'todas' },
+  { id: 'facil', label: 'fácil' },
+  { id: 'media', label: 'media' },
+  { id: 'reto', label: 'reto' },
+];
 ---
 
 <BaseLayout
   title={`${nombre} — MiniGol Club`}
-  description={descripcion}
+  description={descripcionCorta}
   canonical={canonicalUrl}
 >
   <Header />
@@ -52,49 +67,93 @@ articles.forEach((article, index) => {
     <Breadcrumb items={[{ label: nombre }]} />
   </div>
 
-  <!-- ============ Category Hero con dorsal gigante ============ -->
-  <section class="relative overflow-hidden" style="border-bottom: 2px solid var(--color-foreground);">
-    <!-- Dorsal decorativo gigante -->
-    <span
-      class="dorsal-fill pointer-events-none absolute select-none"
-      style={`top: -40px; right: -20px; font-size: clamp(220px, 32vw, 360px); color: ${colorVar}; opacity: 0.10; line-height: 0.85;`}
-      aria-hidden="true"
-    >
-      {dorsalNumber}
-    </span>
+  <!-- ============ HERO ============ -->
+  <section class="cat-hero" style={`--cat-color: ${colorVar};`}>
+    <div class="cat-hero__inner mx-auto max-w-7xl px-4 md:px-12">
+      <span class="cat-hero__dorsal" aria-hidden="true">{dorsalNumber}</span>
 
-    <div class="relative mx-auto max-w-7xl px-4 py-10 md:px-12 md:py-16">
-      <div class="flex items-center gap-3">
-        <span class="cat-chip" style={`--cat-color: ${colorVar};`}>
+      <div class="cat-hero__content">
+        <span class="cat-chip cat-hero__chip" style={`--cat-color: ${colorVar};`}>
           <span class="bar" aria-hidden="true"></span>
           <span>{nombre}</span>
         </span>
-        <span class="mono" style="font-size: 10px; letter-spacing: 0.12em; color: var(--color-foreground-subtle);">
-          SECCIÓN {dorsalNumber}
-        </span>
+
+        <h1 class="cat-hero__title display">
+          <span class="marker">{nombre}</span>{` de fútbol`}
+        </h1>
+
+        <p class="cat-hero__subtitle">{descripcion}</p>
+
+        <p class="cat-hero__meta mono">
+          <strong>{articles.length}</strong>&nbsp;{articles.length === 1 ? 'artículo' : 'artículos'}
+          {lastUpdated && (
+            <>
+              <span class="cat-hero__sep" aria-hidden="true">·</span>
+              actualizada el <strong>{lastUpdated}</strong>
+            </>
+          )}
+          {tagline && (
+            <>
+              <span class="cat-hero__sep" aria-hidden="true">·</span>
+              <span class="hand cat-hero__tagline">{tagline}</span>
+            </>
+          )}
+        </p>
       </div>
+    </div>
+    <div class="divider-pitch"></div>
+  </section>
 
-      <h1
-        class="display mt-4 m-0"
-        style="font-size: clamp(2.5rem, 6vw, 4.5rem); line-height: 0.95; letter-spacing: -0.025em;"
-      >
-        {nombre}
-      </h1>
+  <!-- ============ FILTROS ============ -->
+  <section class="cat-filters mx-auto max-w-7xl px-4 pt-6 md:px-12 md:pt-8">
+    <div class="cat-filters__row">
+      <span class="cat-filters__label mono">
+        <Icon name="lucide:filter" class="h-3 w-3" />
+        EDAD
+      </span>
+      <div class="cat-filters__chips" data-filter-edad>
+        {ageRanges.map((r, i) => (
+          <button
+            type="button"
+            class="cat-filters__chip"
+            data-active={i === 0 ? 'true' : 'false'}
+            data-edad-id={r.id}
+            data-edad-min={r.min}
+            data-edad-max={r.max}
+          >
+            {r.label}
+          </button>
+        ))}
+      </div>
+    </div>
 
-      <p
-        class="mt-4 max-w-2xl text-base md:text-lg"
-        style="color: var(--color-foreground-muted); line-height: 1.55;"
-      >
-        {descripcion}
-      </p>
-
-      <p class="mono mt-4" style="font-size: 11px; letter-spacing: 0.08em; color: var(--color-foreground-muted);">
-        {articles.length} {articles.length === 1 ? 'ARTÍCULO PUBLICADO' : 'ARTÍCULOS PUBLICADOS'}
-      </p>
+    <div class="cat-filters__row" data-filter-disabled aria-disabled="true">
+      <span class="cat-filters__label mono">
+        <Icon name="lucide:gauge" class="h-3 w-3" />
+        NIVEL
+      </span>
+      <div class="cat-filters__chips">
+        {levelChips.map((l, i) => (
+          <button
+            type="button"
+            class="cat-filters__chip cat-filters__chip--soon"
+            data-active={i === 0 ? 'true' : 'false'}
+            disabled
+          >
+            {l.label}
+          </button>
+        ))}
+      </div>
     </div>
   </section>
 
-  <main id="main" class="mx-auto max-w-7xl px-4 py-10 md:px-12 md:py-14">
+  <!-- ============ AD CAT-TOP ============ -->
+  <div class="mx-auto max-w-7xl px-4 md:px-12">
+    <AdSlot id={`cat-top-${slug}`} format="horizontal" />
+  </div>
+
+  <!-- ============ GRID ============ -->
+  <main id="main" class="mx-auto max-w-7xl px-4 pb-10 md:px-12 md:pb-14">
     <h2 class="sr-only">Artículos de {nombre}</h2>
 
     {articles.length === 0 ? (
@@ -108,62 +167,48 @@ articles.forEach((article, index) => {
         <a href="/" class="btn btn-ghost mt-6 inline-flex">Volver al inicio</a>
       </div>
     ) : (
-      <div class="grid gap-4 md:gap-5" style="grid-template-columns: repeat(2, minmax(0,1fr));" data-cat-grid>
-        {gridItems.map((item) =>
-          item.type === 'article' ? (
+      <>
+        <div
+          class="grid gap-4 md:gap-5"
+          style="grid-template-columns: repeat(2, minmax(0,1fr));"
+          data-cat-grid
+        >
+          {sortedArticles.map((article, index) => (
             <ArticleCard
-              article={item.article}
+              article={article}
               categoriaColor={color}
               categoriaNombre={nombre}
-              loading={item.index < 6 ? 'eager' : 'lazy'}
+              loading={index < 6 ? 'eager' : 'lazy'}
               hideCategoryChip
             />
-          ) : (
-            <div class="md:col-span-2 lg:col-span-3">
-              <AdSlot id={`cat-feed-${slug}`} format="horizontal" />
-            </div>
-          ),
-        )}
-      </div>
+          ))}
+        </div>
+
+        <p class="cat-empty hand" data-empty-state hidden>
+          ningún artículo entra en ese rango de edad. prueba con otra opción.
+        </p>
+      </>
     )}
 
-    <!-- Paginación -->
     {page && page.lastPage > 1 && (
       <nav
         aria-label="Paginación"
         class="mt-12 flex items-center justify-center gap-4"
       >
         {page.url.prev ? (
-          <a href={page.url.prev} class="btn btn-ghost" rel="prev">
-            ← Anterior
-          </a>
+          <a href={page.url.prev} class="btn btn-ghost" rel="prev">← Anterior</a>
         ) : (
-          <span
-            class="btn btn-ghost cursor-not-allowed opacity-50"
-            aria-disabled="true"
-          >
-            ← Anterior
-          </span>
+          <span class="btn btn-ghost cursor-not-allowed opacity-50" aria-disabled="true">← Anterior</span>
         )}
 
-        <span
-          class="mono"
-          style="font-size: 12px; letter-spacing: 0.08em; color: var(--color-foreground-muted);"
-        >
+        <span class="mono" style="font-size: 12px; letter-spacing: 0.08em; color: var(--color-foreground-muted);">
           {String(page.currentPage).padStart(2, '0')} / {String(page.lastPage).padStart(2, '0')}
         </span>
 
         {page.url.next ? (
-          <a href={page.url.next} class="btn btn-ghost" rel="next">
-            Siguiente →
-          </a>
+          <a href={page.url.next} class="btn btn-ghost" rel="next">Siguiente →</a>
         ) : (
-          <span
-            class="btn btn-ghost cursor-not-allowed opacity-50"
-            aria-disabled="true"
-          >
-            Siguiente →
-          </span>
+          <span class="btn btn-ghost cursor-not-allowed opacity-50" aria-disabled="true">Siguiente →</span>
         )}
       </nav>
     )}
@@ -173,10 +218,205 @@ articles.forEach((article, index) => {
 </BaseLayout>
 
 <style>
-  /* 3 cols en lg (Tailwind no aplica con grid-template-columns inline). */
+  /* ---- Hero ---- */
+  .cat-hero {
+    position: relative;
+    border-bottom: 2px solid var(--color-foreground);
+    background:
+      radial-gradient(circle at 0% 0%, color-mix(in oklab, var(--cat-color), transparent 92%) 0%, transparent 60%),
+      var(--color-background);
+    overflow: hidden;
+  }
+  .cat-hero__inner {
+    display: grid;
+    grid-template-columns: 1fr;
+    align-items: center;
+    gap: 12px;
+    padding-top: 28px;
+    padding-bottom: 28px;
+  }
+  .cat-hero__dorsal {
+    font-family: var(--font-display);
+    font-weight: 700;
+    color: var(--cat-color);
+    line-height: 0.85;
+    font-size: clamp(96px, 24vw, 240px);
+    letter-spacing: -0.04em;
+    user-select: none;
+    display: block;
+  }
+  .cat-hero__content {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .cat-hero__chip {
+    align-self: flex-start;
+  }
+  .cat-hero__title {
+    font-size: clamp(2.25rem, 5.5vw, 3.75rem);
+    line-height: 1;
+    margin: 0;
+    letter-spacing: -0.025em;
+  }
+  .cat-hero__subtitle {
+    margin: 0;
+    color: var(--color-foreground-muted);
+    font-size: 1rem;
+    line-height: 1.55;
+    max-width: 56ch;
+  }
+  .cat-hero__meta {
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 6px 8px;
+    font-size: 12px;
+    color: var(--color-foreground-muted);
+    letter-spacing: 0.04em;
+  }
+  .cat-hero__meta strong {
+    color: var(--color-foreground);
+    font-weight: 700;
+  }
+  .cat-hero__sep {
+    color: var(--color-foreground-subtle);
+  }
+  .cat-hero__tagline {
+    font-size: 20px;
+    line-height: 1;
+    color: var(--color-handwritten);
+    transform: rotate(-3deg);
+    display: inline-block;
+  }
+
+  @media (min-width: 768px) {
+    .cat-hero__inner {
+      grid-template-columns: auto 1fr;
+      gap: 28px;
+      padding-top: 44px;
+      padding-bottom: 44px;
+    }
+    .cat-hero__subtitle {
+      font-size: 1.05rem;
+    }
+  }
+
+  /* ---- Filtros ---- */
+  .cat-filters__row {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px 14px;
+    padding: 6px 0;
+  }
+  .cat-filters__row + .cat-filters__row {
+    margin-top: 6px;
+  }
+  .cat-filters__label {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    color: var(--color-foreground-muted);
+    flex-shrink: 0;
+  }
+  .cat-filters__chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .cat-filters__chip {
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: 13px;
+    padding: 7px 14px;
+    min-height: 36px;
+    border-radius: var(--radius-full);
+    border: 1.5px solid var(--color-border-strong);
+    background: transparent;
+    color: var(--color-foreground);
+    cursor: pointer;
+    transition:
+      background var(--duration-fast) var(--ease-out),
+      color var(--duration-fast) var(--ease-out),
+      border-color var(--duration-fast) var(--ease-out);
+  }
+  .cat-filters__chip:hover:not([disabled]) {
+    background: var(--color-surface-alt);
+  }
+  .cat-filters__chip[data-active='true'] {
+    background: var(--color-foreground);
+    color: var(--color-background);
+    border-color: var(--color-foreground);
+  }
+  .cat-filters__chip--soon {
+    cursor: not-allowed;
+    opacity: 0.55;
+  }
+  [data-filter-disabled] {
+    position: relative;
+  }
+  [data-filter-disabled]::after {
+    content: 'pronto';
+    position: absolute;
+    top: 50%;
+    right: 0;
+    transform: translateY(-50%);
+    font-family: var(--font-mono);
+    font-size: 9px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--color-foreground-subtle);
+    border: 1px dashed var(--color-border-strong);
+    padding: 2px 6px;
+    border-radius: 3px;
+    pointer-events: none;
+  }
+
+  /* ---- Grid breakpoint extra ---- */
   @media (min-width: 1024px) {
     [data-cat-grid] {
       grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
     }
   }
+
+  /* ---- Empty filter ---- */
+  .cat-empty {
+    margin-top: 40px;
+    text-align: center;
+    color: var(--color-handwritten);
+    font-size: 24px;
+  }
 </style>
+
+<script is:inline>
+  (() => {
+    const grid = document.querySelector('[data-cat-grid]');
+    const filterButtons = document.querySelectorAll('[data-filter-edad] button');
+    const emptyState = document.querySelector('[data-empty-state]');
+    if (!grid || filterButtons.length === 0) return;
+
+    function applyFilter(min, max) {
+      let visible = 0;
+      grid.querySelectorAll('[data-article-card]').forEach((card) => {
+        const aMin = parseInt(card.dataset.edadMin, 10);
+        const aMax = parseInt(card.dataset.edadMax, 10);
+        const overlaps = aMax >= min && aMin <= max;
+        card.style.display = overlaps ? '' : 'none';
+        if (overlaps) visible++;
+      });
+      if (emptyState) emptyState.hidden = visible > 0;
+    }
+
+    filterButtons.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        filterButtons.forEach((b) => (b.dataset.active = 'false'));
+        btn.dataset.active = 'true';
+        applyFilter(parseInt(btn.dataset.edadMin, 10), parseInt(btn.dataset.edadMax, 10));
+      });
+    });
+  })();
+</script>
