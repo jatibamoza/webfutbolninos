@@ -1,0 +1,91 @@
+---
+// Placeholder visual de newsletter. NO envía datos reales aún —
+// guarda el email en localStorage hasta que conectemos un proveedor real.
+---
+
+<aside
+  class="card-paper mx-auto my-12 max-w-3xl px-6 py-10 md:px-10"
+  aria-labelledby="newsletter-heading"
+>
+  <div class="flex flex-wrap items-baseline gap-3">
+    <span class="dorsal-fill" style="font-size: 48px; opacity: 0.9;">
+      05
+    </span>
+    <span
+      class="hand inline-block"
+      style="font-size: 22px; color: var(--color-handwritten); transform: rotate(-3deg);"
+    >
+      el correo del lunes
+    </span>
+  </div>
+  <h2
+    id="newsletter-heading"
+    class="display mt-2 text-2xl md:text-3xl"
+    style="line-height: 1.05;"
+  >
+    Un email los lunes con <span class="marker">una idea</span> para entrenar con tu peque.
+  </h2>
+  <p class="mt-3 text-base" style="color: var(--color-foreground-muted);">
+    Sin spam, sin curso de 7 días. Solo un ejercicio o consejo a la semana.
+    Puedes darte de baja con un click.
+  </p>
+
+  <form
+    id="newsletter-form"
+    class="mt-6 flex flex-col gap-3 sm:flex-row"
+    novalidate
+  >
+    <label for="newsletter-email" class="sr-only">Tu email</label>
+    <input
+      id="newsletter-email"
+      name="email"
+      type="email"
+      required
+      autocomplete="email"
+      placeholder="hola@tu-email.com"
+      class="flex-1 rounded-md px-4 text-base"
+      style="min-height: 48px; border: 1.5px solid var(--color-border-strong); background: var(--color-paper); color: var(--color-foreground);"
+    />
+    <button type="submit" class="btn btn-accent">
+      Apuntarme
+    </button>
+  </form>
+
+  <p
+    id="newsletter-msg"
+    class="mt-3 text-sm"
+    style="color: var(--color-foreground-subtle); min-height: 1.25rem;"
+  ></p>
+
+  <p class="mono mt-4 text-xs" style="letter-spacing: 0.06em; color: var(--color-foreground-subtle);">
+    Solo para mayores de 18. Más detalle en la <a href="/politica-privacidad/" class="underline">política de privacidad</a>.
+  </p>
+</aside>
+
+<script>
+  const form = document.getElementById('newsletter-form') as HTMLFormElement | null;
+  const input = document.getElementById('newsletter-email') as HTMLInputElement | null;
+  const msg = document.getElementById('newsletter-msg');
+
+  form?.addEventListener('submit', (event) => {
+    event.preventDefault();
+    if (!input || !msg) return;
+    const email = input.value.trim();
+    if (!email || !/.+@.+\..+/.test(email)) {
+      msg.textContent = 'Email no válido. Revisa el formato.';
+      msg.style.color = 'var(--color-energy)';
+      return;
+    }
+    // Placeholder: guardamos en localStorage hasta tener proveedor real.
+    try {
+      const list = JSON.parse(localStorage.getItem('mg.newsletter.pending') ?? '[]');
+      if (!list.includes(email)) list.push(email);
+      localStorage.setItem('mg.newsletter.pending', JSON.stringify(list));
+    } catch {
+      /* localStorage no disponible — no rompemos UX */
+    }
+    input.value = '';
+    msg.textContent = '¡Anotado! Te avisaremos cuando lancemos la newsletter de verdad.';
+    msg.style.color = 'var(--color-secondary)';
+  });
+</script>

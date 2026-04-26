@@ -1,0 +1,76 @@
+---
+import PitchLines from './PitchLines.astro';
+---
+
+<div class="relative ml-auto" style="aspect-ratio: 1/1; max-width: 460px;">
+  <!-- Cuaderno principal rotado -->
+  <div
+    class="absolute inset-0 overflow-hidden"
+    style="background: var(--color-paper); border: 1px solid var(--color-border); border-radius: 18px; box-shadow: var(--shadow-lg); transform: rotate(2deg);"
+  >
+    <!-- Líneas de campo de fondo -->
+    <div class="absolute" style="inset: 16px; color: var(--color-secondary);">
+      <PitchLines opacity={0.55} class="h-full w-full" />
+    </div>
+
+    <!-- Manuscritos del plan -->
+    <div
+      class="hand absolute"
+      style="top: 24px; left: 28px; font-size: 28px; color: var(--color-handwritten); transform: rotate(-2deg);"
+    >
+      plan del sábado
+    </div>
+    <div
+      class="hand absolute"
+      style="top: 70px; left: 60px; font-size: 22px; color: var(--color-handwritten); transform: rotate(-1deg);"
+    >
+      1. calentar 5'
+    </div>
+    <div
+      class="hand absolute"
+      style="top: 100px; left: 60px; font-size: 22px; color: var(--color-handwritten); transform: rotate(0deg);"
+    >
+      2. conducción 10'
+    </div>
+    <div
+      class="hand absolute"
+      style="top: 130px; left: 60px; font-size: 22px; color: var(--color-handwritten); transform: rotate(-1deg);"
+    >
+      3. partidito
+    </div>
+
+    <!-- Flecha táctica roja -->
+    <svg class="absolute inset-0" viewBox="0 0 460 460" aria-hidden="true">
+      <path
+        d="M 90 280 Q 200 220 320 300"
+        stroke="#DC2626"
+        stroke-width="3"
+        fill="none"
+        stroke-dasharray="8 6"
+      ></path>
+      <path
+        d="M 320 300 l -10 -10 m 10 10 l -10 10"
+        stroke="#DC2626"
+        stroke-width="3"
+        fill="none"
+      ></path>
+      <circle cx="90" cy="280" r="8" fill="#DC2626"></circle>
+    </svg>
+
+    <!-- Sello esquina -->
+    <span class="stamp absolute" style="bottom: 20px; right: 20px; transform: rotate(4deg);">
+      VS. PARQUE
+    </span>
+  </div>
+
+  <!-- Post-it amarillo -->
+  <div
+    class="absolute"
+    style="top: -8px; right: -12px; width: 130px; padding: 10px 12px; background: var(--color-accent); color: #1c1917; border-radius: 6px; transform: rotate(6deg); box-shadow: 0 8px 16px rgba(0,0,0,0.12);"
+  >
+    <div class="hand" style="font-size: 22px; line-height: 1;">¡no le grites!</div>
+    <div class="mono" style="font-size: 9px; margin-top: 4px; opacity: 0.7;">
+      NOTA — PAPÁ ENTRENADOR
+    </div>
+  </div>
+</div>
