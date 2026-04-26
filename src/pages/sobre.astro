@@ -1,0 +1,220 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Header from '@/components/Header.astro';
+import Footer from '@/components/Footer.astro';
+import Breadcrumb from '@/components/Breadcrumb.astro';
+import { AUTHOR, SITE, SITE_URL } from '@/consts';
+
+const title = 'Sobre MiniGol Club';
+const description =
+  'Quiénes somos, cómo trabajamos el contenido, qué nivel de revisión aplicamos por temas y cómo nos financiamos. Transparencia editorial completa.';
+
+const personJsonLd = JSON.stringify({
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: AUTHOR.name,
+  url: AUTHOR.url,
+  jobTitle: 'Fundador y editor de MiniGol Club',
+  email: `mailto:${AUTHOR.email}`,
+  knowsAbout: [
+    'Fútbol infantil',
+    'Iniciación deportiva en niños',
+    'Pedagogía deportiva',
+  ],
+  worksFor: {
+    '@type': 'Organization',
+    name: SITE.name,
+    url: SITE_URL,
+  },
+});
+
+const aboutJsonLd = JSON.stringify({
+  '@context': 'https://schema.org',
+  '@type': 'AboutPage',
+  name: title,
+  description,
+  url: `${SITE_URL}/sobre/`,
+  mainEntity: {
+    '@type': 'Organization',
+    name: SITE.name,
+    url: SITE_URL,
+    description: SITE.description,
+    foundingDate: '2026-04-25',
+    founder: {
+      '@type': 'Person',
+      name: AUTHOR.name,
+      url: AUTHOR.url,
+    },
+    contactPoint: {
+      '@type': 'ContactPoint',
+      contactType: 'editorial',
+      email: AUTHOR.email,
+      availableLanguage: ['Spanish'],
+    },
+  },
+});
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  canonical={`${SITE_URL}/sobre/`}
+>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={personJsonLd} />
+    <script type="application/ld+json" set:html={aboutJsonLd} />
+  </Fragment>
+
+  <Header />
+
+  <div class="mx-auto max-w-4xl px-4 md:px-6">
+    <Breadcrumb items={[{ label: 'Sobre nosotros' }]} />
+  </div>
+
+  <main id="main" class="mx-auto max-w-3xl px-4 pb-16 md:px-6">
+    <article class="prose prose-lg max-w-none">
+      <header class="mb-10 not-prose">
+        <h1 class="mb-3 font-display text-4xl font-bold leading-tight text-foreground md:text-5xl">
+          Sobre MiniGol Club
+        </h1>
+        <p class="text-lg text-foreground-muted">
+          Fútbol para niños, explicado para padres. Sin tecnicismos, sin marketing y sin presión.
+        </p>
+      </header>
+
+      <section>
+        <h2>Quién está detrás</h2>
+        <p>
+          MiniGol Club lo escribe <strong>{AUTHOR.name}</strong>. Padre, no entrenador titulado.
+          Empecé este proyecto cuando me harté de buscar recursos en español que me explicaran cómo
+          jugar al fútbol con mi hijo de forma sencilla, sin terminología de academia y sin
+          convertir cada tarde en un entreno serio.
+        </p>
+        <p>
+          Lo que vas a encontrar aquí es lo que yo necesitaba leer hace un año: ejercicios
+          adaptados por edad, criterios para comprar equipamiento sin gastar de más, y una forma
+          de acompañar a un niño en este deporte sin presionarle.
+        </p>
+      </section>
+
+      <section>
+        <h2>Cómo trabajamos el contenido</h2>
+        <p>
+          Cada artículo pasa por tres filtros antes de publicarse:
+        </p>
+        <ol>
+          <li>
+            <strong>Investigación.</strong> Cruzamos al menos tres fuentes — federaciones, escuelas
+            de fútbol base, manuales pedagógicos y, cuando aplica, estudios académicos.
+          </li>
+          <li>
+            <strong>Filtro padre.</strong> Si una recomendación no la haría con mi propio hijo, no
+            entra en el artículo. Punto.
+          </li>
+          <li>
+            <strong>Revisión por especialistas en temas sensibles.</strong> Cualquier contenido que
+            roce salud, nutrición, psicología deportiva o lesiones se contrasta con un profesional
+            del área antes de publicar. Si todavía no tenemos revisor para un tema, no escribimos
+            sobre él hasta que lo tengamos.
+          </li>
+        </ol>
+      </section>
+
+      <section>
+        <h2>Qué NO encontrarás aquí</h2>
+        <ul>
+          <li>Diagnósticos médicos ni planes de fisioterapia (no somos médicos).</li>
+          <li>Dietas para niños deportistas (no somos nutricionistas titulados).</li>
+          <li>Recomendaciones de psicología clínica (no somos psicólogos).</li>
+          <li>
+            Promesas tipo <em>"tu hijo será el próximo Messi"</em>. La inmensa mayoría de niños
+            que juegan al fútbol no llegan a profesionales y eso está perfectamente bien.
+          </li>
+        </ul>
+        <p>
+          Cuando un tema requiere conocimiento experto, lo decimos abiertamente y derivamos a la
+          fuente correcta (pediatra, fisioterapeuta, psicólogo deportivo, entrenador federado).
+        </p>
+      </section>
+
+      <section>
+        <h2>Cómo nos financiamos (y por qué importa)</h2>
+        <p>
+          MiniGol Club se financia con dos fuentes:
+        </p>
+        <ul>
+          <li>
+            <strong>Publicidad de Google AdSense</strong> en formatos limitados. No usamos popups,
+            ni intersticiales, ni autoplay de vídeo. La publicidad va siempre etiquetada
+            como tal y nunca aparece sobre el título o el contenido principal del artículo.
+          </li>
+          <li>
+            <strong>Enlaces de afiliados Amazon.</strong> Cuando recomendamos un producto (por
+            ejemplo un balón o unas botas), el enlace puede ser de afiliados. Si compras a través
+            de él, recibimos una pequeña comisión <strong>sin coste adicional para ti</strong>.
+            Solo recomendamos productos que probaríamos con nuestros propios hijos.
+          </li>
+        </ul>
+        <p>
+          <strong>Lo que no hacemos:</strong> vender datos, mostrar publicidad personalizada
+          invasiva, ocultar enlaces de afiliados, ni recomendar productos que no usaríamos.
+          Si en algún momento eso cambia, lo decimos en esta página.
+        </p>
+      </section>
+
+      <section>
+        <h2>Para quién es este sitio</h2>
+        <p>
+          Para padres y madres con hijos de <strong>4 a 12 años</strong> que quieren acompañar a
+          sus peques en el fútbol sin necesidad de ser entrenadores. Si estás en cualquiera de
+          estas situaciones, este sitio te sirve:
+        </p>
+        <ul>
+          <li>Tu hijo pequeño ha pedido un balón y no sabes por dónde empezar.</li>
+          <li>Llevas a tu hijo a un club federado y quieres entender qué está aprendiendo.</li>
+          <li>Quieres comprar el primer balón, las primeras botas, los primeros conos sin equivocarte.</li>
+          <li>Buscas juegos de fútbol para un cumpleaños o para una tarde de parque.</li>
+          <li>Vais a ver el Mundial 2026 en familia y quieres explicárselo a un peque.</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>Privacidad y datos de menores</h2>
+        <p>
+          MiniGol Club <strong>no recoge datos personales de menores</strong>. Nuestra newsletter,
+          cuando la lancemos, requerirá confirmar que tienes 18 años o más. El contenido del sitio
+          no pide registro ni datos para acceder.
+        </p>
+        <p>
+          Para detalles concretos sobre cookies y datos, consulta nuestras
+          <a href="/politica-privacidad/">política de privacidad</a> y
+          <a href="/politica-cookies/">política de cookies</a>.
+        </p>
+      </section>
+
+      <section>
+        <h2>Contacto</h2>
+        <p>
+          ¿Quieres proponer un tema, corregirnos un dato, sugerir una fuente o colaborar como
+          revisor especialista? Escríbenos a
+          <a href={`mailto:${AUTHOR.email}`}>{AUTHOR.email}</a>.
+        </p>
+        <p>
+          Leemos cada email. Tardamos en responder porque solo somos un padre con un proyecto, pero
+          contestamos siempre.
+        </p>
+      </section>
+
+      <section class="not-prose mt-12 rounded-card border border-border bg-surface-alt p-6">
+        <h2 class="mb-3 font-display text-xl font-bold text-foreground">Compromiso editorial</h2>
+        <p class="mb-0 text-foreground-muted">
+          Si algo de lo que publicamos te parece incorrecto, sesgado o anticuado, dínoslo.
+          Corregir es parte del trabajo, no una excepción. Cualquier corrección importante se
+          marca explícitamente en el artículo con la fecha de actualización.
+        </p>
+      </section>
+    </article>
+  </main>
+
+  <Footer />
+</BaseLayout>

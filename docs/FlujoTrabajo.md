@@ -115,7 +115,7 @@ Sitio listo para crawl + solicitud AdSense enviada. Requiere deploy en producci�
   - ejercicios-futbol-4-anos-sin-material (entrenamiento, cluster)
   - juegos-futbol-parque-ninos (juegos, cluster)
   - a-que-edad-empezar-futbol (iniciacion, pillar)
-- [ ] **3.13** Página /sobre/ con bio autor (E-E-A-T)
+- [x] **3.13** Página /sobre/ con bio autor (E-E-A-T) — 2026-04-26 (`src/pages/sobre.astro`, JSON-LD AboutPage + Person, declara afiliación Amazon, política de revisión por especialistas)
 - [x] Asset `/public/og-default.jpg` — 2026-04-26 (generado vía `scripts/generate-og-default.mjs` con sharp + SVG inline)
 
 ---
