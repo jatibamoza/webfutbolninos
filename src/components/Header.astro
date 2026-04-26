@@ -59,15 +59,14 @@ const currentPath = Astro.url.pathname;
 
     <!-- Acciones -->
     <div class="flex items-center gap-2">
-      <button
-        type="button"
+      <a
+        href="/buscar/"
         class="flex h-10 w-10 items-center justify-center rounded-md transition-colors"
         style="color: var(--color-foreground-muted);"
         aria-label="Buscar"
-        data-search-trigger
       >
         <Icon name="lucide:search" class="h-5 w-5" aria-hidden="true" />
-      </button>
+      </a>
 
       <button
         type="button"

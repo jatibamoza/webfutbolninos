@@ -1,0 +1,180 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Header from '@/components/Header.astro';
+import Footer from '@/components/Footer.astro';
+import Breadcrumb from '@/components/Breadcrumb.astro';
+import { SITE_URL } from '@/consts';
+
+const title = 'Buscar';
+const description =
+  'Buscador interno de MiniGol Club. Encuentra ejercicios, juegos, guías y recursos por palabra clave.';
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  canonical={`${SITE_URL}/buscar/`}
+  noindex
+>
+  <Fragment slot="head">
+    <link rel="stylesheet" href="/pagefind/pagefind-ui.css" />
+    <script is:inline src="/pagefind/pagefind-ui.js" defer></script>
+  </Fragment>
+
+  <Header />
+
+  <div class="mx-auto max-w-4xl px-4 md:px-6">
+    <Breadcrumb items={[{ label: title }]} />
+  </div>
+
+  <main id="main" class="mx-auto max-w-3xl px-4 pb-16 md:px-6">
+    <header class="mb-6">
+      <div class="flex items-baseline gap-3">
+        <span
+          class="hand inline-block"
+          style="font-size: 22px; color: var(--color-handwritten); transform: rotate(-3deg);"
+        >
+          ¿qué buscas?
+        </span>
+      </div>
+      <h1
+        class="display mt-2 m-0"
+        style="font-size: clamp(2.25rem, 5vw, 3.25rem); line-height: 1; letter-spacing: -0.025em;"
+      >
+        Buscar en <span style="color: var(--color-accent);">MiniGol Club</span>
+      </h1>
+      <p
+        class="mt-3 text-base"
+        style="color: var(--color-foreground-muted); line-height: 1.55;"
+      >
+        Por nombre del ejercicio, edad del peque, categoría o palabra del título.
+        El buscador indexa todos los artículos publicados en el sitio.
+      </p>
+    </header>
+
+    <div id="search" class="mt-6"></div>
+
+    <p
+      class="mono mt-8 text-xs"
+      style="letter-spacing: 0.04em; color: var(--color-foreground-subtle);"
+    >
+      Buscador interno potenciado por Pagefind. La búsqueda se ejecuta en tu
+      navegador, no enviamos lo que escribes a ningún servidor.
+    </p>
+  </main>
+
+  <Footer />
+</BaseLayout>
+
+<style is:global>
+  /* Tokens del cuaderno aplicados a la UI de Pagefind */
+  :root {
+    --pagefind-ui-scale: 1;
+    --pagefind-ui-primary: var(--color-foreground);
+    --pagefind-ui-text: var(--color-foreground);
+    --pagefind-ui-background: var(--color-paper);
+    --pagefind-ui-border: var(--color-border);
+    --pagefind-ui-tag: var(--color-surface-alt);
+    --pagefind-ui-border-width: 1.5px;
+    --pagefind-ui-border-radius: var(--radius-md);
+    --pagefind-ui-image-border-radius: var(--radius-md);
+    --pagefind-ui-image-box-ratio: 16 / 10;
+    --pagefind-ui-font: var(--font-body);
+  }
+
+  .pagefind-ui {
+    font-family: var(--font-body);
+  }
+
+  .pagefind-ui__search-input {
+    font-family: var(--font-body);
+    font-size: 16px;
+    background: var(--color-paper);
+    color: var(--color-foreground);
+  }
+
+  .pagefind-ui__result-title {
+    font-family: var(--font-display);
+    font-weight: 700;
+    color: var(--color-foreground);
+  }
+
+  .pagefind-ui__result-title a {
+    color: var(--color-foreground) !important;
+  }
+
+  .pagefind-ui__result-title a:hover {
+    color: var(--color-primary) !important;
+    text-decoration: underline;
+  }
+
+  .pagefind-ui__result-excerpt {
+    color: var(--color-foreground-muted);
+  }
+
+  .pagefind-ui__result-tags .pagefind-ui__result-tag {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  .pagefind-ui__message {
+    font-family: var(--font-mono);
+    color: var(--color-foreground-muted);
+    font-size: 12px;
+    letter-spacing: 0.04em;
+  }
+
+  .pagefind-ui__button {
+    font-family: var(--font-body);
+    font-weight: 700;
+    background: var(--color-foreground) !important;
+    color: var(--color-background) !important;
+    border-radius: var(--radius-md);
+  }
+</style>
+
+<script is:inline>
+  // PagefindUI se carga desde /pagefind/pagefind-ui.js (defer en el <head>).
+  // Esperamos a que el global esté disponible y luego inicializamos.
+  function initPagefind() {
+    var Ctor = window.PagefindUI;
+    if (typeof Ctor !== 'function') {
+      var target = document.getElementById('search');
+      if (target) {
+        target.innerHTML =
+          '<p class="mono" style="font-size: 13px; color: var(--color-foreground-muted);">' +
+          'El buscador se activa al completar el primer build con Pagefind. ' +
+          'Si estás en local, ejecuta <code>pnpm build &amp;&amp; pnpm preview</code>.' +
+          '</p>';
+      }
+      return;
+    }
+    new Ctor({
+      element: '#search',
+      showSubResults: true,
+      showImages: false,
+      resetStyles: false,
+      translations: {
+        placeholder: 'ejercicios, juegos, edad…',
+        clear_search: 'Limpiar',
+        load_more: 'Ver más resultados',
+        search_label: 'Buscar en MiniGol Club',
+        filters_label: 'Filtros',
+        zero_results: 'No hay resultados para [SEARCH_TERM]',
+        many_results: '[COUNT] resultados para [SEARCH_TERM]',
+        one_result: '1 resultado para [SEARCH_TERM]',
+        alt_search: 'Sin resultados para [SEARCH_TERM]. Mostrando resultados para [DIFFERENT_TERM]',
+        search_suggestion: 'Sin resultados para [SEARCH_TERM]. Prueba con:',
+        searching: 'Buscando «[SEARCH_TERM]»…',
+      },
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initPagefind);
+  } else {
+    initPagefind();
+  }
+</script>
