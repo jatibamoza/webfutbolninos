@@ -105,7 +105,7 @@ Sitio listo para crawl + solicitud AdSense enviada. Requiere deploy en producci�
 - [x] **3.1** Verificar dominio en Google Search Console — 2026-04-26 (verificación automática vía Cloudflare)
 - [x] **3.2** Submit sitemap en GSC (`https://minigolclub.com/sitemap-index.xml`) — 2026-04-26
 - [x] **3.3** Configurar GA4 (`G-705L75RTFB`) con Consent Mode v2 — 2026-04-26
-- [ ] **3.4** Banner consentimiento cookies (Consent Mode v2)
+- [x] **3.4** Banner consentimiento cookies (Consent Mode v2) — 2026-04-26 (vanilla-cookieconsent v3.1.0; requiere `show(true)` manual tras `run()`)
 - [ ] **3.5** Componente `<AdSlot>` con label "Publicidad" + placeholder
 - [ ] **3.7** Solicitar AdSense (con ≥10 artículos, ajustar si aún son menos)
 - [ ] **3.8** Solicitar Amazon Afiliados España
