@@ -3,4 +3,4 @@ Allow: /
 Disallow: /buscar
 Disallow: /buscar/
 
-Sitemap: https://futbolparaninos.club/sitemap-index.xml
+Sitemap: https://minigolclub.com/sitemap-index.xml
