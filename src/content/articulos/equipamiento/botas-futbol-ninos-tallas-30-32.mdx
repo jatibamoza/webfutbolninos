@@ -18,6 +18,9 @@ tieneAfiliados: true
 featured: false
 ---
 
+import AmazonCard from '@/components/ui/AmazonCard.astro';
+import ComparisonTable from '@/components/ui/ComparisonTable.astro';
+
 Comprar **botas de fútbol para niños talla 30-32** parece sencillo hasta que entras a una tienda. Tres tipos de suelo, cinco marcas grandes, precios entre 25 y 90 €, y un peque que se las pondrá tres meses antes de pasar a la siguiente talla.
 
 Te ahorro el rodeo: aquí está lo que importa, lo que no, y 4 modelos que cumplen.
@@ -77,23 +80,103 @@ Casi todas las escuelas federadas las exigen. Compra unas pequeñas (talla XS o 
 
 ## 4 modelos recomendados para talla 30-32
 
-### 1. Adidas Goletto VIII TF (multitaco) — el todoterreno
+<AmazonCard
+  query="adidas goletto viii tf junior talla 31"
+  title="Adidas Goletto VIII TF"
+  subtitle="Multitaco · talla 30-32"
+  badge="El todoterreno"
+  pros={[
+    'Multitaco: parque, patio y artificial',
+    'Cuero sintético blando',
+    'Si tu peque juega "donde puede"',
+  ]}
+  priceRange="30-35 €"
+/>
 
-Multitaco, perfectas para parque + patio + a veces césped artificial. Cuero sintético blando, buen ajuste, **30-35 €**. Es lo que recomendaría si tu peque juega "donde puede", sin un suelo fijo.
+Multitaco, perfectas para parque + patio + a veces césped artificial. Es lo que recomendaría si tu peque juega "donde puede", sin un suelo fijo. Cuero sintético blando que no maltrata el pie en los primeros días.
 
-### 2. Nike Phantom Club Junior AG — la federada
+<AmazonCard
+  query="nike phantom club junior ag talla 31"
+  title="Nike Phantom Club Junior"
+  subtitle="AG · césped artificial"
+  badge="La federada"
+  pros={[
+    'Suela AG diseñada para giros',
+    'Empeine sintético acolchado',
+    'Aguantan una temporada completa',
+  ]}
+  priceRange="40-55 €"
+/>
 
-Para escuelas con campo de fútbol 7 artificial. Empeine sintético acolchado, suela AG bien diseñada para giros. **40-55 €**. Buena durabilidad — aguantan una temporada entera sin que se descosa el empeine.
+Para escuelas con campo de fútbol 7 artificial. Si tu peque entrena 2-3 días a la semana en campo de hierba sintética, esta es la opción que mejor responde y mejor dura. La suela AG aguanta los giros sin redondear los tacos en los primeros 3 meses.
 
-### 3. Puma Future Play Junior TF — la cómoda
+<AmazonCard
+  query="puma future play junior tf talla 31"
+  title="Puma Future Play Junior"
+  subtitle="TF · multitaco blando"
+  badge="La cómoda"
+  pros={[
+    'Más blandita que las Adidas',
+    'Para niños que dicen "me aprietan"',
+    'Multitaco para parque y patio',
+  ]}
+  priceRange="35-45 €"
+/>
 
-Más blanditas que las Adidas. Buenas para niños que se quejan de que las botas "les aprietan". Multitaco. **35-45 €**.
+Más blanditas que las Adidas. Buenas para niños que se quejan de que las botas "les aprietan" — la horma es un poco más ancha y el empeine cede más rápido al uso.
 
-### 4. Joma Toledo Junior — la española y bien de precio
+<AmazonCard
+  query="joma toledo junior talla 31"
+  title="Joma Toledo Junior"
+  subtitle="TF / AG / FG · varias suelas"
+  badge="La española"
+  pros={[
+    'Marca española de fútbol base',
+    'Varias suelas disponibles',
+    'Mejor relación precio/calidad',
+  ]}
+  priceRange="25-35 €"
+/>
 
-Marca española menos conocida fuera del fútbol base. Calidad muy correcta, **25-35 €**, varias suelas disponibles (TF, AG, FG). Si quieres ahorrar sin sacrificar calidad, esta es la opción.
+Marca española menos conocida fuera del fútbol base. Calidad muy correcta a un precio inferior a las grandes marcas. Si quieres ahorrar sin sacrificar calidad y tu peque no es exigente con la marca, esta es la opción.
 
-> **Aviso de afiliados:** Cuando estos modelos estén enlazados, los enlaces serán de Amazon Afiliados. Si compras a través de ellos, MiniGol Club recibe una pequeña comisión sin coste extra para ti. Solo recomendamos modelos que probaríamos con nuestros propios hijos.
+<ComparisonTable
+  caption="Comparativa por tipo de suelo"
+  columns={[
+    { id: 'suelo', label: 'Suelo' },
+    { id: 'mejor', label: 'Mejor para' },
+    { id: 'precio', label: 'Precio' },
+  ]}
+  rows={[
+    {
+      name: 'Adidas Goletto VIII',
+      badge: 'El todoterreno',
+      query: 'adidas goletto viii tf junior talla 31',
+      highlight: true,
+      cells: { suelo: 'TF · multitaco', mejor: 'Parque + patio', precio: '30-35 €' },
+    },
+    {
+      name: 'Nike Phantom Club Junior',
+      badge: 'La federada',
+      query: 'nike phantom club junior ag talla 31',
+      cells: { suelo: 'AG · artificial', mejor: 'Escuela federada', precio: '40-55 €' },
+    },
+    {
+      name: 'Puma Future Play Junior',
+      badge: 'La cómoda',
+      query: 'puma future play junior tf talla 31',
+      cells: { suelo: 'TF · multitaco', mejor: 'Pies sensibles', precio: '35-45 €' },
+    },
+    {
+      name: 'Joma Toledo Junior',
+      badge: 'La española',
+      query: 'joma toledo junior talla 31',
+      cells: { suelo: 'TF / AG / FG', mejor: 'Mejor precio', precio: '25-35 €' },
+    },
+  ]}
+/>
+
+> **Aviso de afiliados:** los enlaces de arriba van a Amazon con nuestro tag. Si compras a través de ellos, MiniGol Club recibe una pequeña comisión sin coste extra para ti. Solo recomendamos modelos que probaríamos con nuestros propios hijos.
 
 ## Cómo poner las botas correctamente
 

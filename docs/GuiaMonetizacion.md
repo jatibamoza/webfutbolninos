@@ -65,10 +65,14 @@
 ## 2. Amazon Afiliados España
 
 ### Estado actual
-- ⚠️ Aún no hay componente `<AmazonCard>` ni `<AffiliateDisclosure>` específico — los enlaces de afiliados se mencionan en línea en el copy de los artículos `tieneAfiliados:true`.
+- ✅ Componente `<AmazonCard>` listo en [`src/components/ui/AmazonCard.astro`](../src/components/ui/AmazonCard.astro). Acepta `asin` (preferido) o `query` (fallback de búsqueda), badge editorial, pros, rango de precio, y construye URL afiliada con el tag automáticamente.
+- ✅ Componente `<ComparisonTable>` listo en [`src/components/ui/ComparisonTable.astro`](../src/components/ui/ComparisonTable.astro). Tabla scrollable con CTAs por fila, soporta `highlight` para destacar el modelo recomendado.
+- ✅ Helpers `amazonUrl(asin)` y `amazonSearchUrl(query)` en [`src/consts.ts`](../src/consts.ts). Leen `import.meta.env.PUBLIC_AMAZON_TAG`.
+- ✅ Cards integradas en los dos artículos `tieneAfiliados:true`: `mejor-balon-futbol-ninos-5-anos.mdx` y `botas-futbol-ninos-tallas-30-32.mdx`.
 - ✅ Aviso legal y política de privacidad mencionan participación en Amazon EU.
 - ✅ Artículos con `tieneAfiliados:true` muestran un disclosure dashed paper al inicio (implementado en `ArticleLayout.astro`).
 - ✅ Footer con disclosure permanente: "Este sitio participa en el programa de afiliados de Amazon EU…".
+- ✅ Cuenta de afiliados creada (2026-04-26). Tag asignado: **`minigolclub-21`**.
 
 ### Pasos para solicitar Amazon Afiliados
 
@@ -89,17 +93,47 @@
 
 ### Configurar el tag en el código
 
-Cuando tengas el tag (por ejemplo `minigolclub-21`):
+El código ya está listo — solo falta una variable en Cloudflare:
 
-1. Añade variable en Cloudflare Workers Build variables: `PUBLIC_AMAZON_TAG=minigolclub-21`.
-2. Añade en `src/consts.ts`:
-   ```ts
-   export const AMAZON_TAG = import.meta.env.PUBLIC_AMAZON_TAG ?? '';
-   ```
-3. Cuando crees el componente `<AmazonCard>` (próximo sprint), usa el tag para construir las URLs:
-   ```ts
-   const url = `https://www.amazon.es/dp/${asin}?tag=${AMAZON_TAG}`;
-   ```
+1. **Cloudflare Workers → minigolclub → Settings → Build → Build variables**
+   - Name: `PUBLIC_AMAZON_TAG`
+   - Value: `minigolclub-21`
+   - Type: **Plaintext**
+2. Save → trigger nuevo deploy (push commit vacío o "Retry deployment")
+3. A partir de ahí, todos los `<AmazonCard>` y `<ComparisonTable>` construyen URLs con el sufijo `?tag=minigolclub-21` automáticamente vía `amazonUrl()` / `amazonSearchUrl()` en [`src/consts.ts`](../src/consts.ts).
+
+**Sin la variable definida**, los enlaces siguen funcionando pero NO atribuyen comisión (van a Amazon sin tag). Por eso es crítico configurar la variable antes de empezar a difundir los artículos.
+
+### API de los componentes
+
+```astro
+<AmazonCard
+  query="adidas tiro club balon talla 3"
+  title="Adidas Tiro Club"
+  subtitle="Talla 3 · iniciación"
+  badge="El todoterreno"
+  pros={['PU + butilo', 'Termosellado', 'Para uso intensivo']}
+  priceRange="18-22 €"
+/>
+
+<ComparisonTable
+  caption="Comparativa rápida"
+  columns={[
+    { id: 'mejor', label: 'Mejor para' },
+    { id: 'precio', label: 'Precio' },
+  ]}
+  rows={[
+    {
+      name: 'Adidas Tiro Club',
+      query: 'adidas tiro club balon talla 3',
+      highlight: true,
+      cells: { mejor: 'Uso intensivo', precio: '18-22 €' },
+    },
+  ]}
+/>
+```
+
+`asin` es preferido cuando se conoce — el `query` es fallback que abre una búsqueda de Amazon. Para artículos nuevos, intentar siempre conseguir el ASIN exacto del producto recomendado (mayor CTR y mejor atribución).
 
 ### Buenas prácticas Amazon
 

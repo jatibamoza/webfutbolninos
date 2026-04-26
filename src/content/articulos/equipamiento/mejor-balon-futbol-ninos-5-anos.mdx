@@ -18,6 +18,9 @@ tieneAfiliados: true
 featured: false
 ---
 
+import AmazonCard from '@/components/ui/AmazonCard.astro';
+import ComparisonTable from '@/components/ui/ComparisonTable.astro';
+
 Si has buscado el **mejor balón de fútbol para niños de 5 años**, lo más probable es que te haya pasado lo mismo que a mí: encuentras 200 modelos, todos parecen iguales, y al final acabas comprando el más barato del supermercado. Y luego se rompe en una semana o pesa demasiado y tu hijo se queja de que le duele el pie.
 
 Esta guía es para evitarte ese rodeo. Vamos al grano: qué talla necesitas, qué tres detalles importan de verdad, y 4 modelos que cumplen.
@@ -42,23 +45,103 @@ Cualquier balón que reúna **PU + butilo + termosellado** durará un año largo
 
 ## 4 balones recomendados (uso real, no marketing)
 
-### 1. Adidas Tiro Club (talla 3) — el todoterreno
+<AmazonCard
+  query="adidas tiro club balon talla 3"
+  title="Adidas Tiro Club"
+  subtitle="Talla 3 · iniciación"
+  badge="El todoterreno"
+  pros={[
+    'PU sintético + cámara de butilo',
+    'Termosellado: aguanta cesped, asfalto y paredes',
+    'El que comprarías si solo compras uno',
+  ]}
+  priceRange="18-22 €"
+/>
 
-Pensado para entrenamiento de iniciación. PU, butilo, termosellado. Aguanta cesped, asfalto y golpes contra paredes. Es el que recomendaría si solo vas a comprar uno y olvidarte. Precio sobre los 18-22 €.
+Pensado para entrenamiento de iniciación. Es el más "compra y olvídate" de los cuatro. La construcción termosellada con cámara de butilo aguanta meses de uso intensivo en cualquier superficie sin perder forma ni aire.
 
-### 2. Mikasa SX3 — el bonito y resistente
+<AmazonCard
+  query="mikasa sx3 balon futbol talla 3"
+  title="Mikasa SX3"
+  subtitle="Talla 3 · suave al tacto"
+  badge="El bonito y resistente"
+  pros={[
+    'Más blando al tacto que Adidas/Nike',
+    'Ideal si tu hijo tiene miedo al impacto',
+    'Buena relación calidad/precio',
+  ]}
+  priceRange="15-20 €"
+/>
 
-Mikasa es marca de baloncesto y voley, pero su línea de fútbol infantil es excelente. Más blandito al tacto, ideal si tu hijo aún tiene miedo al impacto en la cara. Buena relación calidad/precio.
+Mikasa es marca de baloncesto y voley, pero su línea de fútbol infantil es excelente. Más blandito al tacto, ideal si tu hijo aún tiene miedo al impacto en la cara cuando cabecea o controla un balón alto.
 
-### 3. Nike Strike Mini (talla 3) — el de regalo
+<AmazonCard
+  query="nike strike mini balon talla 3"
+  title="Nike Strike Mini"
+  subtitle="Talla 3 · diseños de equipos"
+  badge="El de regalo"
+  pros={[
+    'Diseños llamativos (Barça, Madrid, PSG)',
+    'Construcción correcta',
+    'El que más ilusión hace de regalo',
+  ]}
+  priceRange="20-28 €"
+/>
 
-Diseños muy llamativos (suelen sacar versiones de equipos como Barça, Madrid, PSG). A nivel construcción está bien, pero pagas marca. Reservadlo como regalo de cumpleaños — es el que más ilusión hace.
+Diseños muy llamativos. A nivel construcción está bien, pero pagas marca. Reservadlo como regalo de cumpleaños — es el que más cara de ilusión te va a sacar al niño.
 
-### 4. Senda Vatio Club (talla 3) — el sostenible
+<AmazonCard
+  query="senda vatio club balon talla 3 fair trade"
+  title="Senda Vatio Club"
+  subtitle="Talla 3 · Fair Trade"
+  badge="El sostenible"
+  pros={[
+    'Certificación Fair Trade',
+    'Calidad similar al Adidas Tiro',
+    'Para padres que miran trazabilidad',
+  ]}
+  priceRange="18-25 €"
+/>
 
-Marca menos conocida en España, certificada Fair Trade. Calidad similar al Adidas Tiro a precio parecido, con el plus ético si te importa la trazabilidad. Lo encuentras online (Amazon, Decathlon ocasionalmente).
+Marca menos conocida en España, certificada Fair Trade. Calidad similar al Adidas Tiro a precio parecido, con el plus ético si te importa la trazabilidad de quién y cómo lo fabrican.
 
-> **Aviso de afiliados:** Si compras alguno de estos balones a través de los enlaces de Amazon que iremos añadiendo, MiniGol Club recibe una pequeña comisión sin coste adicional para ti. Solo recomendamos modelos que probaríamos con nuestros propios hijos.
+<ComparisonTable
+  caption="Comparativa rápida"
+  columns={[
+    { id: 'mejor', label: 'Mejor para' },
+    { id: 'material', label: 'Material' },
+    { id: 'precio', label: 'Precio' },
+  ]}
+  rows={[
+    {
+      name: 'Adidas Tiro Club',
+      badge: 'El todoterreno',
+      query: 'adidas tiro club balon talla 3',
+      highlight: true,
+      cells: { mejor: 'Uso intensivo', material: 'PU + butilo', precio: '18-22 €' },
+    },
+    {
+      name: 'Mikasa SX3',
+      badge: 'El blandito',
+      query: 'mikasa sx3 balon futbol talla 3',
+      cells: { mejor: 'Niños sensibles', material: 'PU suave', precio: '15-20 €' },
+    },
+    {
+      name: 'Nike Strike Mini',
+      badge: 'El de regalo',
+      query: 'nike strike mini balon talla 3',
+      cells: { mejor: 'Cumpleaños', material: 'PU + látex', precio: '20-28 €' },
+    },
+    {
+      name: 'Senda Vatio Club',
+      badge: 'Fair Trade',
+      query: 'senda vatio club balon talla 3',
+      cells: { mejor: 'Trazabilidad', material: 'PU + butilo', precio: '18-25 €' },
+    },
+  ]}
+/>
+
+> **Aviso de afiliados:** los enlaces de arriba van a Amazon con nuestro tag. Si compras a través de ellos, MiniGol Club recibe una pequeña comisión sin coste adicional para ti. Solo recomendamos modelos que probaríamos con nuestros propios hijos.
 
 ## Errores típicos al comprar el primer balón
 

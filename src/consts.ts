@@ -1,6 +1,18 @@
 export const SITE_URL = 'https://minigolclub.com';
 export const GA_ID = 'G-705L75RTFB';
 export const ADSENSE_CLIENT = import.meta.env.PUBLIC_ADSENSE_CLIENT ?? '';
+export const AMAZON_TAG = import.meta.env.PUBLIC_AMAZON_TAG ?? '';
+
+export function amazonUrl(asin: string): string {
+  const base = `https://www.amazon.es/dp/${asin}`;
+  return AMAZON_TAG ? `${base}?tag=${AMAZON_TAG}` : base;
+}
+
+export function amazonSearchUrl(query: string): string {
+  const params = new URLSearchParams({ k: query });
+  if (AMAZON_TAG) params.set('tag', AMAZON_TAG);
+  return `https://www.amazon.es/s?${params.toString()}`;
+}
 
 export const SITE = {
   name: 'MiniGol Club',

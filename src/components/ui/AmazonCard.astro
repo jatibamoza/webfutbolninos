@@ -1,0 +1,213 @@
+---
+import { amazonUrl, amazonSearchUrl } from '@/consts';
+
+interface Props {
+  /** ASIN exacto del producto en Amazon. Preferido cuando se conoce. */
+  asin?: string;
+  /** Query de búsqueda Amazon — fallback cuando no hay ASIN. */
+  query?: string;
+  /** Título principal de la tarjeta. */
+  title: string;
+  /** Subtítulo opcional (talla, variante…). */
+  subtitle?: string;
+  /** Etiqueta editorial corta ("El todoterreno", "El más cómodo"…). */
+  badge?: string;
+  /** Bullets de venta (3 máx recomendado). */
+  pros?: string[];
+  /** Rango de precio aprox. — Amazon prohíbe precio exacto. */
+  priceRange?: string;
+  /** Texto del CTA. */
+  ctaLabel?: string;
+}
+
+const {
+  asin,
+  query,
+  title,
+  subtitle,
+  badge,
+  pros = [],
+  priceRange,
+  ctaLabel = 'Ver en Amazon',
+} = Astro.props;
+
+const href = asin ? amazonUrl(asin) : query ? amazonSearchUrl(query) : '#';
+const isLive = Boolean(asin || query);
+---
+
+<aside class="amazon-card card-paper" data-affiliate="amazon">
+  {badge && <span class="amazon-card__badge mono">{badge}</span>}
+
+  <div class="amazon-card__body">
+    <div class="amazon-card__media img-ph" aria-hidden="true">
+      <span>imagen producto</span>
+    </div>
+
+    <div class="amazon-card__content">
+      <header class="amazon-card__head">
+        <h3 class="amazon-card__title display">{title}</h3>
+        {subtitle && <p class="amazon-card__subtitle mono">{subtitle}</p>}
+      </header>
+
+      {pros.length > 0 && (
+        <ul class="amazon-card__pros">
+          {pros.map((p) => <li>{p}</li>)}
+        </ul>
+      )}
+
+      <div class="amazon-card__footer">
+        {priceRange && <span class="amazon-card__price mono">{priceRange}</span>}
+        {isLive ? (
+          <a
+            class="btn btn-accent amazon-card__cta"
+            href={href}
+            target="_blank"
+            rel="sponsored noopener nofollow"
+          >
+            {ctaLabel} <span aria-hidden="true">→</span>
+          </a>
+        ) : (
+          <span class="amazon-card__cta amazon-card__cta--soon mono">
+            Próximamente
+          </span>
+        )}
+      </div>
+    </div>
+  </div>
+
+  <p class="amazon-card__disclosure mono">
+    Enlace afiliado · MiniGol Club recibe comisión sin coste para ti
+  </p>
+</aside>
+
+<style>
+  .amazon-card {
+    position: relative;
+    padding: 18px;
+    margin: 1.6em 0;
+  }
+  .amazon-card__badge {
+    position: absolute;
+    top: -10px;
+    left: 14px;
+    background: var(--color-accent);
+    color: #1c1917;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    border-radius: 4px;
+    transform: rotate(-1.5deg);
+    box-shadow: var(--shadow-sm);
+  }
+
+  .amazon-card__body {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+    align-items: stretch;
+  }
+
+  .amazon-card__media {
+    aspect-ratio: 4/3;
+    min-height: 120px;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .amazon-card__content {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .amazon-card__head {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .amazon-card__title {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 1.2rem;
+    line-height: 1.15;
+    margin: 0;
+  }
+  .amazon-card__subtitle {
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-foreground-muted);
+    margin: 0;
+  }
+
+  .amazon-card__pros {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .amazon-card__pros li {
+    position: relative;
+    padding-left: 22px;
+    font-size: 0.95rem;
+    line-height: 1.45;
+    color: var(--color-foreground-muted);
+  }
+  .amazon-card__pros li::before {
+    content: '✓';
+    position: absolute;
+    left: 0;
+    top: 0;
+    color: var(--color-secondary);
+    font-weight: 700;
+  }
+
+  .amazon-card__footer {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-top: auto;
+    padding-top: 4px;
+  }
+  .amazon-card__price {
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    color: var(--color-foreground);
+  }
+  .amazon-card__cta {
+    text-decoration: none;
+  }
+  .amazon-card__cta--soon {
+    display: inline-flex;
+    align-items: center;
+    padding: 10px 16px;
+    border: 1.5px dashed var(--color-border-strong);
+    border-radius: var(--radius-md);
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-foreground-subtle);
+  }
+
+  .amazon-card__disclosure {
+    margin: 14px 0 0;
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-foreground-subtle);
+    text-align: right;
+  }
+
+  @media (min-width: 640px) {
+    .amazon-card__body {
+      grid-template-columns: 200px 1fr;
+      gap: 22px;
+    }
+  }
+</style>

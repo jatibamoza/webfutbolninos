@@ -1,0 +1,190 @@
+---
+import { amazonUrl, amazonSearchUrl } from '@/consts';
+
+export interface ComparisonColumn {
+  id: string;
+  label: string;
+}
+
+export interface ComparisonRow {
+  name: string;
+  badge?: string;
+  asin?: string;
+  query?: string;
+  highlight?: boolean;
+  cells: Record<string, string>;
+}
+
+interface Props {
+  caption?: string;
+  columns: ComparisonColumn[];
+  rows: ComparisonRow[];
+  ctaLabel?: string;
+}
+
+const { caption, columns, rows, ctaLabel = 'Amazon' } = Astro.props;
+
+function rowHref(row: ComparisonRow): string | null {
+  if (row.asin) return amazonUrl(row.asin);
+  if (row.query) return amazonSearchUrl(row.query);
+  return null;
+}
+---
+
+<figure class="cmp-figure">
+  {caption && <figcaption class="cmp-caption mono">{caption}</figcaption>}
+  <div class="cmp-wrap">
+    <table class="cmp">
+      <thead>
+        <tr>
+          <th scope="col">Modelo</th>
+          {columns.map((c) => <th scope="col">{c.label}</th>)}
+          <th scope="col" class="cmp__col-cta">Comprar</th>
+        </tr>
+      </thead>
+      <tbody>
+        {rows.map((row) => {
+          const href = rowHref(row);
+          return (
+            <tr class:list={[{ 'cmp__row--highlight': row.highlight }]}>
+              <th scope="row" class="cmp__name">
+                <span class="cmp__name-label display">{row.name}</span>
+                {row.badge && <span class="cmp__name-badge mono">{row.badge}</span>}
+              </th>
+              {columns.map((c) => (
+                <td>{row.cells[c.id] ?? '—'}</td>
+              ))}
+              <td class="cmp__cta-cell">
+                {href ? (
+                  <a
+                    class="cmp__cta"
+                    href={href}
+                    target="_blank"
+                    rel="sponsored noopener nofollow"
+                  >
+                    {ctaLabel} <span aria-hidden="true">→</span>
+                  </a>
+                ) : (
+                  <span class="cmp__cta-empty mono">—</span>
+                )}
+              </td>
+            </tr>
+          );
+        })}
+      </tbody>
+    </table>
+  </div>
+  <p class="cmp-disclosure mono">
+    Enlaces de afiliado de Amazon · MiniGol Club recibe comisión sin coste para ti
+  </p>
+</figure>
+
+<style>
+  .cmp-figure {
+    margin: 1.8em 0;
+  }
+  .cmp-caption {
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--color-foreground-muted);
+    margin-bottom: 8px;
+  }
+  .cmp-wrap {
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background: var(--color-paper);
+    box-shadow: var(--shadow-paper);
+    overflow-x: auto;
+  }
+  .cmp {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.92rem;
+    min-width: 560px;
+  }
+  .cmp thead th {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-foreground-muted);
+    background: var(--color-surface-alt);
+    padding: 12px 14px;
+    text-align: left;
+    border-bottom: 1px solid var(--color-border);
+    font-weight: 500;
+  }
+  .cmp__col-cta {
+    width: 1%;
+    white-space: nowrap;
+  }
+  .cmp tbody td,
+  .cmp tbody th {
+    padding: 12px 14px;
+    border-bottom: 1px solid var(--color-rule);
+    vertical-align: middle;
+    text-align: left;
+  }
+  .cmp tbody tr:last-child td,
+  .cmp tbody tr:last-child th {
+    border-bottom: none;
+  }
+  .cmp__row--highlight {
+    background: color-mix(in oklab, var(--color-marker), transparent 80%);
+  }
+  .cmp__name {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 150px;
+    font-weight: 400;
+  }
+  .cmp__name-label {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 0.98rem;
+    line-height: 1.15;
+    color: var(--color-foreground);
+  }
+  .cmp__name-badge {
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-foreground-muted);
+  }
+
+  .cmp__cta-cell {
+    text-align: right;
+  }
+  .cmp__cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 12px;
+    background: var(--color-accent);
+    color: #1c1917;
+    border-radius: var(--radius-md);
+    font-family: var(--font-body);
+    font-weight: 700;
+    font-size: 13px;
+    text-decoration: none;
+    transition: transform var(--duration-base) var(--ease-out);
+  }
+  .cmp__cta:hover {
+    transform: translateY(-1px);
+  }
+  .cmp__cta-empty {
+    color: var(--color-foreground-subtle);
+    font-size: 12px;
+  }
+
+  .cmp-disclosure {
+    margin: 10px 4px 0;
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-foreground-subtle);
+    text-align: right;
+  }
+</style>
