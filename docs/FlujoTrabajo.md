@@ -105,13 +105,13 @@ Sitio listo para crawl + solicitud AdSense enviada. Requiere deploy en producci�
 - [x] **3.2** Submit sitemap en GSC (`https://minigolclub.com/sitemap-index.xml`) — 2026-04-26
 - [x] **3.3** Configurar GA4 (`G-705L75RTFB`) con Consent Mode v2 — 2026-04-26
 - [x] **3.4** Banner consentimiento cookies (Consent Mode v2) — 2026-04-26 (vanilla-cookieconsent v3.1.0; requiere `show(true)` manual tras `run()`)
-- [ ] **3.5** Componente `<AdSlot>` con label "Publicidad" + placeholder
+- [x] **3.5** Componente `<AdSlot>` con label "Publicidad" + placeholder — 2026-04-26 (`src/components/AdSlot.astro`, activable vía `PUBLIC_ADSENSE_CLIENT`)
 - [ ] **3.7** Solicitar AdSense (con ≥10 artículos, ajustar si aún son menos)
 - [ ] **3.8** Solicitar Amazon Afiliados España
 - [ ] **3.11** Search interna con Pagefind + página `/buscar`
 - [ ] **3.12** Publicar 5 artículos más (total 6)
 - [ ] **3.13** Página /sobre/ con bio autor (E-E-A-T)
-- [ ] Asset `/public/og-default.jpg` (referenciado en BaseLayout, aún falta)
+- [x] Asset `/public/og-default.jpg` — 2026-04-26 (generado vía `scripts/generate-og-default.mjs` con sharp + SVG inline)
 
 ---
 

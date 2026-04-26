@@ -1,0 +1,68 @@
+---
+import { ADSENSE_CLIENT } from '@/consts';
+
+interface Props {
+  id: string;
+  format?: 'horizontal' | 'rectangle' | 'in-article' | 'fluid';
+  slot?: string;
+  class?: string;
+}
+
+const { id, format = 'rectangle', slot, class: className = '' } = Astro.props;
+
+// Min-height reservado por formato — evita CLS aunque AdSense tarde en cargar.
+const reservedHeight: Record<NonNullable<Props['format']>, string> = {
+  horizontal: 'min-h-[90px]',
+  rectangle: 'min-h-[250px]',
+  'in-article': 'min-h-[280px]',
+  fluid: 'min-h-[200px]',
+};
+
+const adSenseEnabled = ADSENSE_CLIENT.length > 0 && slot !== undefined;
+---
+
+<aside
+  data-ad-slot={id}
+  aria-label="Publicidad"
+  class:list={[
+    'mx-auto my-8 flex w-full max-w-3xl flex-col items-center',
+    className,
+  ]}
+>
+  <span class="mb-1 text-xs font-medium uppercase tracking-wider text-foreground-muted">
+    Publicidad
+  </span>
+
+  <div
+    class:list={[
+      'flex w-full items-center justify-center rounded-card border border-dashed border-border bg-surface-alt',
+      reservedHeight[format],
+    ]}
+  >
+    {adSenseEnabled ? (
+      <ins
+        class="adsbygoogle block"
+        style="display:block"
+        data-ad-client={ADSENSE_CLIENT}
+        data-ad-slot={slot}
+        data-ad-format={format === 'in-article' ? 'fluid' : 'auto'}
+        data-full-width-responsive="true"
+        {...format === 'in-article' && { 'data-ad-layout': 'in-article' }}
+      />
+    ) : (
+      <span class="text-sm text-foreground-muted">Espacio publicitario</span>
+    )}
+  </div>
+</aside>
+
+{adSenseEnabled && (
+  <script
+    is:inline
+    async
+    src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${ADSENSE_CLIENT}`}
+    crossorigin="anonymous"
+  />
+  <script is:inline>
+    (window.adsbygoogle = window.adsbygoogle || []).push({});
+  </script>
+)}

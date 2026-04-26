@@ -1,5 +1,6 @@
 export const SITE_URL = 'https://minigolclub.com';
 export const GA_ID = 'G-705L75RTFB';
+export const ADSENSE_CLIENT = import.meta.env.PUBLIC_ADSENSE_CLIENT ?? '';
 
 export const SITE = {
   name: 'MiniGol Club',
