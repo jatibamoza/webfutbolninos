@@ -1,0 +1,29 @@
+---
+// Mapeo entre slug de categoría y color de marca.
+// Se mantiene aquí para que cualquier consumidor solo pase el slug.
+const CATEGORY_COLORS: Record<string, string> = {
+  entrenamiento: 'var(--color-secondary)',
+  ejercicios: 'var(--color-secondary)',
+  juegos: 'var(--color-fun)',
+  equipamiento: 'var(--color-accent)',
+  iniciacion: 'var(--color-primary)',
+  recursos: 'var(--color-info)',
+  'mundial-2026': 'var(--color-energy)',
+  laliga: 'var(--color-primary)',
+};
+
+interface Props {
+  category: string;
+  label?: string;
+  variant?: 'bar' | 'dot';
+}
+
+const { category, label, variant = 'bar' } = Astro.props;
+const color = CATEGORY_COLORS[category] ?? 'var(--color-primary)';
+const text = label ?? category.replace(/-/g, ' ');
+---
+
+<span class="cat-chip" style={`--cat-color: ${color};`}>
+  <span class={variant} aria-hidden="true"></span>
+  <span>{text}</span>
+</span>

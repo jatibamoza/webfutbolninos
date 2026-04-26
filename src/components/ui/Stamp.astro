@@ -1,0 +1,12 @@
+---
+interface Props {
+  text: string;
+  rotate?: number;
+}
+
+const { text, rotate = -2 } = Astro.props;
+---
+
+<span class="stamp" style={`transform: rotate(${rotate}deg);`}>
+  {text}
+</span>
