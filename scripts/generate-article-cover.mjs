@@ -57,42 +57,66 @@ function wrapTitle(text, maxCharsPerLine = 30) {
 
 const titleLines = wrapTitle(title);
 const titleSvg = titleLines
-  .map((line, i) => `<text x="80" y="${380 + i * 80}" font-family="'Fredoka','Trebuchet MS',sans-serif" font-size="64" font-weight="700" fill="#0F172A">${line.replace(/&/g, '&amp;').replace(/</g, '&lt;')}</text>`)
+  .map((line, i) => `<text x="80" y="${410 + i * 78}" font-family="'Fredoka','Trebuchet MS',sans-serif" font-size="62" font-weight="700" fill="#1A1F2C" letter-spacing="-0.02em">${line.replace(/&/g, '&amp;').replace(/</g, '&lt;')}</text>`)
   .join('\n  ');
 
 const svg = `<?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="750" viewBox="0 0 1200 750">
   <defs>
     <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#FFFBEB"/>
-      <stop offset="100%" stop-color="#FEF3C7"/>
+      <stop offset="0%" stop-color="#FAF6E8"/>
+      <stop offset="100%" stop-color="#F4EBC8"/>
     </linearGradient>
+    <pattern id="grid" width="32" height="32" patternUnits="userSpaceOnUse">
+      <path d="M32 0H0V32" fill="none" stroke="#E8DEC0" stroke-width="0.8"/>
+    </pattern>
   </defs>
 
   <rect width="1200" height="750" fill="url(#bg)"/>
+  <rect width="1200" height="750" fill="url(#grid)" opacity="0.55"/>
 
-  <!-- Banda lateral con color de categoría -->
-  <rect x="0" y="0" width="16" height="750" fill="${accentColor}"/>
+  <!-- Línea roja del cuaderno (margen izquierdo) -->
+  <line x1="56" y1="0" x2="56" y2="750" stroke="#DC3C3C" stroke-width="1.5" opacity="0.32"/>
 
-  <!-- Logo -->
-  <g transform="translate(80, 100)">
-    <circle cx="60" cy="60" r="58" fill="#2563EB"/>
-    <circle cx="60" cy="60" r="42" fill="#FFFBEB"/>
-    <path d="M60 28l10 16h-20l10-16zM92 60l-16 10v-20l16 10zM60 92l-10-16h20l-10 16zM28 60l16-10v20l-16-10z" fill="#0F172A"/>
-    <circle cx="60" cy="60" r="8" fill="#0F172A"/>
+  <!-- Logo (escudo navy + M amarilla) -->
+  <g transform="translate(80, 80) scale(0.96)">
+    <path d="M50 6 L88 16 L88 50 C88 74 72 88 50 94 C28 88 12 74 12 50 L12 16 Z" fill="#1A1F2C"/>
+    <g stroke="#FFFCF1" stroke-width="1.2" fill="none" opacity="0.5">
+      <rect x="22" y="20" width="56" height="48" rx="3"/>
+      <line x1="50" y1="20" x2="50" y2="68"/>
+      <circle cx="50" cy="44" r="9"/>
+    </g>
+    <text x="50" y="57" text-anchor="middle" font-family="'Fredoka',system-ui,sans-serif" font-weight="700" font-size="36" fill="#F59E0B">M</text>
   </g>
 
-  <text x="170" y="170" font-family="'Fredoka','Trebuchet MS',sans-serif" font-size="36" font-weight="700" fill="#0F172A">MiniGol Club</text>
+  <text x="190" y="135" font-family="'Fredoka','Trebuchet MS',sans-serif" font-size="32" font-weight="700" fill="#1A1F2C" letter-spacing="-0.02em">
+    MiniGol <tspan fill="#F59E0B">Club</tspan>
+  </text>
+  <text x="190" y="160" font-family="'JetBrains Mono',ui-monospace,monospace" font-size="13" font-weight="500" fill="#4D5468" letter-spacing="0.18em">FÚTBOL · PARA · PADRES</text>
 
-  <!-- Categoría badge -->
-  <rect x="80" y="280" rx="6" ry="6" width="${categoryLabel.length * 14 + 40}" height="44" fill="${accentColor}"/>
-  <text x="100" y="310" font-family="'Nunito','Trebuchet MS',sans-serif" font-size="22" font-weight="700" fill="#FFFFFF">${categoryLabel}</text>
+  <!-- Dorsal decorativo -->
+  <text x="1130" y="280" text-anchor="end" font-family="'Fredoka',system-ui,sans-serif" font-size="220" font-weight="700" fill="${accentColor}" opacity="0.10" letter-spacing="-0.04em">${String(Math.floor(Math.random() * 99) + 1).padStart(2, '0')}</text>
+
+  <!-- Categoría chip mono -->
+  <g transform="translate(80, 320)">
+    <rect x="0" y="0" width="28" height="4" rx="2" fill="${accentColor}"/>
+    <text x="40" y="4" font-family="'JetBrains Mono',ui-monospace,monospace" font-size="14" font-weight="500" fill="#1A1F2C" letter-spacing="0.12em">${categoryLabel}</text>
+  </g>
 
   <!-- Título -->
   ${titleSvg}
 
-  <!-- Dominio -->
-  <text x="80" y="690" font-family="'Nunito','Trebuchet MS',sans-serif" font-size="22" font-weight="600" fill="#475569">minigolclub.com</text>
+  <!-- Marker amarillo decorativo en bottom -->
+  <rect x="80" y="660" width="180" height="14" fill="#FFD45E" opacity="0.85"/>
+
+  <!-- Dominio mono -->
+  <text x="80" y="715" font-family="'JetBrains Mono',ui-monospace,monospace" font-size="16" font-weight="500" fill="#1A1F2C" letter-spacing="0.15em">MINIGOLCLUB.COM</text>
+
+  <!-- Sello bottom-right rotado -->
+  <g transform="translate(1010, 680) rotate(-2)">
+    <rect x="0" y="0" width="100" height="28" rx="4" fill="none" stroke="#C9BC91" stroke-width="1.5"/>
+    <text x="50" y="18" text-anchor="middle" font-family="'JetBrains Mono',ui-monospace,monospace" font-size="10" letter-spacing="0.18em" fill="#4D5468">EST · 2026</text>
+  </g>
 </svg>`;
 
 const outDir = resolve(here, '..', 'public', 'articulos', categoria);

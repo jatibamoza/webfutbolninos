@@ -33,3 +33,8 @@ desktop.ini
 .cache/
 coverage/
 .cloudflare/
+
+# Archivos comprimidos
+*.zip
+*.tar.gz
+*.tgz
