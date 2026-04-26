@@ -8,9 +8,9 @@
 ## 📍 Estado actual
 
 - **Fecha:** 2026-04-26
-- **Fase:** 1 — Esqueleto (sistema editorial funcionando) → cierre
-- **Sprint activo:** **Sprint 3 cerrado.** Próximo: Sprint 4 (publicar 4 artículos más + AdSense submit)
-- **Bloqueantes:** ninguno
+- **Fase:** 2 — Lanzamiento (identidad visual + monetización)
+- **Sprint activo:** **Sprint 4 — código completo.** Faltan acciones manuales: solicitar AdSense + Amazon Afiliados (ver `docs/GuiaMonetizacion.md`).
+- **Bloqueantes:** ninguno técnico — listo para someterse a AdSense.
 
 ---
 
@@ -93,12 +93,12 @@ Sistema editorial funcionando. Lighthouse CI verde en las 3 URLs de prueba (Perf
 
 ---
 
-## 🔄 Sprint actual — Sprint 3 (semanas 5-6)
+## ✅ Sprint 3 cerrado (2026-04-26)
 
 ### Objetivo
-Sitio listo para crawl + solicitud AdSense enviada. Requiere deploy en producción primero (dominio + Cloudflare Pages).
+Sitio listo para crawl + base editorial.
 
-### Por hacer en este sprint
+### Cerradas
 - [x] **1.10** Conectar repo a Cloudflare Workers (deploy automático en `main`) — 2026-04-26
 - [x] **1.11** Comprar dominio `minigolclub.com` — 2026-04-26
 - [x] **1.12** Apuntar `minigolclub.com` + `www.minigolclub.com` a Cloudflare Workers, HTTPS activo — 2026-04-26
@@ -107,16 +107,40 @@ Sitio listo para crawl + solicitud AdSense enviada. Requiere deploy en producci�
 - [x] **3.3** Configurar GA4 (`G-705L75RTFB`) con Consent Mode v2 — 2026-04-26
 - [x] **3.4** Banner consentimiento cookies (Consent Mode v2) — 2026-04-26 (vanilla-cookieconsent v3.1.0; requiere `show(true)` manual tras `run()`)
 - [x] **3.5** Componente `<AdSlot>` con label "Publicidad" + placeholder — 2026-04-26 (`src/components/AdSlot.astro`, activable vía `PUBLIC_ADSENSE_CLIENT`)
-- [ ] **3.7** Solicitar AdSense (con ≥10 artículos, ajustar si aún son menos)
-- [ ] **3.8** Solicitar Amazon Afiliados España
-- [ ] **3.11** Search interna con Pagefind + página `/buscar`
 - [x] **3.12** Publicar 5 artículos más (total 6) — 2026-04-26
-  - mejor-balon-futbol-ninos-5-anos (equipamiento, money)
-  - como-ensenar-futbol-nino-desde-cero (iniciacion, pillar)
-  - ejercicios-futbol-4-anos-sin-material (entrenamiento, cluster)
-  - juegos-futbol-parque-ninos (juegos, cluster)
-  - a-que-edad-empezar-futbol (iniciacion, pillar)
 - [x] **3.13** Página /sobre/ con bio autor (E-E-A-T) — 2026-04-26 (`src/pages/sobre.astro`, JSON-LD AboutPage + Person, declara afiliación Amazon, política de revisión por especialistas)
+- [x] OG image + covers de 6 artículos generados via scripts/sharp — 2026-04-26
+- [x] Astro 5→6 (cierra alertas XSS Dependabot) — 2026-04-26
+
+---
+
+## 🔄 Sprint actual — Sprint 4 (semanas 7-8)
+
+### Objetivo
+Sitio listo para AdSense submit + identidad visual definida. Diseño v2 "Cuaderno de Campo" entregado por Claude Design e integrado.
+
+### Cerradas
+- [x] **3.4-fix** Bug cookie banner reapareciendo entre páginas (validConsent guard) + tokens del cuaderno aplicados al modal — 2026-04-26
+- [x] **4.1** Páginas legales completas: `/politica-privacidad/`, `/politica-cookies/`, `/aviso-legal/`, `/contacto/` — 2026-04-26 (bloqueante AdSense desbloqueado)
+- [x] **4.2** Footer con botón "Gestionar cookies" (data-cc="show-preferencesModal") — 2026-04-26
+- [x] **4.3** Diseño v2 "Cuaderno de Campo" integrado en 6 fases — 2026-04-26
+  - Fase A: tokens + utility classes + UI primitives (CatChip, DorsalNumber, AgeBadge, Chrono, Stamp, PitchLines)
+  - Fase B: Logo escudo nuevo, Header/Footer rediseñados, favicon + OG + covers regenerados
+  - Fase C: Home v2 con hero cuaderno, bento de 6 categorías, lo más leído, últimos, NewsletterInline placeholder
+  - Fase D: Categoría v2 con dorsal gigante decorativo + AdSlot in-feed cada 6
+  - Fase E: Artículo v2 con TOC dorsales scroll-spy, prose con CSS counter en H2, blockquote "nota de coach" Caveat, sello manuscrito en cover
+  - Fase F: AdSlot dashed paper + StickyNewsletter mobile cerrable con persistencia 14 días
+- [x] **3.11** Search interna con Pagefind + página `/buscar` — 2026-04-26 (build script `astro build && pagefind --site dist`, UI con tokens del cuaderno, traducciones es)
+- [x] **3.12-cont** Publicar 4 artículos más (total 10) — 2026-04-26
+  - botas-futbol-ninos-tallas-30-32 (equipamiento, money, P0)
+  - ejercicios-coordinacion-futbol-ninos (entrenamiento, cluster 7-9)
+  - mundial-2026-explicado-ninos (mundial-2026, pillar estacional, featured)
+  - juegos-futbol-cumpleanos-ninos (juegos, cluster grupo)
+
+### Pendientes (acciones manuales del usuario)
+- [ ] **3.7** Solicitar Google AdSense — checklist en `docs/GuiaMonetizacion.md §1`
+- [ ] **3.8** Solicitar Amazon Afiliados España — checklist en `docs/GuiaMonetizacion.md §2`
+- [ ] **1.12b** Redirect 301 `futbolpeques.com` → `minigolclub.com` — solo aplica si compras el defensivo (no comprado)
 - [x] Asset `/public/og-default.jpg` — 2026-04-26 (generado vía `scripts/generate-og-default.mjs` con sharp + SVG inline)
 
 ---
