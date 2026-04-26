@@ -137,9 +137,7 @@ Ocupamos el cuadrante **familiar + para padres**. Nadie lo lidera con autoridad 
 - `futbolpeques.com` — disponible y bueno, pero crea brecha entre marca y dominio
 - `minigolclub.com` — **elegido**: `.com` + marca exacta + coherencia total
 
-**Dominios defensivos comprados:**
-- `futbolpeques.com` → 301 a `minigolclub.com`
-- Configurar redirect 301 desde dominios secundarios al principal
+**Dominios defensivos:** ninguno comprado por ahora. Si crecen las visitas, evaluar `futbolpeques.com` o variantes para evitar typosquatting.
 
 ### 4.4 Tagline / claim
 
