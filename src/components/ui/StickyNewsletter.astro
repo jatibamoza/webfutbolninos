@@ -1,0 +1,98 @@
+---
+// Banner sticky bottom mobile con email placeholder.
+// Se oculta al cerrar y reaparece tras 14 días (timestamp ISO en
+// localStorage como `mg.newsletter.dismissed`). Solo se muestra en mobile.
+---
+
+<aside
+  id="sticky-newsletter"
+  class="lg:hidden"
+  data-mg-newsletter-banner
+  hidden
+  style="
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    z-index: 60;
+    border-top: 2px solid var(--color-foreground);
+    background: var(--color-paper);
+    box-shadow: 0 -8px 24px rgba(26, 31, 44, 0.10);
+    padding: 12px 14px env(safe-area-inset-bottom, 12px);
+  "
+  aria-labelledby="sticky-news-h"
+>
+  <div class="flex items-center gap-3">
+    <div class="min-w-0 flex-1">
+      <p
+        id="sticky-news-h"
+        class="display m-0 truncate"
+        style="font-size: 14px; font-weight: 700; line-height: 1.15;"
+      >
+        Un email los lunes 📬
+      </p>
+      <p
+        class="m-0 mt-0.5 truncate"
+        style="font-size: 12px; color: var(--color-foreground-muted);"
+      >
+        Una idea por semana. Sin spam.
+      </p>
+    </div>
+    <a
+      href="/#lo-mas-leido"
+      class="btn btn-accent"
+      style="padding: 8px 14px; min-height: 40px; font-size: 13px;"
+      data-mg-newsletter-cta
+    >
+      Apuntarme
+    </a>
+    <button
+      type="button"
+      data-mg-newsletter-close
+      aria-label="Cerrar banner"
+      style="display: grid; place-items: center; width: 36px; height: 36px; border-radius: 8px; background: transparent; border: 1px solid var(--color-border-strong); color: var(--color-foreground-muted); flex-shrink: 0;"
+    >
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M6 6l12 12M18 6 6 18"></path>
+      </svg>
+    </button>
+  </div>
+</aside>
+
+<script>
+  const STORAGE_KEY = 'mg.newsletter.dismissed';
+  const REAPPEAR_AFTER_DAYS = 14;
+
+  const banner = document.getElementById('sticky-newsletter');
+  const closeBtn = document.querySelector<HTMLButtonElement>('[data-mg-newsletter-close]');
+  if (!banner || !closeBtn) {
+    /* nada que hacer */
+  } else {
+    let dismissedAt: string | null = null;
+    try {
+      dismissedAt = localStorage.getItem(STORAGE_KEY);
+    } catch {
+      /* localStorage bloqueado, no mostramos para no molestar */
+    }
+
+    const shouldShow = (() => {
+      if (!dismissedAt) return true;
+      const ts = Date.parse(dismissedAt);
+      if (Number.isNaN(ts)) return true;
+      const elapsedDays = (Date.now() - ts) / (1000 * 60 * 60 * 24);
+      return elapsedDays > REAPPEAR_AFTER_DAYS;
+    })();
+
+    if (shouldShow) {
+      // Pequeño delay para no compeler con el banner de cookies en la primera visita.
+      setTimeout(() => banner.removeAttribute('hidden'), 1500);
+    }
+
+    closeBtn.addEventListener('click', () => {
+      banner.setAttribute('hidden', '');
+      try {
+        localStorage.setItem(STORAGE_KEY, new Date().toISOString());
+      } catch {
+        /* sin persistencia, OK */
+      }
+    });
+  }
+</script>

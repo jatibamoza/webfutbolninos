@@ -2,6 +2,7 @@
 import '@/styles/global.css';
 import { SITE, SITE_URL, GA_ID } from '@/consts';
 import CookieBanner from '@/components/CookieBanner.astro';
+import StickyNewsletter from '@/components/ui/StickyNewsletter.astro';
 
 interface Props {
   title: string;
@@ -92,5 +93,6 @@ const fullTitle = title === SITE.name ? title : `${title} · ${SITE.name}`;
     </a>
     <slot />
     <CookieBanner />
+    <StickyNewsletter />
   </body>
 </html>
