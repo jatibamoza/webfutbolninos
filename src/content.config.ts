@@ -1,7 +1,8 @@
 import { defineCollection, z } from 'astro:content';
+import { glob } from 'astro/loaders';
 
 const categoriasCollection = defineCollection({
-  type: 'data',
+  loader: glob({ pattern: '**/*.json', base: './src/content/categorias' }),
   schema: z.object({
     nombre: z.string(),
     slug: z.string(),
@@ -16,7 +17,7 @@ const categoriasCollection = defineCollection({
 });
 
 const autoresCollection = defineCollection({
-  type: 'data',
+  loader: glob({ pattern: '**/*.json', base: './src/content/autores' }),
   schema: z.object({
     nombre: z.string(),
     slug: z.string(),
@@ -30,7 +31,7 @@ const autoresCollection = defineCollection({
 });
 
 const articulosCollection = defineCollection({
-  type: 'content',
+  loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/articulos' }),
   schema: z.object({
     title: z.string().max(70),
     description: z.string().min(120).max(160),
@@ -54,7 +55,7 @@ const articulosCollection = defineCollection({
 });
 
 const recursosCollection = defineCollection({
-  type: 'data',
+  loader: glob({ pattern: '**/*.json', base: './src/content/recursos' }),
   schema: z.object({
     titulo: z.string().max(70),
     descripcion: z.string().max(200),
