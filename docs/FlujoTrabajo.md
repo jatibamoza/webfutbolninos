@@ -7,10 +7,10 @@
 
 ## 📍 Estado actual
 
-- **Fecha:** 2026-04-25
-- **Fase:** 1 — Esqueleto (sistema editorial funcionando)
-- **Sprint activo:** **Sprint 3 — SEO técnico + AdSense submit** (por arrancar)
-- **Bloqueantes:** ninguno — dominio y Cloudflare Pages pendientes (tareas 1.10–1.12)
+- **Fecha:** 2026-04-26
+- **Fase:** 1 — Esqueleto (sistema editorial funcionando) → cierre
+- **Sprint activo:** **Sprint 3 cerrado.** Próximo: Sprint 4 (publicar 4 artículos más + AdSense submit)
+- **Bloqueantes:** ninguno
 
 ---
 
@@ -29,6 +29,7 @@
 | 2026-04-25 | Backlog 6 meses + 20 artículos núcleo (`PlanTrabajo.md`) |
 | 2026-04-25 | **Sprint 1 cerrado:** bootstrap Astro 5 + Tailwind 4, CI + Lighthouse, repo GitHub público, branch protection, labels, milestones |
 | 2026-04-25 | **Sprint 2 cerrado (PR #10 → main):** sistema editorial completo — content collections, layouts, componentes, primer artículo, Lighthouse CI verde |
+| 2026-04-26 | **Sprint 3 cerrado:** dominio + Cloudflare Workers + GA4 + cookie banner + 5 artículos + página /sobre/ + Astro 6 (XSS fix) |
 
 ---
 
