@@ -109,7 +109,12 @@ Sitio listo para crawl + solicitud AdSense enviada. Requiere deploy en producci�
 - [ ] **3.7** Solicitar AdSense (con ≥10 artículos, ajustar si aún son menos)
 - [ ] **3.8** Solicitar Amazon Afiliados España
 - [ ] **3.11** Search interna con Pagefind + página `/buscar`
-- [ ] **3.12** Publicar 5 artículos más (total 6)
+- [x] **3.12** Publicar 5 artículos más (total 6) — 2026-04-26
+  - mejor-balon-futbol-ninos-5-anos (equipamiento, money)
+  - como-ensenar-futbol-nino-desde-cero (iniciacion, pillar)
+  - ejercicios-futbol-4-anos-sin-material (entrenamiento, cluster)
+  - juegos-futbol-parque-ninos (juegos, cluster)
+  - a-que-edad-empezar-futbol (iniciacion, pillar)
 - [ ] **3.13** Página /sobre/ con bio autor (E-E-A-T)
 - [x] Asset `/public/og-default.jpg` — 2026-04-26 (generado vía `scripts/generate-og-default.mjs` con sharp + SVG inline)
 
