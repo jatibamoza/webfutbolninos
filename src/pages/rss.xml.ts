@@ -22,7 +22,7 @@ export async function GET(context: APIContext) {
       title: article.data.title,
       description: article.data.description,
       pubDate: article.data.pubDate,
-      link: `/articulos/${article.id}/`,
+      link: `/${article.id.replace(/\.mdx?$/, '')}/`,
       categories: [article.data.categoria],
     })),
     customData: `<language>es-es</language>`,

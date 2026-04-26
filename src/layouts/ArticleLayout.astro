@@ -47,7 +47,7 @@ const {
   tags,
 } = article.data;
 
-const canonicalUrl = new URL(`/articulos/${article.id}/`, SITE_URL).toString();
+const canonicalUrl = new URL(`/${article.id.replace(/\.mdx?$/, '')}/`, SITE_URL).toString();
 const ogImageUrl = new URL(cover, SITE_URL).toString();
 const colorVar = categoryColorVar(categoriaColor);
 

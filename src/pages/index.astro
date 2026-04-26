@@ -46,7 +46,7 @@ const monthName = new Date().toLocaleDateString('es-ES', {
 });
 
 const articleHref = (article: CollectionEntry<'articulos'>) =>
-  `/${article.data.categoria}/${article.id.replace(/\.mdx?$/, '')}/`;
+  `/${article.id.replace(/\.mdx?$/, '')}/`;
 
 // Iconos lucide por slug — en algunos casos el JSON los nombra distinto.
 const ICON_BY_SLUG: Record<string, string> = {
