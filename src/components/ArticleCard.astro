@@ -1,48 +1,54 @@
 ---
 import type { CollectionEntry } from 'astro:content';
+import CatChip from '@/components/ui/CatChip.astro';
+import Chrono from '@/components/ui/Chrono.astro';
 
 interface Props {
   article: CollectionEntry<'articulos'>;
   categoriaColor?: string;
   categoriaNombre?: string;
   loading?: 'lazy' | 'eager';
+  /** Si true, oculta el chip de categoría (cuando ya estamos dentro de la categoría). */
+  hideCategoryChip?: boolean;
 }
 
 const {
   article,
-  categoriaColor = 'secondary',
   categoriaNombre,
   loading = 'lazy',
+  hideCategoryChip = false,
 } = Astro.props;
 
-const { title, description, cover, coverAlt, coverWidth, coverHeight, pubDate, edadMin, edadMax, tiempoLectura } = article.data;
-const slug = `/${article.id.replace('.mdx', '')}/`;
+const {
+  title,
+  description,
+  cover,
+  coverAlt,
+  coverWidth,
+  coverHeight,
+  pubDate,
+  edadMin,
+  edadMax,
+  tiempoLectura,
+  categoria,
+} = article.data;
 
-const colorMap: Record<string, string> = {
-  primary: 'bg-primary/10 text-foreground',
-  secondary: 'bg-secondary/10 text-foreground',
-  accent: 'bg-accent/10 text-foreground',
-  fun: 'bg-fun/10 text-foreground',
-  energy: 'bg-energy/10 text-foreground',
-  info: 'bg-info/10 text-foreground',
-};
-
-const badgeClass = colorMap[categoriaColor] ?? colorMap.secondary;
+const slug = `/${article.id.replace(/\.mdx?$/, '')}/`;
 
 const dateFormatted = pubDate.toLocaleDateString('es-ES', {
   day: 'numeric',
-  month: 'long',
+  month: 'short',
   year: 'numeric',
 });
 ---
 
-<article class="group">
+<article class="group h-full">
   <a
     href={slug}
-    class="block overflow-hidden rounded-card bg-surface shadow-card transition-all duration-200 hover:-translate-y-0.5 hover:shadow-card-hover focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2"
+    class="card-paper flex h-full flex-col overflow-hidden"
   >
     <!-- Cover -->
-    <div class="overflow-hidden" style="aspect-ratio: 16/10;">
+    <div class="overflow-hidden" style={`aspect-ratio: 16/10; border-bottom: 1px solid var(--color-border);`}>
       <img
         src={cover}
         alt={coverAlt}
@@ -50,42 +56,48 @@ const dateFormatted = pubDate.toLocaleDateString('es-ES', {
         height={coverHeight}
         loading={loading}
         decoding="async"
-        class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.02]"
+        class="block h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.02]"
       />
     </div>
 
     <!-- Content -->
-    <div class="p-5">
-      <!-- Badge + meta -->
-      <div class="mb-3 flex items-center gap-3">
-        {categoriaNombre && (
-          <span class:list={['rounded-sm px-2 py-0.5 text-xs font-semibold', badgeClass]}>
-            {categoriaNombre}
-          </span>
-        )}
-        <span class="text-xs text-foreground-muted">
-          {edadMin}–{edadMax} años
-          {tiempoLectura && <> · {tiempoLectura} min</>}
-        </span>
-      </div>
+    <div class="flex flex-1 flex-col gap-3 p-4 md:p-5">
+      {!hideCategoryChip && (
+        <CatChip category={categoria} label={categoriaNombre} variant="bar" />
+      )}
 
-      <!-- Title -->
-      <h3 class="mb-2 font-display text-xl font-semibold leading-snug text-foreground line-clamp-2">
+      <h3
+        class="display m-0 line-clamp-2"
+        style="font-size: 18px; line-height: 1.15; font-weight: 700; color: var(--color-foreground);"
+      >
         {title}
       </h3>
 
-      <!-- Excerpt -->
-      <p class="mb-4 text-sm leading-relaxed text-foreground-muted line-clamp-2">
+      <p
+        class="line-clamp-2 text-sm leading-relaxed"
+        style="color: var(--color-foreground-muted);"
+      >
         {description}
       </p>
 
-      <!-- Date -->
-      <time
-        datetime={pubDate.toISOString()}
-        class="text-xs text-foreground-muted"
-      >
-        {dateFormatted}
-      </time>
+      <div class="mt-auto flex items-center justify-between gap-3 pt-2">
+        <div class="flex items-center gap-3">
+          {tiempoLectura && <Chrono minutes={tiempoLectura} />}
+          <span
+            class="mono"
+            style="font-size: 11px; letter-spacing: 0.04em; color: var(--color-foreground-subtle);"
+          >
+            {edadMin}–{edadMax} años
+          </span>
+        </div>
+        <time
+          datetime={pubDate.toISOString()}
+          class="mono"
+          style="font-size: 10px; letter-spacing: 0.04em; color: var(--color-foreground-subtle);"
+        >
+          {dateFormatted}
+        </time>
+      </div>
     </div>
   </a>
 </article>
