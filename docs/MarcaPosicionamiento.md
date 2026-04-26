@@ -123,22 +123,22 @@ Ocupamos el cuadrante **familiar + para padres**. Nadie lo lidera con autoridad 
 
 **Marca:** **MiniGol Club**
 
-**Dominio:** **futbolparaninos.club**
+**Dominio:** **minigolclub.com**
 
 **Razones:**
 - *MiniGol Club* — brandable, alegre, memorable, evoca pertenencia ("Club"), apto para niños y padres, libre de connotaciones "criar profesional"
-- *futbolparaninos.club* — keyword exacta long-tail, .club coherente con la marca, posicionamiento SEO directo desde día 1
-- Doble identidad funcional: la URL captura tráfico SEO; la marca da diferenciación memorable
+- *minigolclub.com* — dominio de marca en `.com`, coherencia total entre URL y nombre de marca, memorable y pronunciable
+- Coherencia: cuando alguien escucha "MiniGol Club" teclea `minigolclub.com` directamente
 
-**Alternativas descartadas (registradas para histórico):**
-- *FutKids Club* — anglicismo innecesario
-- *Escuela MiniGol* — connota formación reglada (choca con tono familiar)
-- *PequeGol*, *Mi Primer Gol* — bonitos pero menos contenedores
-- Dominios `futbolninos.com`, `minigolfutbol.com`, `futbolinfantil360.com` — descartados por menor claim SEO o disponibilidad
+**Proceso de selección (2026-04-26):**
+- `futbolparaninos.club` — descartado: `.club` penaliza CTR, percepción spam, EMD sin TLD fuerte no compensa
+- `futbolparaninos.es` / `futbolparaninos.com` — no disponibles
+- `futbol-para-ninos.com` — descartado: guiones = señal spam histórica, no pronunciable
+- `futbolpeques.com` — disponible y bueno, pero crea brecha entre marca y dominio
+- `minigolclub.com` — **elegido**: `.com` + marca exacta + coherencia total
 
-**Acciones derivadas:**
-- Comprar `futbolparaninos.club` ya en sprint 1
-- Reservar también `minigolclub.com` y `minigol.club` como defensivos (si presupuesto lo permite)
+**Dominios defensivos comprados:**
+- `futbolpeques.com` → 301 a `minigolclub.com`
 - Configurar redirect 301 desde dominios secundarios al principal
 
 ### 4.4 Tagline / claim

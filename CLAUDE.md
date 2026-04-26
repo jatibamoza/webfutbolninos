@@ -8,7 +8,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## 1. Qué es MiniGol Club
 
-**Marca:** MiniGol Club · **Dominio:** `futbolparaninos.club`
+**Marca:** MiniGol Club · **Dominio:** `minigolclub.com`
 
 Sitio de contenido SEO sobre fútbol infantil para padres con hijos de 4 a 12 años. Monetización: AdSense + Amazon Afiliados + recursos descargables PDF (futuro lead-magnet).
 

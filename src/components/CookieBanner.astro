@@ -4,6 +4,8 @@
 
   declare function gtag(...args: unknown[]): void;
 
+  console.log('[CookieBanner] script loaded, CookieConsent:', CookieConsent);
+
   CookieConsent.run({
     guiOptions: {
       consentModal: {
@@ -75,6 +77,8 @@
       },
     },
   });
+
+  console.log('[CookieBanner] run() invoked, _ccRun:', (window as unknown as { _ccRun?: boolean })._ccRun);
 </script>
 
 <style is:global>

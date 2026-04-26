@@ -21,7 +21,8 @@
 | 2026-04-25 | Brief de producto inicial (CLAUDE.md original) |
 | 2026-04-25 | Análisis ChatGPT consolidado (`AnalisisWebFutbolparaNiños_ChatGPT.md`) |
 | 2026-04-25 | Decisión de marca: **MiniGol Club** |
-| 2026-04-25 | Decisión de dominio: **futbolparaninos.club** |
+| 2026-04-25 | Decisión de dominio inicial: `futbolparaninos.club` (revisada) |
+| 2026-04-26 | Decisión de dominio final: **minigolclub.com** (comprado) + `futbolpeques.com` defensivo |
 | 2026-04-25 | Decisión de stack: **Astro 5 + Tailwind 4 + Cloudflare Pages** (ADR-001, ADR-002) |
 | 2026-04-25 | Sistema de diseño v1 definido (`DisenoUI.md`) |
 | 2026-04-25 | Posicionamiento de marca v1 definido (`MarcaPosicionamiento.md`) |
@@ -97,12 +98,13 @@ Sistema editorial funcionando. Lighthouse CI verde en las 3 URLs de prueba (Perf
 Sitio listo para crawl + solicitud AdSense enviada. Requiere deploy en producción primero (dominio + Cloudflare Pages).
 
 ### Por hacer en este sprint
-- [ ] **1.10** Conectar repo a Cloudflare Pages (deploy automático en `main`)
-- [ ] **1.11** Comprar dominio `futbolparaninos.club`
-- [ ] **1.12** Apuntar dominio a Cloudflare Pages, HTTPS activo
-- [ ] **3.1** Verificar dominio en Google Search Console + Bing Webmaster
-- [ ] **3.2** Submit sitemap.xml en GSC + Bing
-- [ ] **3.3** Configurar GA4 + Cloudflare Web Analytics
+- [x] **1.10** Conectar repo a Cloudflare Workers (deploy automático en `main`) — 2026-04-26
+- [x] **1.11** Comprar dominio `minigolclub.com` (+ `futbolpeques.com` defensivo) — 2026-04-26
+- [x] **1.12** Apuntar `minigolclub.com` + `www.minigolclub.com` a Cloudflare Workers, HTTPS activo — 2026-04-26
+- [ ] **1.12b** 301 `futbolpeques.com` → `minigolclub.com` (pendiente configurar en Cloudflare)
+- [x] **3.1** Verificar dominio en Google Search Console — 2026-04-26 (verificación automática vía Cloudflare)
+- [x] **3.2** Submit sitemap en GSC (`https://minigolclub.com/sitemap-index.xml`) — 2026-04-26
+- [x] **3.3** Configurar GA4 (`G-705L75RTFB`) con Consent Mode v2 — 2026-04-26
 - [ ] **3.4** Banner consentimiento cookies (Consent Mode v2)
 - [ ] **3.5** Componente `<AdSlot>` con label "Publicidad" + placeholder
 - [ ] **3.7** Solicitar AdSense (con ≥10 artículos, ajustar si aún son menos)
