@@ -1,8 +1,8 @@
-export const SITE_URL = 'https://futbolparaninos.club';
+export const SITE_URL = 'https://minigolclub.com';
 
 export const SITE = {
   name: 'MiniGol Club',
-  domain: 'futbolparaninos.club',
+  domain: 'minigolclub.com',
   tagline: 'Fútbol para niños, explicado para padres',
   description:
     'Guías, ejercicios y consejos de fútbol infantil para padres con hijos de 4 a 12 años. Contenido cercano, sin tecnicismos.',
@@ -14,7 +14,7 @@ export const SITE = {
 export const AUTHOR = {
   name: 'Javier Tibamoza',
   url: `${SITE_URL}/autores/javier-tibamoza/`,
-  email: 'hola@futbolparaninos.club',
+  email: 'hola@minigolclub.com',
 } as const;
 
 export const NAV_PRIMARY = [
