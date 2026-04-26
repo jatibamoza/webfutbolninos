@@ -1,0 +1,96 @@
+<script>
+  import 'vanilla-cookieconsent/dist/cookieconsent.css';
+  import * as CookieConsent from 'vanilla-cookieconsent';
+
+  declare function gtag(...args: unknown[]): void;
+
+  CookieConsent.run({
+    guiOptions: {
+      consentModal: {
+        layout: 'box',
+        position: 'bottom left',
+        equalWeightButtons: false,
+      },
+      preferencesModal: {
+        layout: 'box',
+      },
+    },
+
+    categories: {
+      necessary: {
+        enabled: true,
+        readOnly: true,
+      },
+      analytics: {},
+    },
+
+    onConsent: ({ cookie }) => {
+      gtag('consent', 'update', {
+        analytics_storage: cookie.categories.includes('analytics') ? 'granted' : 'denied',
+      });
+    },
+
+    onChange: ({ cookie }) => {
+      gtag('consent', 'update', {
+        analytics_storage: cookie.categories.includes('analytics') ? 'granted' : 'denied',
+      });
+    },
+
+    language: {
+      default: 'es',
+      translations: {
+        es: {
+          consentModal: {
+            title: 'Usamos cookies 🍪',
+            description:
+              'Usamos cookies analíticas para entender cómo usas el sitio y mejorarlo. No compartimos datos con terceros ni usamos cookies de publicidad invasiva.',
+            acceptAllBtn: 'Aceptar todo',
+            rejectAllBtn: 'Solo necesarias',
+            showPreferencesBtn: 'Gestionar',
+            footer:
+              '<a href="/politica-privacidad/">Política de privacidad</a> · <a href="/politica-cookies/">Política de cookies</a>',
+          },
+          preferencesModal: {
+            title: 'Preferencias de cookies',
+            acceptAllBtn: 'Aceptar todo',
+            acceptNecessaryBtn: 'Solo necesarias',
+            savePreferencesBtn: 'Guardar preferencias',
+            closeIconLabel: 'Cerrar',
+            sections: [
+              {
+                title: 'Cookies necesarias',
+                description:
+                  'Estas cookies son imprescindibles para que el sitio funcione correctamente. No se pueden desactivar.',
+                linkedCategory: 'necessary',
+              },
+              {
+                title: 'Cookies analíticas',
+                description:
+                  'Nos ayudan a entender cómo navegas por el sitio (páginas visitadas, tiempo de lectura). Los datos son anónimos y no se usan para publicidad.',
+                linkedCategory: 'analytics',
+              },
+            ],
+          },
+        },
+      },
+    },
+  });
+</script>
+
+<style is:global>
+  /* Tokens de marca aplicados al banner */
+  :root {
+    --cc-btn-primary-bg: #2563eb;
+    --cc-btn-primary-hover-bg: #1d4ed8;
+    --cc-btn-primary-text: #ffffff;
+    --cc-btn-secondary-bg: #f1f5f9;
+    --cc-btn-secondary-hover-bg: #e2e8f0;
+    --cc-btn-secondary-text: #0f172a;
+    --cc-modal-border-radius: 0.75rem;
+    --cc-btn-border-radius: 0.5rem;
+    --cc-toggle-on-bg: #2563eb;
+    --cc-cookie-category-block-bg: #fffbeb;
+    --cc-cookie-category-block-border: #e2e8f0;
+    --cc-font-family: 'Nunito', sans-serif;
+  }
+</style>
