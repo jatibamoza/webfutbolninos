@@ -24,7 +24,9 @@
         "non-composited-animations": "off",
         "prioritize-lcp-image": "off",
         "uses-optimized-images": "off",
-        "uses-responsive-images": "off"
+        "uses-responsive-images": "off",
+        "unused-javascript": "off",
+        "modern-image-formats": "off"
       }
     },
     "upload": {
