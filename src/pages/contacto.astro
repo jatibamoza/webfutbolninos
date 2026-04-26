@@ -1,0 +1,118 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Header from '@/components/Header.astro';
+import Footer from '@/components/Footer.astro';
+import Breadcrumb from '@/components/Breadcrumb.astro';
+import { AUTHOR, SITE_URL } from '@/consts';
+
+const title = 'Contacto';
+const description =
+  'Contacto MiniGol Club: escríbenos para proponer un tema, corregir un dato, sugerir una fuente o colaborar como revisor especialista. Respondemos siempre.';
+
+const subjectIdeas = [
+  { label: 'Propuesta de tema', value: 'Propuesta de tema para el blog' },
+  { label: 'Corrección', value: 'Corrección o feedback editorial' },
+  { label: 'Colaboración', value: 'Colaboración como revisor especialista' },
+  { label: 'Afiliados / publicidad', value: 'Consulta sobre afiliados o publicidad' },
+  { label: 'Otro', value: 'Otro asunto' },
+];
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  canonical={`${SITE_URL}/contacto/`}
+>
+  <Header />
+
+  <div class="mx-auto max-w-4xl px-4 md:px-6">
+    <Breadcrumb items={[{ label: title }]} />
+  </div>
+
+  <main id="main" class="mx-auto max-w-3xl px-4 pb-16 md:px-6">
+    <article class="prose prose-lg max-w-none">
+      <header class="mb-8 not-prose">
+        <h1 class="mb-3 font-display text-4xl font-bold leading-tight text-foreground md:text-5xl">
+          {title}
+        </h1>
+        <p class="text-lg text-foreground-muted">
+          Escríbenos para proponer un tema, corregir un dato, sugerir una fuente o colaborar como
+          revisor especialista. Leemos cada email y contestamos siempre.
+        </p>
+      </header>
+
+      <section>
+        <h2>Cómo contactarnos</h2>
+        <p>
+          La forma más directa es por email. Por ahora no tenemos formulario web (lo evitamos
+          para no recoger datos innecesarios y mantener el sitio rápido).
+        </p>
+        <p class="not-prose">
+          <a
+            href={`mailto:${AUTHOR.email}`}
+            class="inline-flex items-center gap-2 rounded-button bg-primary px-5 py-3 text-base font-semibold text-white transition-colors hover:bg-primary/90 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+          >
+            Escribir a {AUTHOR.email}
+          </a>
+        </p>
+      </section>
+
+      <section>
+        <h2>Para qué temas escribirnos</h2>
+        <p>Algunos motivos típicos:</p>
+        <ul>
+          {subjectIdeas.map((s) => <li><strong>{s.label}:</strong> {s.value}.</li>)}
+        </ul>
+        <p>
+          Si quieres ahorrar tiempo, indica en el asunto del correo el tipo de mensaje (por
+          ejemplo: <code>[Corrección]</code> o <code>[Colaboración]</code>).
+        </p>
+      </section>
+
+      <section>
+        <h2>Tiempo de respuesta</h2>
+        <p>
+          Solemos responder en <strong>3-5 días laborables</strong>. Si necesitas algo urgente,
+          dilo en el asunto del correo. Somos un proyecto pequeño (un padre + Claude, literalmente)
+          así que no podemos competir con un help desk de empresa, pero leemos todo lo que llega.
+        </p>
+      </section>
+
+      <section>
+        <h2>Lo que no atendemos por email</h2>
+        <ul>
+          <li><strong>Consultas médicas, fisioterapéuticas o nutricionales</strong> sobre niños concretos. No somos profesionales sanitarios y derivar decisiones de salud por email es irresponsable. Para eso, pediatra o especialista de tu confianza.</li>
+          <li><strong>Diagnósticos psicológicos.</strong> Ídem: psicólogo deportivo o clínico colegiado.</li>
+          <li><strong>Spam comercial</strong> de enlaces patrocinados, "guest posts" auto-vendidos o intercambio de backlinks SEO. Va al filtro directo.</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>Si vas a proponer un tema</h2>
+        <p>Para que la propuesta llegue rápido a buen puerto, cuéntame:</p>
+        <ul>
+          <li>Qué pregunta concreta resolvería el artículo.</li>
+          <li>Qué edad de niño tienes en mente (4-6, 7-9, 10-12).</li>
+          <li>Qué te falta en lo que ya hay publicado en internet sobre ese tema.</li>
+          <li>Si tienes alguna fuente de referencia (estudio, manual, escuela).</li>
+        </ul>
+        <p>
+          Cuanto más concreto, más fácil que entre al calendario editorial. Si entra, te avisamos
+          con el enlace cuando se publica.
+        </p>
+      </section>
+
+      <section>
+        <h2>Privacidad de tu correo</h2>
+        <p>
+          Lo que nos cuentes por email se usa exclusivamente para responderte. Si la conversación
+          deriva en colaboración continuada (revisor, autor invitado), te lo decimos
+          explícitamente. Detalle completo en nuestra
+          <a href="/politica-privacidad/">política de privacidad</a>.
+        </p>
+      </section>
+    </article>
+  </main>
+
+  <Footer />
+</BaseLayout>

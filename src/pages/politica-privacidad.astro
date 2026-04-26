@@ -1,0 +1,151 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Header from '@/components/Header.astro';
+import Footer from '@/components/Footer.astro';
+import Breadcrumb from '@/components/Breadcrumb.astro';
+import { AUTHOR, SITE, SITE_URL } from '@/consts';
+
+const title = 'Política de privacidad';
+const description =
+  'Política de privacidad de MiniGol Club: qué datos recogemos, cómo los tratamos, plazos de conservación y derechos del usuario según el RGPD.';
+const lastUpdate = '26 de abril de 2026';
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  canonical={`${SITE_URL}/politica-privacidad/`}
+>
+  <Header />
+
+  <div class="mx-auto max-w-4xl px-4 md:px-6">
+    <Breadcrumb items={[{ label: title }]} />
+  </div>
+
+  <main id="main" class="mx-auto max-w-3xl px-4 pb-16 md:px-6">
+    <article class="prose prose-lg max-w-none">
+      <header class="mb-8 not-prose">
+        <h1 class="mb-3 font-display text-4xl font-bold leading-tight text-foreground md:text-5xl">
+          {title}
+        </h1>
+        <p class="text-sm text-foreground-muted">Última actualización: {lastUpdate}</p>
+      </header>
+
+      <section>
+        <h2>1. Responsable del tratamiento</h2>
+        <ul>
+          <li><strong>Responsable:</strong> {AUTHOR.name}, en calidad de editor del sitio {SITE.name}.</li>
+          <li><strong>Sitio web:</strong> <a href={SITE_URL}>{SITE.domain}</a></li>
+          <li><strong>Contacto:</strong> <a href={`mailto:${AUTHOR.email}`}>{AUTHOR.email}</a></li>
+          <li><strong>Finalidad general:</strong> publicación de contenido editorial sobre fútbol infantil.</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>2. Datos que recogemos</h2>
+        <p>
+          {SITE.name} es un sitio de contenido. <strong>No requiere registro</strong> para leer
+          ningún artículo ni descargar ningún recurso público. Los datos que tratamos se reducen a:
+        </p>
+        <ul>
+          <li>
+            <strong>Datos de navegación anónimos</strong> a través de Google Analytics 4
+            (páginas visitadas, duración de la visita, dispositivo, país aproximado). Estos datos
+            se recogen <strong>solo si has aceptado las cookies analíticas</strong> en el banner de
+            consentimiento. La IP se anonimiza antes de enviarse a Google.
+          </li>
+          <li>
+            <strong>Datos de contacto</strong> que tú nos facilites voluntariamente al escribirnos
+            por email (nombre, dirección de correo, mensaje). Solo se usan para responderte.
+          </li>
+          <li>
+            <strong>Cookies estrictamente necesarias</strong> para el funcionamiento del sitio
+            (recordar tu elección de consentimiento). Se gestionan en cliente, no se envían a
+            terceros.
+          </li>
+        </ul>
+        <p>
+          <strong>No recogemos datos personales de menores.</strong> El sitio está pensado para
+          adultos (padres y madres). Cualquier formulario futuro (newsletter, descargas) requerirá
+          declaración explícita de mayoría de edad.
+        </p>
+      </section>
+
+      <section>
+        <h2>3. Base legal del tratamiento</h2>
+        <ul>
+          <li><strong>Consentimiento</strong> (art. 6.1.a RGPD) para cookies analíticas y de medición.</li>
+          <li><strong>Interés legítimo</strong> (art. 6.1.f RGPD) para responder a consultas que nos envías.</li>
+          <li><strong>Cumplimiento de obligaciones legales</strong> (art. 6.1.c RGPD) cuando proceda.</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>4. Plazos de conservación</h2>
+        <ul>
+          <li><strong>Datos de navegación (GA4):</strong> 14 meses (configuración por defecto).</li>
+          <li><strong>Correos de consultas:</strong> hasta 12 meses tras resolver la consulta, salvo que la conversación derive en una colaboración continuada.</li>
+          <li><strong>Cookies de consentimiento:</strong> 6 meses; pasado ese plazo se vuelve a preguntar.</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>5. Destinatarios y transferencias internacionales</h2>
+        <p>Los datos pueden tratarse por terceros en calidad de encargados del tratamiento:</p>
+        <ul>
+          <li><strong>Cloudflare, Inc.</strong> (EE. UU.) — alojamiento del sitio, CDN y seguridad. Adherido al EU-US Data Privacy Framework.</li>
+          <li><strong>Google LLC</strong> (EE. UU.) — analítica web (GA4) y, si lo activamos, publicidad (AdSense). Adherido al EU-US Data Privacy Framework.</li>
+          <li><strong>Amazon EU S.à r.l.</strong> — al hacer clic en enlaces de afiliados, Amazon trata tu navegación bajo su propia política.</li>
+        </ul>
+        <p>
+          No vendemos ni cedemos tus datos a otros terceros. Las transferencias internacionales se
+          amparan en cláusulas contractuales tipo aprobadas por la Comisión Europea o en marcos
+          equivalentes vigentes.
+        </p>
+      </section>
+
+      <section>
+        <h2>6. Derechos del usuario</h2>
+        <p>Como titular de tus datos puedes ejercer en cualquier momento los derechos:</p>
+        <ul>
+          <li>De <strong>acceso</strong> a los datos que tengamos sobre ti.</li>
+          <li>De <strong>rectificación</strong> de datos inexactos.</li>
+          <li>De <strong>supresión</strong> ("derecho al olvido").</li>
+          <li>De <strong>limitación</strong> u <strong>oposición</strong> al tratamiento.</li>
+          <li>De <strong>portabilidad</strong> de los datos.</li>
+          <li>De <strong>retirar el consentimiento</strong> en cualquier momento (no afecta a los tratamientos previos).</li>
+        </ul>
+        <p>
+          Para ejercer cualquiera de estos derechos, escríbenos a
+          <a href={`mailto:${AUTHOR.email}`}>{AUTHOR.email}</a> indicando el derecho que ejerces.
+          Responderemos en un plazo máximo de un mes.
+        </p>
+        <p>
+          Si consideras que el tratamiento no se ajusta a la normativa, puedes presentar una
+          reclamación ante la <strong>Agencia Española de Protección de Datos</strong>
+          (<a href="https://www.aepd.es/" rel="noopener">aepd.es</a>).
+        </p>
+      </section>
+
+      <section>
+        <h2>7. Cambios en esta política</h2>
+        <p>
+          Podemos actualizar esta política cuando cambien las herramientas que usamos o la
+          normativa aplicable. Cualquier cambio sustantivo se anunciará en esta página con su
+          fecha de actualización. Te recomendamos revisarla periódicamente.
+        </p>
+      </section>
+
+      <section>
+        <h2>8. Información complementaria</h2>
+        <p>
+          Esta política se complementa con nuestra
+          <a href="/politica-cookies/">política de cookies</a> (detalle de cookies usadas) y nuestro
+          <a href="/aviso-legal/">aviso legal</a> (información identificativa del editor).
+        </p>
+      </section>
+    </article>
+  </main>
+
+  <Footer />
+</BaseLayout>

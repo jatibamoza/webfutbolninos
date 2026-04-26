@@ -1,0 +1,127 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Header from '@/components/Header.astro';
+import Footer from '@/components/Footer.astro';
+import Breadcrumb from '@/components/Breadcrumb.astro';
+import { AUTHOR, SITE, SITE_URL } from '@/consts';
+
+const title = 'Política de cookies';
+const description =
+  'Política de cookies de MiniGol Club: qué cookies usamos, su finalidad, plazo y cómo aceptarlas o rechazarlas en cualquier momento.';
+const lastUpdate = '26 de abril de 2026';
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  canonical={`${SITE_URL}/politica-cookies/`}
+>
+  <Header />
+
+  <div class="mx-auto max-w-4xl px-4 md:px-6">
+    <Breadcrumb items={[{ label: title }]} />
+  </div>
+
+  <main id="main" class="mx-auto max-w-3xl px-4 pb-16 md:px-6">
+    <article class="prose prose-lg max-w-none">
+      <header class="mb-8 not-prose">
+        <h1 class="mb-3 font-display text-4xl font-bold leading-tight text-foreground md:text-5xl">
+          {title}
+        </h1>
+        <p class="text-sm text-foreground-muted">Última actualización: {lastUpdate}</p>
+      </header>
+
+      <section>
+        <h2>1. Qué son las cookies</h2>
+        <p>
+          Las cookies son pequeños archivos de texto que un sitio web guarda en tu navegador para
+          recordar información (preferencias, idioma, consentimientos) o para medir cómo se usa
+          el sitio. Algunas son imprescindibles para que la web funcione; otras son opcionales y
+          dependen de tu consentimiento.
+        </p>
+      </section>
+
+      <section>
+        <h2>2. Cookies que usa {SITE.name}</h2>
+        <p>Clasificamos nuestras cookies en dos categorías:</p>
+
+        <h3>2.1 Cookies necesarias</h3>
+        <p>Imprescindibles para el funcionamiento del sitio. No requieren consentimiento.</p>
+        <ul>
+          <li>
+            <strong><code>cc_cookie</code></strong> — guarda tu elección en el banner de
+            consentimiento. <strong>Plazo:</strong> 6 meses. <strong>Origen:</strong> propio
+            (vanilla-cookieconsent).
+          </li>
+        </ul>
+
+        <h3>2.2 Cookies analíticas (opcionales)</h3>
+        <p>
+          Solo se activan si has aceptado las cookies analíticas en el banner. Nos ayudan a
+          entender qué artículos funcionan y dónde mejorar.
+        </p>
+        <ul>
+          <li>
+            <strong><code>_ga</code></strong> — Google Analytics 4. Identificador anónimo de
+            visitante. <strong>Plazo:</strong> 13 meses. <strong>Origen:</strong> tercero (Google).
+          </li>
+          <li>
+            <strong><code>_ga_&lt;ID&gt;</code></strong> — Google Analytics 4. Estado de la sesión.
+            <strong>Plazo:</strong> 13 meses. <strong>Origen:</strong> tercero (Google).
+          </li>
+        </ul>
+        <p>
+          Toda la analítica se procesa con <strong>IP anonimizada</strong> y bajo el modo
+          <strong>Consent Mode v2</strong> de Google.
+        </p>
+
+        <h3>2.3 Cookies publicitarias</h3>
+        <p>
+          Actualmente <strong>{SITE.name} no muestra publicidad</strong>. Si en el futuro
+          activamos Google AdSense, aparecerán cookies publicitarias en este apartado y se pedirá
+          consentimiento explícito antes de cargarlas.
+        </p>
+      </section>
+
+      <section>
+        <h2>3. Cómo gestionar tu consentimiento</h2>
+        <p>Tienes tres opciones para gestionar las cookies:</p>
+        <ul>
+          <li><strong>Banner inicial:</strong> al visitar el sitio por primera vez puedes "Aceptar todo", "Solo necesarias" o "Gestionar" para elegir categoría a categoría.</li>
+          <li><strong>Reabrir preferencias:</strong> en cualquier momento puedes cambiar tu elección haciendo clic en el enlace "Gestionar cookies" del pie de página.</li>
+          <li><strong>Configuración del navegador:</strong> tu navegador permite borrar y bloquear cookies a nivel global. Consulta la ayuda de tu navegador para los pasos concretos:
+            <ul>
+              <li><a href="https://support.google.com/chrome/answer/95647" rel="noopener">Chrome</a></li>
+              <li><a href="https://support.mozilla.org/kb/proteccion-antirrastreo-mejorada-firefox-escritorio" rel="noopener">Firefox</a></li>
+              <li><a href="https://support.apple.com/es-es/guide/safari/sfri11471/mac" rel="noopener">Safari</a></li>
+              <li><a href="https://support.microsoft.com/microsoft-edge/" rel="noopener">Edge</a></li>
+            </ul>
+          </li>
+        </ul>
+        <p>
+          Si bloqueas todas las cookies, parte de las funcionalidades del sitio pueden no
+          funcionar correctamente, pero el contenido editorial seguirá siendo accesible.
+        </p>
+      </section>
+
+      <section>
+        <h2>4. Política de privacidad relacionada</h2>
+        <p>
+          El detalle del tratamiento de los datos asociados a estas cookies (responsable, base
+          legal, plazos, derechos) está en nuestra
+          <a href="/politica-privacidad/">política de privacidad</a>.
+        </p>
+      </section>
+
+      <section>
+        <h2>5. Cambios en esta política</h2>
+        <p>
+          Si añadimos o quitamos cookies, actualizaremos esta página con la fecha. Para preguntas
+          escríbenos a <a href={`mailto:${AUTHOR.email}`}>{AUTHOR.email}</a>.
+        </p>
+      </section>
+    </article>
+  </main>
+
+  <Footer />
+</BaseLayout>
