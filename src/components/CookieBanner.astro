@@ -76,27 +76,87 @@
     },
   });
 
-  // vanilla-cookieconsent v3 no muestra el banner automáticamente con autoShow;
-  // hay que invocar show(true) explícitamente si no hay consentimiento previo guardado.
-  if (!document.getElementById('cc-main')) {
+  // vanilla-cookieconsent v3 con autoShow no auto-renderiza el banner;
+  // hay que invocar show(true) manualmente, pero SOLO si no hay consentimiento previo,
+  // si no se mostraba en cada navegación entre páginas.
+  if (!CookieConsent.validConsent()) {
     CookieConsent.show(true);
   }
 </script>
 
 <style is:global>
-  /* Tokens de marca aplicados al banner */
-  :root {
-    --cc-btn-primary-bg: #2563eb;
-    --cc-btn-primary-hover-bg: #1d4ed8;
-    --cc-btn-primary-text: #ffffff;
-    --cc-btn-secondary-bg: #f1f5f9;
-    --cc-btn-secondary-hover-bg: #e2e8f0;
-    --cc-btn-secondary-text: #0f172a;
-    --cc-modal-border-radius: 0.75rem;
-    --cc-btn-border-radius: 0.5rem;
-    --cc-toggle-on-bg: #2563eb;
-    --cc-cookie-category-block-bg: #fffbeb;
-    --cc-cookie-category-block-border: #e2e8f0;
-    --cc-font-family: 'Nunito', sans-serif;
+  /* Tokens 'Cuaderno de Campo' aplicados al banner. Las variables siguen el contrato
+     público de vanilla-cookieconsent v3: prefijo --cc-*. */
+  #cc-main {
+    --cc-bg: var(--color-paper);
+    --cc-primary-color: var(--color-foreground);
+    --cc-secondary-color: var(--color-foreground-muted);
+    --cc-link-color: var(--color-primary);
+
+    --cc-btn-primary-bg: var(--color-foreground);
+    --cc-btn-primary-color: var(--color-background);
+    --cc-btn-primary-hover-bg: color-mix(in oklab, var(--color-foreground) 88%, transparent);
+    --cc-btn-primary-hover-color: var(--color-background);
+
+    --cc-btn-secondary-bg: var(--color-surface-alt);
+    --cc-btn-secondary-color: var(--color-foreground);
+    --cc-btn-secondary-hover-bg: color-mix(in oklab, var(--color-surface-alt), var(--color-foreground) 6%);
+    --cc-btn-secondary-hover-color: var(--color-foreground);
+    --cc-btn-secondary-border-color: var(--color-border-strong);
+    --cc-btn-secondary-hover-border-color: var(--color-border-strong);
+
+    --cc-separator-border-color: var(--color-border);
+    --cc-cookie-category-block-bg: var(--color-paper);
+    --cc-cookie-category-block-border: var(--color-border);
+    --cc-cookie-category-block-bg-hover: var(--color-surface-alt);
+    --cc-cookie-category-block-border-hover: var(--color-border-strong);
+    --cc-cookie-category-expanded-block-bg: var(--color-surface-alt);
+    --cc-cookie-category-expanded-block-hover-bg: var(--color-surface-alt);
+
+    --cc-toggle-on-bg: var(--color-foreground);
+    --cc-toggle-off-bg: var(--color-border-strong);
+    --cc-toggle-on-knob-bg: var(--color-background);
+    --cc-toggle-off-knob-bg: var(--color-paper);
+    --cc-toggle-readonly-bg: var(--color-rule);
+    --cc-toggle-readonly-knob-bg: var(--color-paper);
+
+    --cc-modal-border-radius: var(--radius-lg);
+    --cc-btn-border-radius: var(--radius-md);
+
+    --cc-font-family: var(--font-body);
+    --cc-overlay-bg: rgba(26, 31, 44, 0.45);
+    --cc-modal-box-shadow: var(--shadow-paper);
+
+    --cc-pm-toggle-border-radius: var(--radius-full);
+  }
+
+  /* Caja del modal con borde de cuaderno + line-height más cómoda */
+  #cc-main .cm,
+  #cc-main .pm {
+    border: 1px solid var(--color-border);
+    line-height: 1.55;
+  }
+
+  /* Título con tipografía display (Fredoka) — coherencia con headings del sitio */
+  #cc-main .cm__title,
+  #cc-main .pm__title {
+    font-family: var(--font-display);
+    font-weight: 700;
+    letter-spacing: -0.01em;
+  }
+
+  /* Botones del banner siguen el peso 700 del sistema, mantienen min-height accesible */
+  #cc-main .cm__btn,
+  #cc-main .pm__btn {
+    font-weight: 700;
+    min-height: 44px;
+  }
+
+  /* Footer del modal con la fuente mono (estética cuaderno) en los enlaces legales */
+  #cc-main .cm__footer a,
+  #cc-main .pm__footer a {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    letter-spacing: 0.04em;
   }
 </style>
