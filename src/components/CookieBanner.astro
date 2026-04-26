@@ -7,6 +7,8 @@
   console.log('[CookieBanner] script loaded, CookieConsent:', CookieConsent);
 
   CookieConsent.run({
+    autoShow: true,
+    hideFromBots: false,
     guiOptions: {
       consentModal: {
         layout: 'box',
@@ -79,6 +81,15 @@
   });
 
   console.log('[CookieBanner] run() invoked, _ccRun:', (window as unknown as { _ccRun?: boolean })._ccRun);
+
+  setTimeout(() => {
+    const ccMain = document.getElementById('cc-main');
+    console.log('[CookieBanner] cc-main element after 500ms:', ccMain);
+    if (ccMain) {
+      console.log('[CookieBanner] cc-main innerHTML length:', ccMain.innerHTML.length);
+      console.log('[CookieBanner] cc-main computed style:', window.getComputedStyle(ccMain).display);
+    }
+  }, 500);
 </script>
 
 <style is:global>
