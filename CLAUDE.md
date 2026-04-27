@@ -26,6 +26,10 @@ Sitio de contenido SEO sobre fútbol infantil para padres con hijos de 4 a 12 a�
 - [docs/seo/EstrategiaEEAT.md](docs/seo/EstrategiaEEAT.md) — mapa YMYL, autores, página /sobre/, link earning, roadmap E-E-A-T 6 meses
 - [docs/seo/ResultadosEnDirecto.md](docs/seo/ResultadosEnDirecto.md) — **post-MVP.** Widget resultados Mundial 2026 → LaLiga → Champions → Copa del Rey
 
+**Pizarra Táctica (producto separado, fase de diseño cerrada 2026-04-27):**
+- [docs/ArquitecturaPizarra.md](docs/ArquitecturaPizarra.md) — isla Preact, backend Cloudflare-only, freemium "motor gratis + entregables PRO", Lemon Squeezy, schema HowTo, A11y, topología `src/components/pizarra/`, bugs del mockup a corregir, ADR-006 borrador
+- [docs/PlanTrabajoPizarra.md](docs/PlanTrabajoPizarra.md) — Fase 2 (MVP gratis, ~24h), Fase 2.5 (URLs evergreen por preset), Fase 3a/b/c (cuentas, pagos, PDF/oEmbed) con criterios de avance entre fases
+
 **Estado vivo:**
 - [docs/PlanTrabajo.md](docs/PlanTrabajo.md) — backlog en sprints
 - [docs/FlujoTrabajo.md](docs/FlujoTrabajo.md) — qué se está haciendo ahora
@@ -231,6 +235,8 @@ Instalados desde [wshobson/agents](https://github.com/wshobson/agents) el 2026-0
 | Calendario editorial, briefs, lead-magnets | `docs/seo/PlanContenidos.md` |
 | YMYL, autores, página /sobre/, link earning | `docs/seo/EstrategiaEEAT.md` |
 | Widget resultados en directo (Mundial/LaLiga/Champions) | `docs/seo/ResultadosEnDirecto.md` |
+| Línea freemium, stack o backend de la Pizarra Táctica | `docs/ArquitecturaPizarra.md` |
+| Tarea de Fase 2/2.5/3 de la Pizarra Táctica | `docs/PlanTrabajoPizarra.md` |
 
 **Regla:** si hay conflicto entre código y doc, gana el doc — y el PR debe ajustar el código. Si el doc está obsoleto, el PR debe ajustar el doc.
 
