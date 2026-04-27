@@ -33,27 +33,29 @@ const autoresCollection = defineCollection({
 
 const articulosCollection = defineCollection({
   loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/articulos' }),
-  schema: z.object({
-    title: z.string().max(70),
-    description: z.string().min(120).max(160),
-    keyword: z.string(),
-    categoria: z.string(),
-    autor: z.string(),
-    pubDate: z.coerce.date(),
-    updatedDate: z.coerce.date().optional(),
-    cover: z.string(),
-    coverAlt: z.string(),
-    coverWidth: z.number().int().default(1200),
-    coverHeight: z.number().int().default(750),
-    edadMin: z.number().int().min(3).max(18),
-    edadMax: z.number().int().min(3).max(18),
-    nivel: z.enum(['facil', 'media', 'reto']),
-    tags: z.array(z.string()).default([]),
-    draft: z.boolean().default(false),
-    tiempoLectura: z.number().int().optional(),
-    tieneAfiliados: z.boolean().default(false),
-    featured: z.boolean().default(false),
-  }),
+  schema: ({ image }) =>
+    z.object({
+      title: z.string().max(70),
+      description: z.string().min(120).max(160),
+      keyword: z.string(),
+      categoria: z.string(),
+      autor: z.string(),
+      pubDate: z.coerce.date(),
+      updatedDate: z.coerce.date().optional(),
+      // image() valida que el path resuelve a un asset real en src/ y devuelve
+      // ImageMetadata { src, width, height, format } — para usar con <Image />
+      // de Astro y obtener WebP/AVIF + responsive srcset automáticos.
+      cover: image(),
+      coverAlt: z.string(),
+      edadMin: z.number().int().min(3).max(18),
+      edadMax: z.number().int().min(3).max(18),
+      nivel: z.enum(['facil', 'media', 'reto']),
+      tags: z.array(z.string()).default([]),
+      draft: z.boolean().default(false),
+      tiempoLectura: z.number().int().optional(),
+      tieneAfiliados: z.boolean().default(false),
+      featured: z.boolean().default(false),
+    }),
 });
 
 const recursosCollection = defineCollection({

@@ -1,5 +1,6 @@
 ---
 import type { CollectionEntry } from 'astro:content';
+import { Image } from 'astro:assets';
 import CatChip from '@/components/ui/CatChip.astro';
 import Chrono from '@/components/ui/Chrono.astro';
 
@@ -24,8 +25,6 @@ const {
   description,
   cover,
   coverAlt,
-  coverWidth,
-  coverHeight,
   pubDate,
   edadMin,
   edadMax,
@@ -54,13 +53,13 @@ const dateFormatted = pubDate.toLocaleDateString('es-ES', {
     href={slug}
     class="card-paper flex h-full flex-col overflow-hidden"
   >
-    <!-- Cover -->
+    <!-- Cover: <Image> sirve WebP/AVIF + responsive srcset segun viewport -->
     <div class="overflow-hidden" style={`aspect-ratio: 16/10; border-bottom: 1px solid var(--color-border);`}>
-      <img
+      <Image
         src={cover}
         alt={coverAlt}
-        width={coverWidth}
-        height={coverHeight}
+        widths={[320, 480, 640, 800, 1200]}
+        sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
         loading={loading}
         decoding="async"
         class="block h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.02]"
