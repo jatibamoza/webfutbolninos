@@ -10,7 +10,7 @@ const here = dirname(fileURLToPath(import.meta.url));
 
 // Map categoría → color marca
 const categoryColors = {
-  entrenamiento: '#16A34A',
+  ejercicios: '#16A34A',
   juegos: '#EC4899',
   equipamiento: '#F59E0B',
   iniciacion: '#2563EB',
@@ -19,7 +19,7 @@ const categoryColors = {
 };
 
 const categoryLabels = {
-  entrenamiento: 'ENTRENAMIENTO',
+  ejercicios: 'EJERCICIOS',
   juegos: 'JUEGOS',
   equipamiento: 'EQUIPAMIENTO',
   iniciacion: 'INICIACIÓN',
@@ -122,7 +122,9 @@ const svg = `<?xml version="1.0" encoding="UTF-8"?>
   </g>
 </svg>`;
 
-const outDir = resolve(here, '..', 'public', 'articulos', categoria);
+// Tras Sprint 7 P4 las covers viven en src/assets/ para que Astro image()
+// las optimice (WebP/AVIF + responsive). Las de public/ no se procesan.
+const outDir = resolve(here, '..', 'src', 'assets', 'articulos', categoria);
 mkdirSync(outDir, { recursive: true });
 const out = resolve(outDir, `${slug}.jpg`);
 
