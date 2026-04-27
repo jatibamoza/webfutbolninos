@@ -29,6 +29,8 @@ function readArticulosRecursive(dir, baseDir) {
   return results;
 }
 
+const VALID_CATEGORIES = ['ejercicios', 'juegos', 'equipamiento', 'iniciacion', 'recursos', 'mundial-2026'];
+
 function articulosApiMiddleware() {
   return {
     name: 'articulos-api',
@@ -36,7 +38,7 @@ function articulosApiMiddleware() {
       server.middlewares.use('/api/articulos', (req, res, next) => {
         res.setHeader('Content-Type', 'application/json');
         res.setHeader('Access-Control-Allow-Origin', '*');
-        res.setHeader('Access-Control-Allow-Methods', 'GET, PUT, OPTIONS');
+        res.setHeader('Access-Control-Allow-Methods', 'GET, PUT, POST, OPTIONS');
         res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
         if (req.method === 'OPTIONS') {
@@ -46,7 +48,50 @@ function articulosApiMiddleware() {
         }
 
         const url = new URL(req.url, 'http://localhost');
-        const slugParam = url.pathname.replace(/^\//, '');
+        const pathParts = url.pathname.split('/').filter(Boolean);
+
+        // POST /api/articulos/cover
+        if (req.method === 'POST' && pathParts[0] === 'cover') {
+          let body = '';
+          req.on('data', (chunk) => { body += chunk; });
+          req.on('end', async () => {
+            try {
+              const { slug, categoria, title } = JSON.parse(body);
+
+              if (!slug || !slug.trim()) {
+                res.statusCode = 400;
+                res.end(JSON.stringify({ ok: false, error: 'slug es requerido' }));
+                return;
+              }
+              if (!categoria || !categoria.trim()) {
+                res.statusCode = 400;
+                res.end(JSON.stringify({ ok: false, error: 'categoria es requerida' }));
+                return;
+              }
+              if (!title || !title.trim()) {
+                res.statusCode = 400;
+                res.end(JSON.stringify({ ok: false, error: 'title es requerido' }));
+                return;
+              }
+
+              if (!VALID_CATEGORIES.includes(categoria)) {
+                res.statusCode = 400;
+                res.end(JSON.stringify({ ok: false, error: `categoria inválida. Válidas: ${VALID_CATEGORIES.join(', ')}` }));
+                return;
+              }
+
+              const { generateCover } = await import('../scripts/generate-article-cover.mjs');
+              const { path, sizeKB } = await generateCover({ slug, categoria, title });
+              res.end(JSON.stringify({ ok: true, path, sizeKB }));
+            } catch (err) {
+              res.statusCode = 500;
+              res.end(JSON.stringify({ ok: false, error: err.message }));
+            }
+          });
+          return;
+        }
+
+        const slugParam = pathParts[0] || '';
 
         // GET /api/articulos → lista completa
         if (req.method === 'GET' && !slugParam) {
@@ -97,7 +142,6 @@ function articulosApiMiddleware() {
                 res.end(JSON.stringify({ error: 'Artículo no encontrado' }));
                 return;
               }
-              // Re-serializa: gray-matter stringify reconstruye YAML + cuerpo
               const updated = matter.stringify(mdxBody || '', frontmatter);
               fs.writeFileSync(found.filePath, updated, 'utf-8');
               res.end(JSON.stringify({ ok: true }));
