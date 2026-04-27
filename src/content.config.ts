@@ -47,6 +47,7 @@ const articulosCollection = defineCollection({
     coverHeight: z.number().int().default(750),
     edadMin: z.number().int().min(3).max(18),
     edadMax: z.number().int().min(3).max(18),
+    nivel: z.enum(['facil', 'media', 'reto']),
     tags: z.array(z.string()).default([]),
     draft: z.boolean().default(false),
     tiempoLectura: z.number().int().optional(),

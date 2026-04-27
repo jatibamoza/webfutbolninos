@@ -47,7 +47,7 @@ const ageRanges = [
   { id: '11-12', label: '11-12', min: 11, max: 12 },
 ];
 
-// Niveles: placeholder visual hasta que el schema de articulos incluya `nivel`.
+// Niveles: filtro real sobre el campo `nivel` del frontmatter.
 const levelChips = [
   { id: 'todas', label: 'todas' },
   { id: 'facil', label: 'fácil' },
@@ -127,18 +127,18 @@ const levelChips = [
       </div>
     </div>
 
-    <div class="cat-filters__row" data-filter-disabled aria-disabled="true">
+    <div class="cat-filters__row">
       <span class="cat-filters__label mono">
         <Icon name="lucide:gauge" class="h-3 w-3" />
         NIVEL
       </span>
-      <div class="cat-filters__chips">
+      <div class="cat-filters__chips" data-filter-nivel>
         {levelChips.map((l, i) => (
           <button
             type="button"
-            class="cat-filters__chip cat-filters__chip--soon"
+            class="cat-filters__chip"
             data-active={i === 0 ? 'true' : 'false'}
-            disabled
+            data-nivel-id={l.id}
           >
             {l.label}
           </button>
@@ -352,30 +352,6 @@ const levelChips = [
     color: var(--color-background);
     border-color: var(--color-foreground);
   }
-  .cat-filters__chip--soon {
-    cursor: not-allowed;
-    opacity: 0.55;
-  }
-  [data-filter-disabled] {
-    position: relative;
-  }
-  [data-filter-disabled]::after {
-    content: 'pronto';
-    position: absolute;
-    top: 50%;
-    right: 0;
-    transform: translateY(-50%);
-    font-family: var(--font-mono);
-    font-size: 9px;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--color-foreground-subtle);
-    border: 1px dashed var(--color-border-strong);
-    padding: 2px 6px;
-    border-radius: 3px;
-    pointer-events: none;
-  }
-
   /* ---- Grid breakpoint extra ---- */
   @media (min-width: 1024px) {
     [data-cat-grid] {
@@ -395,27 +371,44 @@ const levelChips = [
 <script is:inline>
   (() => {
     const grid = document.querySelector('[data-cat-grid]');
-    const filterButtons = document.querySelectorAll('[data-filter-edad] button');
+    const edadButtons = document.querySelectorAll('[data-filter-edad] button');
+    const nivelButtons = document.querySelectorAll('[data-filter-nivel] button');
     const emptyState = document.querySelector('[data-empty-state]');
-    if (!grid || filterButtons.length === 0) return;
+    if (!grid || edadButtons.length === 0) return;
 
-    function applyFilter(min, max) {
+    const state = { edadMin: 0, edadMax: 99, nivel: 'todas' };
+
+    function applyFilter() {
       let visible = 0;
       grid.querySelectorAll('[data-article-card]').forEach((card) => {
         const aMin = parseInt(card.dataset.edadMin, 10);
         const aMax = parseInt(card.dataset.edadMax, 10);
-        const overlaps = aMax >= min && aMin <= max;
-        card.style.display = overlaps ? '' : 'none';
-        if (overlaps) visible++;
+        const cardNivel = card.dataset.nivel;
+        const overlapsEdad = aMax >= state.edadMin && aMin <= state.edadMax;
+        const matchesNivel = state.nivel === 'todas' || cardNivel === state.nivel;
+        const show = overlapsEdad && matchesNivel;
+        card.style.display = show ? '' : 'none';
+        if (show) visible++;
       });
       if (emptyState) emptyState.hidden = visible > 0;
     }
 
-    filterButtons.forEach((btn) => {
+    edadButtons.forEach((btn) => {
       btn.addEventListener('click', () => {
-        filterButtons.forEach((b) => (b.dataset.active = 'false'));
+        edadButtons.forEach((b) => (b.dataset.active = 'false'));
         btn.dataset.active = 'true';
-        applyFilter(parseInt(btn.dataset.edadMin, 10), parseInt(btn.dataset.edadMax, 10));
+        state.edadMin = parseInt(btn.dataset.edadMin, 10);
+        state.edadMax = parseInt(btn.dataset.edadMax, 10);
+        applyFilter();
+      });
+    });
+
+    nivelButtons.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        nivelButtons.forEach((b) => (b.dataset.active = 'false'));
+        btn.dataset.active = 'true';
+        state.nivel = btn.dataset.nivelId;
+        applyFilter();
       });
     });
   })();

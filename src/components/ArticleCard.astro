@@ -29,6 +29,7 @@ const {
   pubDate,
   edadMin,
   edadMax,
+  nivel,
   tiempoLectura,
   categoria,
 } = article.data;
@@ -47,6 +48,7 @@ const dateFormatted = pubDate.toLocaleDateString('es-ES', {
   data-article-card
   data-edad-min={edadMin}
   data-edad-max={edadMax}
+  data-nivel={nivel}
 >
   <a
     href={slug}
