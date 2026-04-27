@@ -29,6 +29,12 @@ const browserGlobals = {
   matchMedia: 'readonly',
   dataLayer: 'writable',
   gtag: 'readonly',
+  TextEncoder: 'readonly',
+  TextDecoder: 'readonly',
+  btoa: 'readonly',
+  atob: 'readonly',
+  Image: 'readonly',
+  XMLSerializer: 'readonly',
 };
 
 const nodeGlobals = {
