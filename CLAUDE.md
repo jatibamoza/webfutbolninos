@@ -39,30 +39,30 @@ Sitio de contenido SEO sobre fútbol infantil para padres con hijos de 4 a 12 a�
 
 ## 2. Stack y comandos
 
-> El proyecto aún no está inicializado (Sprint 0). Esta sección quedará lista para usar tras Sprint 1 (ver `PlanTrabajo.md`).
+**Stack confirmado:** Astro 6 · TypeScript strict · Tailwind 4 · MDX · Pagefind · Cloudflare Workers (modelo unificado, no Pages legacy) · Node ≥22.12.
 
-**Stack confirmado:** Astro 5 · TypeScript strict · Tailwind 4 · MDX · Pagefind · Cloudflare Pages.
+**Fuentes self-host** vía `@fontsource-variable/{fredoka,nunito,caveat,jetbrains-mono}` (variable fonts, latin subset, preload de Fredoka + Nunito en BaseLayout). NO cargar desde fonts.googleapis.com.
 
-**Comandos esperados (post-Sprint 1):**
+**Comandos:**
 
 ```bash
 pnpm install              # instalar dependencias
 pnpm dev                  # dev server (localhost:4321)
-pnpm build                # build producción → dist/
+pnpm build                # build producción → dist/ + pagefind
 pnpm preview              # preview del build local
 pnpm typecheck            # astro check (TS strict)
 pnpm lint                 # eslint
 pnpm format               # prettier
-pnpm test                 # (cuando se añada vitest)
 ```
 
-**Workflow de contenido nuevo (post-Sprint 2):**
+**Workflow de contenido nuevo:**
 
 1. Crear `src/content/articulos/<categoria>/<slug>.mdx`
-2. Frontmatter completo según schema Zod en `src/content/config.ts`
-3. Cover image en `src/assets/articulos/<categoria>/<slug>.jpg` (mínimo 1200×750)
-4. `pnpm dev` para previsualizar
-5. PR → preview deploy automático Cloudflare → merge a `main` → producción
+2. Frontmatter completo según schema Zod en `src/content.config.ts` (atención: NO `src/content/config.ts`, cambió en Astro 6)
+3. Campos obligatorios: title, description, keyword, categoria, autor, pubDate, cover, coverAlt, edadMin, edadMax, **nivel** (`facil`/`media`/`reto`)
+4. Cover image en `public/articulos/<categoria>/<slug>.jpg` (1200×750, generador en `scripts/generate-article-cover.mjs`)
+5. `pnpm dev` para previsualizar
+6. PR → preview deploy automático Cloudflare Workers → CI (typecheck + lint + build + Lighthouse) → merge a `main` → producción
 
 ---
 
@@ -96,36 +96,65 @@ Estas reglas las verifica también Lighthouse CI; mejor cumplirlas en el origen 
 
 ## 5. Reglas de UI/UX (no negociables)
 
-> Detalle completo en `docs/DisenoUI.md`. Aquí lo crítico que NUNCA se viola:
+> Identidad visual: **"Cuaderno de Campo"** — papel crema, dorsales numéricos, marker amarillo, manuscritos azules. Detalle completo en `docs/DisenoUI.md`.
 
+**Tipografía** (4 familias variable, self-host):
+- **Fredoka** (display: H1-H6, hero, dorsales)
+- **Nunito** (body: párrafos, UI)
+- **Caveat** (manuscrito: anotaciones, etiquetas tipo "¡no le grites!")
+- **JetBrains Mono** (mono: timestamps, dorsales pequeños, etiquetas técnicas)
+
+**Paleta cuaderno** (tokens en `src/styles/global.css`):
+- `--color-paper` crema, `--color-marker` amarillo, `--color-handwritten` azul tinta
+- 6 colores de marca por categoría (primary blue, secondary green, accent amber, fun pink, energy red, info cyan)
+- Dark mode automático: brand 600-series → 400-series para WCAG
+- Texto sobre badge/dorsal de color → SIEMPRE `var(--color-on-brand)` (negro fijo, WCAG-safe en ambos modos)
+
+**Nunca se viola:**
 - ❌ **No emoji como icono estructural.** Lucide via `astro-icon`.
-- ❌ **No Comic Sans / Comic Neue.** Tipos: Fredoka (display) + Nunito (body).
+- ❌ **No Comic Sans / Comic Neue / Inter para display.**
+- ❌ **No `text-white` sobre bg de marca** (rompe WCAG en dark mode brand-400). Usar `--color-on-brand` o `.btn .btn-primary`.
 - ❌ **No popups intersticiales** (penaliza Google, viola política AdSense).
 - ❌ **No animaciones decorativas** ni autoplay de vídeo/audio.
 - ❌ **No más de 3 ads en pantalla** simultánea ni ad sobre el H1.
+- ❌ **No cargar fuentes desde Google Fonts.** Self-host via `@fontsource-variable/*`.
 - ✅ Todo `<AdSlot>` con label "Publicidad" + min-height reservado.
-- ✅ Touch targets ≥ 44px en mobile.
-- ✅ Contraste ≥ 4.5:1 verificado en `prefers-color-scheme: light` y `dark`.
+- ✅ **Touch targets ≥ 44px en mobile.** `.btn` y `.cat-filters__chip` ya cumplen — al crear nuevo interactivo, partir de esa base.
+- ✅ Contraste ≥ 4.5:1 verificado en `prefers-color-scheme: light` Y `dark`.
 - ✅ `prefers-reduced-motion` respetado.
 - ✅ Focus visible (ring 3px) en todo elemento interactivo.
+
+**Checklist antes de PR de UI nueva:**
+1. ¿Touch ≥44px en cada `<button>`/`<a>` interactivo? Verificar también en chips, badges-link, close buttons.
+2. ¿Texto contrasta ≥4.5:1 en light Y dark? (La trampa: tokens brand idénticos en ambos modos — siempre verificar dark si toca color de marca).
+3. ¿Usa tokens existentes (`--color-*`) en lugar de hardcodear hex?
+4. `pnpm lighthouse` local antes de pushear (ver §6).
 
 ---
 
 ## 6. SEO técnico (gates en CI)
 
-Lighthouse CI bloquea PRs que rompan estos umbrales:
+Lighthouse CI corre en `pull_request` Y en `push: main` (regresion guard). Bloquea (error) PRs que rompan estos umbrales:
 
-| Métrica | Mínimo |
-|---------|--------|
-| Performance | 90 |
-| Accessibility | 95 |
-| SEO | 100 |
-| Best Practices | 90 |
-| LCP | < 2.5s |
-| CLS | < 0.1 |
-| INP | < 200ms |
+| Métrica | Umbral CI | Aspiracional |
+|---------|-----------|--------------|
+| Performance | ≥85 | ≥90 |
+| Accessibility | ≥95 | 100 |
+| SEO | 100 | 100 |
+| Best Practices | ≥90 | 100 |
+| LCP | ≤4000ms (warn) | <2500ms |
+| CLS | <0.1 (error) | <0.1 |
+| INP | <200ms | <200ms |
+
+LCP está en warn @4000ms (frontera Good/Needs-Improvement) por la realidad de CI emulado con throttling Slow 4G + GTM/AdSense scripts. Real-world LCP es ~1.8s. Aspiracional <2500ms cuando se mueva GTM a post-consent.
 
 Cada artículo debe tener: canonical, OG completo, Twitter card, JSON-LD `Article` + `BreadcrumbList`, breadcrumbs visibles, links internos, sitemap entry.
+
+**Para correr Lighthouse local antes de pushear:**
+```bash
+pnpm build
+npx -y @lhci/cli@0.14.x autorun
+```
 
 ---
 
