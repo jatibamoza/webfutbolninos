@@ -93,6 +93,38 @@ export function organizationJsonLd(): string {
   return JSON.stringify(schema);
 }
 
+interface PersonJsonLdProps {
+  name: string;
+  url: string;
+  image?: string;
+  sameAs?: string[];
+  jobTitle?: string;
+  description?: string;
+}
+
+export function personJsonLd({
+  name,
+  url,
+  image,
+  sameAs = [],
+  jobTitle,
+  description,
+}: PersonJsonLdProps): string {
+  const schema: Record<string, unknown> = {
+    '@context': 'https://schema.org',
+    '@type': 'Person',
+    name,
+    url,
+  };
+
+  if (image) schema.image = image;
+  if (jobTitle) schema.jobTitle = jobTitle;
+  if (description) schema.description = description;
+  if (sameAs.length > 0) schema.sameAs = sameAs;
+
+  return JSON.stringify(schema);
+}
+
 export function getReadingTime(content: string): number {
   const wordsPerMinute = 200;
   const words = content.trim().split(/\s+/).length;

@@ -1,242 +1,188 @@
-# Plan de Trabajo — Web Fútbol para Niños
+# Plan de Trabajo — MiniGol Club
 
-> Backlog priorizado en sprints de 2 semanas. Estado actual en `FlujoTrabajo.md`.
+> Backlog priorizado en sprints. Estado actual en `FlujoTrabajo.md`.
+> **Última sincronización con realidad: 2026-04-27.**
 
 ---
 
 ## Convenciones
 
-- **Sprint = 2 semanas.**
+- **Sprint = sesión enfocada** (no calendario rígido — el ritmo lo marca el bloqueo de tiempo del usuario).
 - **Issue = task GitHub.** Labels: `tipo/feat`, `tipo/content`, `tipo/seo`, `tipo/infra`, `tipo/design`, `tipo/bug` + `prio/alta|media|baja` + `sprint/N`.
 - **Definition of Done genérica:**
-  - PR mergeado a `main`
-  - Lighthouse CI pasa (Perf ≥90, A11y ≥95, SEO=100)
+  - PR mergeado a `main` (no push directo)
+  - Lighthouse CI pasa (Perf ≥0.90, A11y ≥0.95, SEO=1.0, Best Practices ≥0.90, LCP warn ≤3500ms)
   - Type-check + lint sin errores
-  - Si toca contenido: revisado SEO (title, meta, H1 único, alt text, internal linking)
+  - Si toca contenido: revisado SEO (title, meta, H1 único, alt, ≥2 internal links, frontmatter completo con `nivel`)
   - Documentación actualizada si cambia stack o convenciones
 
 ---
 
-## Roadmap a 6 meses
+## Roadmap
 
-| Fase | Sprints | Objetivo |
-|------|---------|----------|
-| **0 — Bootstrap** | S1 | Repo, Astro inicializado, deploy Cloudflare, CI verde, dominio |
-| **1 — Esqueleto** | S2-S3 | Layouts base, content collections, primer artículo de prueba publicado, AdSense aprobado |
-| **2 — Lanzamiento** | S4-S6 | 10 artículos publicados, GSC verificado, sitemap indexado, tracking funcionando |
-| **3 — Crecimiento** | S7-S10 | 30 artículos, comparativas Amazon, primeros recursos descargables, Pinterest activo |
-| **4 — Monetización plena** | S11-S12 | Newsletter activo, optimización slots ad, A/B test CTAs |
-
----
-
-## Sprint 1 — Bootstrap (semanas 1-2)
-
-**Objetivo:** Tener el proyecto desplegado en producción con un "hello world" navegable, dominio apuntando, CI verde.
-
-| # | Issue | Prioridad | Estimación |
-|---|-------|-----------|------------|
-| 1.1 | Crear repo GitHub `webfutbolninos`, branch protection en `main` | alta | 1h |
-| 1.2 | Inicializar Astro 5 + Tailwind 4 + TS strict | alta | 2h |
-| 1.3 | Configurar `tsconfig` paths `@/`, eslint, prettier | alta | 1h |
-| 1.4 | Crear `astro.config.mjs` con `@astrojs/sitemap`, `@astrojs/mdx`, `@astrojs/tailwind` | alta | 1h |
-| 1.5 | Crear `src/styles/global.css` con tokens de DisenoUI.md | alta | 2h |
-| 1.6 | Implementar `BaseLayout.astro` con head SEO, meta básicos, fonts preload | alta | 2h |
-| 1.7 | Página `index.astro` con hero placeholder | alta | 1h |
-| 1.8 | Página `404.astro` | alta | 30min |
-| 1.9 | Workflow `ci.yml`: typecheck + lint + build en PR | alta | 1h |
-| 1.10 | Conectar repo a Cloudflare Pages, primer deploy verde | alta | 1h |
-| 1.11 | Comprar dominio `futbolparaninos.club` (decisión cerrada en MarcaPosicionamiento §4.3) | alta | 30min |
-| 1.12 | Apuntar dominio a Cloudflare Pages, HTTPS activo | alta | 1h |
-| 1.16 | (Opcional) Comprar dominios defensivos `minigolclub.com` y `minigol.club` con redirect 301 | baja | 30min |
-| 1.13 | Crear páginas legales: privacidad, cookies, aviso legal, contacto | alta | 3h |
-| 1.14 | Setup `_headers` con CSP básica + cache rules | media | 1h |
-| 1.15 | Workflow `lighthouse.yml` con gates configurados | media | 1h |
-
-**Salida del sprint:** dominio.com responde con home + 404 + páginas legales, deploy automático en `main`, CI verde.
+| Fase | Sprints | Objetivo | Estado |
+|------|---------|----------|--------|
+| **0 — Bootstrap** | S1 | Repo, Astro, deploy Cloudflare, CI verde, dominio | ✅ COMPLETO |
+| **1 — Esqueleto** | S2-S3 | Layouts, content collections, 10 artículos, AdSense submitted | ✅ COMPLETO |
+| **2 — Identidad y monetización** | S4-S5 | Diseño 'Cuaderno de Campo', Pagefind, AmazonCard, AdSense script | ✅ COMPLETO |
+| **3 — Estabilización técnica** | S6 | Fix Lighthouse a11y/perf, schema nivel, CLAUDE.md alineado, Dependabot | ✅ COMPLETO |
+| **4 — UX + perf real** | S7 | Theme toggle, GTM/AdSense post-consent, cover image(), 4 artículos nuevos, vuln yaml | ✅ COMPLETO |
+| **5 — Content Manager + cierre backlog** | **S8** | **Admin local con wizard, cerrar 6 artículos backlog, página /autores/, lead-magnet PDF** | 🔴 **EN CURSO** |
+| **6 — Crecimiento** | S9-S11 | Llegar a 30+ artículos, Pinterest activo, newsletter, sistema tags | ⏳ |
+| **7 — Monetización plena** | S12+ | Lead-magnet gated, A/B test ads, comparativas Amazon completas | ⏳ |
 
 ---
 
-## Sprint 2 — Layouts y content collections (semanas 3-4)
+## Sprint 1 — Bootstrap ✅ COMPLETO
 
-**Objetivo:** Sistema editorial funcionando. Crear un artículo de prueba debe ser solo crear un `.mdx`.
-
-| # | Issue | Prioridad | Estimación |
-|---|-------|-----------|------------|
-| 2.1 | `src/content/config.ts` con schemas Zod (articulos, categorias, recursos, autores) | alta | 3h |
-| 2.2 | Seed 6 categorías en `src/content/categorias/` con metadata + imagen cover | alta | 2h |
-| 2.3 | Seed 1 autor en `src/content/autores/` | alta | 30min |
-| 2.4 | Componente `<ArticleCard>` con todas las variantes responsive | alta | 3h |
-| 2.5 | Componente `<CategoryHero>` | alta | 2h |
-| 2.6 | Componente `<Breadcrumb>` con JSON-LD `BreadcrumbList` | alta | 2h |
-| 2.7 | Componente `<Header>` (logo, nav desktop, drawer mobile, search trigger) | alta | 4h |
-| 2.8 | Componente `<Footer>` (4 cols desktop, accordion mobile, links legales) | alta | 2h |
-| 2.9 | Layout `ArticleLayout.astro` con prose + TOC sticky desktop | alta | 4h |
-| 2.10 | Layout `CategoryLayout.astro` con grid + paginación | alta | 3h |
-| 2.11 | Página `[categoria]/index.astro` (listado dinámico) | alta | 2h |
-| 2.12 | Página `[categoria]/[slug].astro` (artículo dinámico) | alta | 2h |
-| 2.13 | Helper `lib/seo.ts` para JSON-LD `Article` + OG tags | alta | 2h |
-| 2.14 | Setup OG image dinámica `/og/[slug].png.ts` (Satori) | media | 4h |
-| 2.15 | Generación RSS `/rss.xml.ts` | media | 1h |
-| 2.16 | Componente `<RelatedArticles>` (por tags + categoría) | media | 2h |
-| 2.17 | Publicar artículo de prueba real "5 ejercicios fútbol niños 6 años" | alta | 2h |
-
-**Salida del sprint:** crear un `.mdx` nuevo + cover image = artículo publicado con SEO completo.
+Astro 6 + Tailwind 4 + TS strict + Cloudflare Workers + dominio `minigolclub.com` + CI + páginas legales (privacidad, cookies, aviso legal, contacto). Workflows `ci.yml` y `lighthouse.yml`.
 
 ---
 
-## Sprint 3 — SEO técnico + AdSense submit (semanas 5-6)
+## Sprint 2 — Layouts y content collections ✅ COMPLETO
 
-**Objetivo:** Sitio listo para crawl + solicitud AdSense enviada (proceso de aprobación tarda 2-4 semanas).
-
-| # | Issue | Prioridad | Estimación |
-|---|-------|-----------|------------|
-| 3.1 | Verificar dominio en Google Search Console + Bing Webmaster | alta | 1h |
-| 3.2 | Submit sitemap.xml en GSC + Bing | alta | 30min |
-| 3.3 | Configurar GA4 + Cloudflare Web Analytics | alta | 2h |
-| 3.4 | Banner consentimiento cookies (klaro o cookieconsent v3) con Consent Mode v2 | alta | 4h |
-| 3.5 | Implementar componente `<AdSlot>` con label "Publicidad" + placeholder reservado | alta | 3h |
-| 3.6 | Implementar `<InArticleAd position="top|mid|bottom">` | alta | 2h |
-| 3.7 | Solicitar AdSense con sitio + 10 artículos publicados | alta | 1h |
-| 3.8 | Solicitar Amazon Afiliados España (3 ventas en 180 días para mantener) | alta | 1h |
-| 3.9 | Componente `<AmazonCard>` con imagen + título + CTA + tag tracking | alta | 3h |
-| 3.10 | Componente `<AffiliateDisclosure>` | alta | 30min |
-| 3.11 | Search interna con Pagefind + página `/buscar` | media | 3h |
-| 3.12 | Publicar 5 artículos más (total 6) | alta | 12h |
-| 3.13 | About/Sobre nosotros con foto autor + bio (E-E-A-T) | alta | 1h |
-| 3.14 | Auditoría SEO inicial: schema validator, Mobile-Friendly Test, PageSpeed Insights | alta | 2h |
-
-**Salida del sprint:** ≥10 artículos publicados, AdSense submitted, GSC indexando, tracking activo.
+Schemas Zod (articulos, categorias, recursos, autores), 6 categorías seed, ArticleCard, Breadcrumb con JSON-LD, Header, Footer, ArticleLayout con TOC, CategoryLayout con grid, helper `lib/seo.ts`, RSS, RelatedArticles.
 
 ---
 
-## Sprint 4-6 — Volumen de contenido + iteración (semanas 7-12)
+## Sprint 3 — SEO técnico + AdSense + Amazon ✅ COMPLETO
 
-**Objetivo:** Llegar a 20 artículos lanzados (núcleo según análisis ChatGPT) + primeros 2 recursos descargables, aprobar AdSense, primeras conversiones afiliados.
+GSC + Bing verificados, GA4, banner cookies (vanilla-cookieconsent v3), AdSlot, AffiliateDisclosure pattern (blockquote), Amazon Afiliados (`minigolclub-21`) con AmazonCard + ComparisonTable, Pagefind búsqueda interna, página /sobre/.
 
-**Cadencia:** 2 artículos/semana = 12 nuevos en 6 semanas (ya hay 10 de sprint 2-3 → 22 totales).
-
-### Backlog de contenido — Lanzamiento (los 20 imprescindibles)
-
-> Plan consolidado con `docs/AnalisisWebFutbolparaNiños_ChatGPT.md`. Reordenar tras keyword research real con Ahrefs/GSC.
-
-#### 🟢 BLOQUE 1 — Ejercicios (tráfico + monetización) — 7 artículos
-
-1. Ejercicios de fútbol para niños de 4 a 6 años (guía completa)
-2. Ejercicios de fútbol para niños de 7 a 10 años
-3. 10 ejercicios de fútbol para hacer en casa con niños
-4. Ejercicios de fútbol sin balón para niños
-5. Entrenamiento de fútbol infantil para principiantes
-6. Cómo enseñar fútbol a un niño desde cero
-7. Ejercicios de coordinación para niños en fútbol
-
-#### 🟣 BLOQUE 2 — Juegos (viral + engagement) — 4 artículos
-
-8. 10 juegos de fútbol para niños divertidos y fáciles
-9. Juegos de fútbol para niños en casa (sin material)
-10. Juegos de fútbol para cumpleaños infantiles
-11. Dinámicas de grupo para entrenamientos de fútbol infantil
-
-#### 🔴 BLOQUE 3 — Mundial (pico de tráfico) — 5 artículos
-
-12. Explicación del Mundial de fútbol para niños
-13. Calendario del Mundial para niños (descargable)
-14. Las mejores selecciones del Mundial explicadas para niños
-15. Jugadores famosos del Mundial para niños
-16. Actividades del Mundial para hacer en casa con niños
-
-#### 🟡 BLOQUE 4 — Descargables (monetización futura) — 2 artículos
-
-17. Plantillas de fútbol para niños (PDF gratis)
-18. Dibujos de fútbol para colorear (descarga gratis)
-
-#### 🔵 BLOQUE 5 — Contenido para padres (SEO fuerte) — 2 artículos
-
-19. Beneficios del fútbol en niños (físicos y mentales)
-20. A qué edad empezar fútbol los niños
-
-### Backlog de features (Sprints 4-6)
-
-| # | Issue | Prioridad |
-|---|-------|-----------|
-| 4.1 | Filtros sticky en categoría (edad, dificultad) | alta |
-| 4.2 | Componente `<ResourceCard>` + página `/recursos` | alta |
-| 4.3 | Primer recurso descargable: "Cuaderno de jugadas 7-9 años" (PDF) | alta |
-| 4.4 | Componente `<ComparisonTable>` para reviews Amazon | media |
-| 4.5 | Schema `Product` + reviews para artículos comparativa | media |
-| 4.6 | Lazy load images con blur placeholder | media |
-| 4.7 | Newsletter capture (Buttondown free tier) — preparar para fase posterior | baja |
-| 4.8 | Pinterest meta tags + plugin auto-share images | media |
-| 4.9 | Optimización CWV post-deploy (audit real con datos GSC) | alta |
-| 4.10 | A/B test posición ads (top vs después intro) | baja |
+**Pendiente acción manual del usuario:** AdSense aprobación (sitio ya con script de verificación + 14 artículos cumple los requisitos).
 
 ---
 
-## Sprint 7-10 — Crecimiento (semanas 13-20)
+## Sprint 4-5 — Identidad visual + monetización ✅ COMPLETO
 
-**Objetivo:** Llegar a 40-50 artículos, primer mes con > 1000 visitas, 5+ conversiones afiliado/semana, Pinterest activo (mes 2 según plan ChatGPT).
+Identidad "Cuaderno de Campo" (Fredoka + Nunito + Caveat + JetBrains Mono, paleta papel crema, dorsales, marker amarillo), 10 artículos publicados, AmazonCard text-only, ComparisonTable, AdSense script verificación en `<head>`, rename `entrenamiento → ejercicios`, CategoryLayout v2 con dorsal numérico + filtros edad.
 
-### Funcionalidades nuevas
+---
 
-| # | Issue | Prioridad |
-|---|-------|-----------|
-| 7.1 | Comentarios con Giscus (GitHub Discussions backend) | media |
-| 7.2 | Sistema de tags + páginas `/tag/[slug]` | media |
-| 7.3 | Página de autor `/autores/[slug]` | media |
-| 7.4 | Sticky footer ad mobile (A/B test) | baja |
-| 7.5 | Web Stories AMP para Google Discover | media |
-| 7.6 | Decap CMS (Netlify CMS fork) si entra editor no-técnico | baja |
-| 7.7 | Dashboard interno (página privada) con métricas resumen | baja |
-| 7.8 | Pinterest auto-pins desde RSS (Tailwind/Buffer) | alta |
-| 7.9 | Templates Canva (10) para Pinterest según diseño visual | alta |
+## Sprint 6 — Estabilización técnica (2026-04-27) ✅ COMPLETO
 
-### Backlog contenido continuo (post 20 iniciales)
+Fix Lighthouse a11y/perf de raíz: touch targets 44px, tokens brand 400-series en dark mode + `--color-on-brand`, self-host fontsource-variable, preconnect GA/AdSense. Schema `nivel` activo + filtro real. Dependabot #6 (TypeScript 6) + #8 (ESLint 10) mergeados. CLAUDE.md alineado al stack actual (Astro 6, Workers, content.config.ts). Lighthouse en push a main como guard de regresión.
 
-**Ampliación BLOQUE 1 — Ejercicios:**
+---
+
+## Sprint 7 — UX + perf real (2026-04-27) ✅ COMPLETO
+
+P0 theme toggle claro/oscuro/sistema (#12), P1 GTM/AdSense post-consent (#14, LCP 3.97s→2.94s), P2 vulnerabilidad yaml CVE-2026-33532 (#13), P3 4 artículos nuevos (#16: ejercicios-7-anos, balón-7-años, espinilleras, juegos-2-niños), P4 cover→Astro `image()` (#15, LCP artículo 2.41s ✅ Good).
+
+**Métricas finales:** perf 0.95-0.96, a11y 1.0, color-contrast 1.0, modern-image-formats 1.0, LCP artículo 2.41s, **14 artículos publicados**.
+
+---
+
+## Sprint 8 — Content Manager + cierre backlog 🔴 EN CURSO
+
+**Objetivo:** desbloquear creación de contenido vía admin local, cerrar los 6 artículos del backlog 20 pendientes, página /autores/ para E-E-A-T, primer lead-magnet PDF.
+
+### Squads en paralelo
+
+| Squad | Foco | Skills/Agentes | Modelo | Estimado |
+|---|---|---|---|---|
+| **D** | Mockup visual Content Manager | `ui-ux-pro-max` | Sonnet | 30 min |
+| **A** | Admin Fase 1 (Edit existente) | `web-developer` | Sonnet | 6-8h |
+| **A2** | Admin Fase 2 (Wizard creación) | `web-developer` | Sonnet | 6-8h |
+| **B** | 6 artículos backlog 20 | `seo-content-writer` ×6 paralelo | **Haiku** | 2h orquestación + N agentes |
+| **B-audit** | Auditoría SEO pre-PR de cada artículo | `seo-content-auditor` ×6 | **Haiku** | 1h |
+| **C** | Página `/autores/javier-tibamoza/` + JSON-LD Person | `web-developer` | Sonnet | 1-2h |
+| **F** | Lead-magnet PDF "Cuaderno ejercicios 4 semanas" | `web-developer` (genera PDF script) | Sonnet | 3-4h |
+| **G** | Coordinación + tracking | `team-manager` | Sonnet | continuo |
+| **Arch** | Decisión auth/DB para futura Fase 5 (VPS Hetzner) | `system-architect` | **Opus** | solo si surge ADR |
+
+### Backlog 20 — pendiente (6 artículos)
+
+| # | Slug | Pilar | Edad | Tipo | Prio |
+|---|---|---|---|---|---|
+| 1 | `beneficios-futbol-ninos-salud` | 5 Padres | 4-12 | cluster | 🔴 P0 (E-E-A-T + Pilar 5) |
+| 2 | `calendario-mundial-2026-ninos` | 6 Mundial | 6-12 | estacional | 🔴 P0 (pico tráfico junio) |
+| 3 | `mejores-selecciones-mundial-ninos` | 6 Mundial | 6-12 | estacional | 🟠 P1 |
+| 4 | `10-juegos-futbol-divertidos-faciles` | 2 Juegos | 4-12 | cluster | 🟠 P1 (viral Pinterest) |
+| 5 | `ejercicios-futbol-niños-en-casa` | 1 Ejercicios | 4-12 | cluster | 🟠 P1 |
+| 6 | `dinamicas-grupo-entrenamientos-futbol-infantil` | 1 Ejercicios | 6-12 | cluster | 🟡 P2 |
+
+### Content Manager — Plan Fase a Fase
+
+**Fase 1 (6-8h)** — Edit existente: form de frontmatter + MDX editor + preview + guardar al disco. Sin git ops.
+**Fase 2 (6-8h)** — Wizard creación 5 pasos (Brief → Generate → Edit → Cover → Commit con PR auto).
+**Fase 3 (3-4h)** — Auditoría desde UI + validaciones CLAUDE.md §4 + Lighthouse local opcional.
+**Fase 4 (2-3h)** — Quality of life: history, search, dark mode, atajos.
+**Fase 5 (futura)** — Deploy a VPS Hetzner con auth básica.
+
+### Stack admin
+
+- **React 19 + Vite 8 + Tailwind 4** (mismo patrón que Content Manager de referencia)
+- **react-router-dom 7** + Lucide React
+- **IndexedDB** sesión wizard + **localStorage** flags + **JSON files** backup durable
+- **Vite middlewares** = mini backend (`/api/articulos`, `/api/generate-article`, `/api/generate-cover`, `/api/git/*`)
+- **Bridge `toast()`** para errores fuera de React
+- **Look&feel "Cuaderno de Campo"** (mismos tokens que web/)
+
+---
+
+## Backlog feature pendiente (no asignado a sprint todavía)
+
+| # | Tarea | Origen | Prio |
+|---|---|---|---|
+| 4.1 | Filtros sticky en categoría (mobile) | Sprint 4 | 🟡 |
+| 4.5 | Schema `Product` + reviews para comparativas Amazon | Sprint 4 | 🟡 |
+| 4.7 | Newsletter capture (Buttondown / ConvertKit) integrado | Sprint 4 | 🟡 |
+| 4.8 | Pinterest meta tags + auto-share | Sprint 4 | 🟢 |
+| 7.1 | Comentarios con Giscus | Sprint 7 | 🟢 |
+| 7.2 | Sistema de tags + páginas `/tag/[slug]` | Sprint 7 | 🟡 |
+| 7.4 | Sticky footer ad mobile (A/B test) | Sprint 7 | 🟢 |
+| 7.5 | Web Stories AMP para Discover | Sprint 7 | 🟢 |
+| 7.7 | Dashboard interno métricas | Sprint 7 | 🟢 |
+| 7.8 | Pinterest auto-pins desde RSS | Sprint 7 | 🟠 |
+| 7.9 | Templates Canva Pinterest | Sprint 7 | 🟠 |
+| 11.1 | Lead-magnet PDF gated por email | Sprint 11 | 🟠 (después Sprint 8 F) |
+| 11.2 | Welcome email automation | Sprint 11 | 🟡 |
+| 11.4 | Optimización ad slots con datos reales | Sprint 11 | 🟡 (depende de aprobación AdSense) |
+| 11.5 | Audit accessibility manual con screen reader | Sprint 11 | 🟡 |
+
+---
+
+## Backlog contenido continuo (post backlog 20)
+
+### Bloque 1 — Ejercicios (ampliación)
 - Ejercicios de portero para niños 8-10 años
 - Conducción de balón para principiantes
 - Cómo enseñar a chutar paso a paso
 - Calentamiento 10 min para niños
 - Plan entrenamiento 4 semanas
-- Circuito completo niños 7-9
 - Ejercicios cabeceo seguro
 - Velocidad y agilidad para futbolistas niños
+- Ejercicios fútbol niños 5 años (silo edad)
+- Ejercicios fútbol niños 8 años
+- Ejercicios fútbol niños 9 años
+- Pase y control balón niños
+- Fútbol sala niños
 
-**Ampliación BLOQUE 2 — Juegos:**
+### Bloque 2 — Juegos (ampliación)
 - Juegos con globos para 4-6 años
 - Juegos en piscina (verano)
 - Juegos con conos: 8 ideas
 - Juegos cooperativos (sin competición)
 - Juegos para días de lluvia
 - Juegos para niños tímidos
+- Juegos fútbol pequeño espacio (casa/apartamento)
+- Juegos fútbol playa verano
 
-**Nuevo BLOQUE 6 — LaLiga (categoría original CLAUDE.md):**
+### Bloque 3 — Equipamiento money keywords (ampliación)
+- Talla balón fútbol edad (hub Pilar 3)
+- Mejores porterías plegables jardín
+- Mejores conos / setas / picas entrenamiento
+- Mejor equipación niño 6-12 años
+- Mejores botas según superficie
+- Mochila portabalón
+- Botas talla 33-35
+
+### Bloque 6 — LaLiga (categoría futura)
 - Calendario LaLiga explicado para niños
 - Equipos de LaLiga para conocer con tus hijos
 - Estadios de LaLiga: ranking visual
 - Jugadores LaLiga modelos a seguir
-
-**Comparativas Amazon (alta conversión):**
-- Mejores balones de fútbol para niños 2026
-- Mejores porterías plegables para jardín
-- Mejores conos / setas / picas para entrenamiento
-- Mejor equipación niño 6-12 años
-- Mejores botas fútbol niño según superficie
-
----
-
-## Sprint 11-12 — Monetización plena (semanas 21-24)
-
-**Objetivo:** Ingresos sostenibles AdSense + Amazon. Newsletter > 200 subs.
-
-| # | Issue | Prioridad |
-|---|-------|-----------|
-| 11.1 | Lead magnet "10 mejores ejercicios PDF" gated por email | alta |
-| 11.2 | Welcome email automation (Buttondown) | alta |
-| 11.3 | Newsletter semanal — primera campaña | alta |
-| 11.4 | Optimización ad slots con datos reales (heatmap + GA4) | alta |
-| 11.5 | Refactor accessibility audit completo (axe, manual screen reader) | alta |
-| 11.6 | Audit performance: bundle analysis, third-party scripts | media |
-| 11.7 | Plan i18n para fase 2026 H2 (es-MX, es-AR) | baja |
 
 ---
 
@@ -244,24 +190,32 @@
 
 Ideas y mejoras a evaluar más adelante. **No empezar sin priorizar primero.**
 
-- **Resultados en directo de competiciones (Mundial 2026 → LaLiga → Champions → Copa del Rey)** — widget interactivo tipo "tarjeta Google" para ver fixtures, resultados, clasificación y bracket de eliminatorias. Diseño kid-friendly. Empieza por Mundial 2026 como pico de tráfico, luego se extiende a LaLiga/Champions. Análisis técnico y de producto en [docs/seo/ResultadosEnDirecto.md](seo/ResultadosEnDirecto.md). **No es MVP** — evaluar para fase post-lanzamiento (Sprint 7+ candidato).
-- Calculadora "¿en qué categoría jugaría mi hijo?" (interactiva)
+- **Resultados en directo de competiciones** (Mundial 2026 → LaLiga → Champions). Análisis en `docs/seo/ResultadosEnDirecto.md`. Evaluar Sprint 9+ candidato.
+- Calculadora "¿en qué categoría jugaría mi hijo?"
 - Quiz "¿qué jugador eres?" para niños (viralidad)
 - Vídeo embebido propio (canal YouTube)
 - App móvil PWA con notificaciones de ejercicios
 - Marketplace de entrenadores
-- Comunidad cerrada de pago (Discord/Circle)
+- Comunidad cerrada de pago
 - Producto físico (cuaderno impreso vendido)
 - Curso online de pago para padres
 
 ---
 
+## Acciones manuales del usuario (fuera del repo)
+
+1. **Aprobación Google AdSense** — sitio ya con script de verificación + 14 artículos. Tras aprobación: crear ad units → pasar slot IDs → pegar en `<AdSlot>`.
+2. **Indexación SEO** — GSC sitemap reenviado 2026-04-26. Indexación realista 4-8 semanas.
+3. **Forzar reindex** en GSC > Inspección de URL para 5 URLs prioritarias (home, /ejercicios/, balón, botas, /sobre/) — tope ~10/día.
+4. **Decidir VPS Hetzner deploy** — para Fase 5 del Content Manager (acceso remoto + auth).
+
+---
+
 ## Métricas y revisión
 
-- **Daily standup:** no aplica (solo dev). Revisión personal 5 min/día.
-- **Sprint review (cada 2 semanas):** actualizar `FlujoTrabajo.md` con qué cerró, qué quedó, qué entra.
+- **Sprint review (cada sesión cerrada):** actualizar `FlujoTrabajo.md` + memoria sprint con qué cerró, qué quedó, qué entra.
 - **Trimestral:** revisar `MarcaPosicionamiento.md` con datos reales de audiencia.
-- **Mensual:** review de KPIs en GSC + GA4 + AdSense + Amazon.
+- **Mensual:** review KPIs en GSC + GA4 + AdSense + Amazon.
 
 ---
 
@@ -269,9 +223,7 @@ Ideas y mejoras a evaluar más adelante. **No empezar sin priorizar primero.**
 
 ```bash
 gh issue create \
-  --title "[S2] 2.4 Componente ArticleCard" \
-  --label "sprint/2,tipo/feat,prio/alta" \
-  --body "Ver docs/PlanTrabajo.md sprint 2 task 2.4. DoD: ver convenciones en cabecera del doc."
+  --title "[S8] Squad B: artículo beneficios-futbol-ninos-salud" \
+  --label "sprint/8,tipo/content,prio/alta" \
+  --body "Ver docs/PlanTrabajo.md sprint 8 squad B item #1. DoD: ver convenciones."
 ```
-
-(Cuando exista repo GitHub configurado.)
