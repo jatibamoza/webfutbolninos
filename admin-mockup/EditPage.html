@@ -1,0 +1,317 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Editar · Ejercicios fútbol niños 6 años · Admin MiniGol Club</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;700&family=Nunito:wght@400;600;700&family=Caveat:wght@500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --color-paper: #fffcf1; --color-background: #faf6e8; --color-surface-alt: #f4ebc8;
+    --color-foreground: #1a1f2c; --color-foreground-muted: #4d5468; --color-foreground-subtle: #5a6172;
+    --color-handwritten: #1f3f8e; --color-marker: #ffd45e;
+    --color-border: #e5dcc0; --color-border-strong: #c9bc91;
+    --color-primary: #2563eb; --color-secondary: #16a34a; --color-accent: #f59e0b;
+    --color-energy: #dc2626;
+    --font-display: 'Fredoka', system-ui, sans-serif;
+    --font-body: 'Nunito', system-ui, sans-serif;
+    --font-hand: 'Caveat', cursive;
+    --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { font-family: var(--font-body); color: var(--color-foreground); background: var(--color-background); }
+  h1,h2,h3 { font-family: var(--font-display); font-weight: 700; letter-spacing: -0.02em; }
+  .mono { font-family: var(--font-mono); letter-spacing: 0.04em; }
+  .hand { font-family: var(--font-hand); color: var(--color-handwritten); }
+  .card-paper { background: var(--color-paper); border: 1px solid var(--color-border); border-radius: 12px; box-shadow: 0 1px 0 rgba(26,31,44,.04), 0 8px 22px -10px rgba(26,31,44,.10); }
+  .btn { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 10px 18px; border-radius: 10px; border: none; font-weight: 700; cursor: pointer; font-family: var(--font-body); }
+  .btn-primary { background: var(--color-foreground); color: var(--color-background); }
+  .btn-ghost { background: transparent; color: var(--color-foreground); border: 1.5px solid var(--color-border-strong); }
+  .icon { width: 18px; height: 18px; vertical-align: middle; }
+
+  /* HEADER */
+  .topbar { display: flex; align-items: center; justify-content: space-between; padding: 14px 20px; border-bottom: 1px solid var(--color-border); background: color-mix(in oklab, var(--color-background) 88%, transparent); backdrop-filter: blur(8px); position: sticky; top: 0; z-index: 50; gap: 12px; flex-wrap: wrap; }
+  .breadcrumb { display: flex; align-items: center; gap: 8px; font-family: var(--font-mono); font-size: 11px; color: var(--color-foreground-muted); letter-spacing: 0.04em; }
+  .breadcrumb a { color: var(--color-foreground-muted); text-decoration: none; }
+  .breadcrumb a:hover { color: var(--color-foreground); }
+  .breadcrumb .sep { color: var(--color-foreground-subtle); }
+  .breadcrumb-current { color: var(--color-foreground); font-weight: 600; max-width: 260px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .topbar-actions { display: flex; align-items: center; gap: 8px; }
+
+  /* LAYOUT 2 col */
+  .container { max-width: 1400px; margin: 0 auto; padding: 24px 20px 80px; }
+  .grid { display: grid; grid-template-columns: 1fr; gap: 20px; }
+  @media (min-width: 1024px) { .grid { grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); } }
+
+  /* FORM */
+  .panel { padding: 20px; }
+  .panel-title { font-size: 12px; font-family: var(--font-mono); letter-spacing: 0.16em; text-transform: uppercase; color: var(--color-foreground-subtle); margin-bottom: 4px; }
+  .panel-h2 { font-size: 22px; margin-bottom: 14px; display: flex; align-items: center; gap: 10px; }
+  .panel-h2 .num { font-family: var(--font-display); color: var(--color-handwritten); opacity: 0.5; font-size: 18px; }
+  .field { margin-bottom: 14px; }
+  .label { display: block; font-weight: 700; font-size: 13px; margin-bottom: 6px; color: var(--color-foreground); }
+  .label .req { color: var(--color-energy); margin-left: 4px; }
+  .input, .textarea, .select { width: 100%; min-height: 44px; padding: 10px 14px; border-radius: 10px; border: 1.5px solid var(--color-border-strong); background: var(--color-paper); font-family: var(--font-body); font-size: 14px; color: var(--color-foreground); }
+  .textarea { min-height: 70px; resize: vertical; line-height: 1.5; }
+  .input:focus, .textarea:focus, .select:focus { outline: none; border-color: var(--color-foreground); box-shadow: 0 0 0 3px var(--color-marker); }
+  .helper { font-family: var(--font-mono); font-size: 11px; color: var(--color-foreground-subtle); margin-top: 4px; }
+  .helper-ok { color: var(--color-secondary); }
+  .helper-warn { color: var(--color-accent); }
+  .row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .nivel-radio { display: flex; gap: 6px; }
+  .nivel-radio label { flex: 1; }
+  .nivel-radio input { display: none; }
+  .nivel-radio .pill { display: block; min-height: 44px; line-height: 44px; text-align: center; font-weight: 700; font-size: 13px; border: 1.5px solid var(--color-border-strong); border-radius: 9999px; cursor: pointer; }
+  .nivel-radio input:checked + .pill { background: var(--color-foreground); color: var(--color-background); border-color: var(--color-foreground); }
+  .tags-input { display: flex; flex-wrap: wrap; gap: 6px; padding: 8px 10px; border: 1.5px solid var(--color-border-strong); border-radius: 10px; background: var(--color-paper); min-height: 44px; align-items: center; }
+  .tag-chip { display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px; background: var(--color-surface-alt); border-radius: 9999px; font-size: 12px; font-weight: 600; }
+  .tag-chip button { border: none; background: transparent; cursor: pointer; color: var(--color-foreground-muted); padding: 0; line-height: 1; font-size: 14px; }
+  .tags-input input { border: none; outline: none; background: transparent; padding: 4px; flex: 1; min-width: 100px; font-family: var(--font-body); font-size: 13px; }
+
+  /* COVER */
+  .cover-wrap { display: flex; gap: 12px; align-items: center; padding: 12px; border: 1.5px dashed var(--color-border-strong); border-radius: 10px; }
+  .cover-thumb { width: 200px; height: 125px; background: linear-gradient(135deg, #faf6e8 0%, #f4ebc8 100%); border: 1px solid var(--color-border); border-radius: 8px; flex-shrink: 0; display: grid; place-items: center; font-family: var(--font-display); color: var(--color-secondary); font-weight: 700; opacity: 0.5; }
+  .cover-actions { display: flex; flex-direction: column; gap: 8px; }
+  @media (max-width: 540px) { .cover-wrap { flex-direction: column; align-items: stretch; } .cover-thumb { width: 100%; } }
+
+  /* SWITCHES */
+  .switches { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+  @media (max-width: 540px) { .switches { grid-template-columns: 1fr; } }
+  .switch { display: flex; align-items: center; justify-content: space-between; padding: 12px 14px; background: var(--color-surface-alt); border-radius: 10px; min-height: 44px; cursor: pointer; }
+  .switch span { font-weight: 700; font-size: 13px; }
+  .switch-track { width: 36px; height: 20px; background: var(--color-border-strong); border-radius: 9999px; position: relative; transition: background 150ms; flex-shrink: 0; }
+  .switch-track::after { content: ""; position: absolute; left: 2px; top: 2px; width: 16px; height: 16px; background: var(--color-paper); border-radius: 50%; transition: left 150ms; }
+  .switch input { display: none; }
+  .switch input:checked + .switch-track { background: var(--color-foreground); }
+  .switch input:checked + .switch-track::after { left: 18px; }
+
+  /* RIGHT PANEL: TABS + EDITOR */
+  .tabs { display: flex; gap: 4px; margin-bottom: 12px; }
+  .tab { min-height: 44px; padding: 8px 16px; border: 1.5px solid var(--color-border-strong); background: transparent; border-radius: 10px 10px 0 0; font-family: var(--font-body); font-weight: 700; font-size: 13px; cursor: pointer; color: var(--color-foreground-muted); }
+  .tab[data-active="true"] { background: var(--color-foreground); color: var(--color-background); border-color: var(--color-foreground); }
+  .editor { width: 100%; min-height: 500px; padding: 16px; border: 1.5px solid var(--color-border-strong); border-radius: 10px; background: var(--color-paper); font-family: var(--font-mono); font-size: 13px; line-height: 1.6; color: var(--color-foreground); resize: vertical; }
+  .editor:focus { outline: none; border-color: var(--color-foreground); }
+  .editor-meta { display: flex; align-items: center; justify-content: space-between; padding: 6px 4px; font-family: var(--font-mono); font-size: 11px; color: var(--color-foreground-subtle); margin-top: 6px; }
+
+  /* FOOTER STICKY */
+  .footer-sticky { position: fixed; bottom: 0; left: 0; right: 0; background: var(--color-paper); border-top: 2px solid var(--color-foreground); padding: 12px 20px; display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; z-index: 40; }
+  .validation-line { display: flex; align-items: center; gap: 14px; font-family: var(--font-mono); font-size: 11px; flex-wrap: wrap; }
+  .v-item { display: inline-flex; align-items: center; gap: 4px; }
+  .v-ok { color: var(--color-secondary); }
+  .v-warn { color: var(--color-accent); }
+  .saved-tag { font-family: var(--font-hand); color: var(--color-handwritten); font-size: 16px; }
+
+  .anno { font-family: var(--font-hand); color: var(--color-handwritten); font-size: 18px; transform: rotate(-2deg); display: inline-block; }
+</style>
+</head>
+<body>
+
+<!-- ============ TOP BAR ============ -->
+<header class="topbar">
+  <div class="breadcrumb">
+    <a href="#">Dashboard</a>
+    <span class="sep">›</span>
+    <a href="#">Editar</a>
+    <span class="sep">›</span>
+    <span class="breadcrumb-current">Ejercicios fútbol niños 6 años</span>
+  </div>
+  <div class="topbar-actions">
+    <button class="btn btn-ghost">
+      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/></svg>
+      Guardar borrador
+    </button>
+    <button class="btn btn-ghost" title="Vista previa pública">
+      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+    </button>
+    <button class="btn btn-primary">
+      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+      Guardar publicado
+    </button>
+  </div>
+</header>
+
+<main class="container">
+<div class="grid">
+
+  <!-- ============ COL IZQ: FORM ============ -->
+  <section>
+    <!-- Identidad -->
+    <div class="card-paper panel" style="margin-bottom:18px;">
+      <div class="panel-title">Sección 01</div>
+      <h2 class="panel-h2"><span class="num">01</span> Identidad</h2>
+
+      <div class="field">
+        <label class="label" for="title">Title<span class="req">*</span></label>
+        <input class="input" id="title" value="Ejercicios fútbol niños 6 años: guía completa" />
+        <div class="helper helper-ok">✓ 47/70 chars</div>
+      </div>
+
+      <div class="field">
+        <label class="label" for="slug">Slug</label>
+        <input class="input mono" id="slug" value="ejercicios-futbol-ninos-6-anos" readonly style="opacity:0.7" />
+        <div class="helper">readonly · cambiar slug rompe URLs públicas</div>
+      </div>
+
+      <div class="field">
+        <label class="label" for="desc">Description<span class="req">*</span></label>
+        <textarea class="textarea" id="desc">Descubre 5 ejercicios de fútbol para niños de 6 años fáciles de hacer en casa o en el parque. Sin material especial, solo un balón y ganas de jugar.</textarea>
+        <div class="helper helper-ok">✓ 152/160 chars · longitud óptima</div>
+      </div>
+    </div>
+
+    <!-- Categorización -->
+    <div class="card-paper panel" style="margin-bottom:18px;">
+      <h2 class="panel-h2"><span class="num">02</span> Categorización</h2>
+
+      <div class="field">
+        <label class="label">Categoría<span class="req">*</span></label>
+        <select class="select">
+          <option>Ejercicios</option><option>Juegos</option><option>Equipamiento</option><option>Iniciación</option><option>Mundial 2026</option>
+        </select>
+      </div>
+
+      <div class="row-2">
+        <div class="field">
+          <label class="label">Edad mín.</label>
+          <input class="input" type="number" value="5" min="3" max="18" />
+        </div>
+        <div class="field">
+          <label class="label">Edad máx.</label>
+          <input class="input" type="number" value="7" min="3" max="18" />
+        </div>
+      </div>
+
+      <div class="field">
+        <label class="label">Nivel<span class="req">*</span></label>
+        <div class="nivel-radio">
+          <label><input type="radio" name="nivel" checked /><span class="pill">fácil</span></label>
+          <label><input type="radio" name="nivel" /><span class="pill">media</span></label>
+          <label><input type="radio" name="nivel" /><span class="pill">reto</span></label>
+        </div>
+      </div>
+
+      <div class="field">
+        <label class="label">Tags</label>
+        <div class="tags-input">
+          <span class="tag-chip">ejercicios <button>×</button></span>
+          <span class="tag-chip">6 años <button>×</button></span>
+          <span class="tag-chip">casa <button>×</button></span>
+          <span class="tag-chip">parque <button>×</button></span>
+          <span class="tag-chip">principiantes <button>×</button></span>
+          <input placeholder="añadir tag…" />
+        </div>
+      </div>
+    </div>
+
+    <!-- SEO -->
+    <div class="card-paper panel" style="margin-bottom:18px;">
+      <h2 class="panel-h2"><span class="num">03</span> SEO</h2>
+
+      <div class="field">
+        <label class="label">Keyword principal<span class="req">*</span></label>
+        <input class="input" value="ejercicios de fútbol para niños de 6 años" />
+        <div class="helper helper-ok">✓ presente en H1, primer párrafo, slug y alt</div>
+      </div>
+
+      <div class="field">
+        <label class="label">Updated date <span style="font-weight:400; color:var(--color-foreground-muted)">opcional</span></label>
+        <input class="input mono" type="date" />
+      </div>
+    </div>
+
+    <!-- Cover -->
+    <div class="card-paper panel" style="margin-bottom:18px;">
+      <h2 class="panel-h2"><span class="num">04</span> Cover</h2>
+      <div class="cover-wrap">
+        <div class="cover-thumb">cover.jpg<br/>1200×750</div>
+        <div class="cover-actions" style="flex:1;">
+          <div class="field" style="margin-bottom:8px;">
+            <label class="label">Alt text<span class="req">*</span></label>
+            <input class="input" value="Niño de 6 años practicando fútbol con su padre en un parque" />
+            <div class="helper helper-ok">✓ contiene keyword + edad</div>
+          </div>
+          <div style="display:flex; gap:8px; flex-wrap:wrap;">
+            <button class="btn btn-ghost" style="font-size:13px;">
+              <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+              Regenerar cover
+            </button>
+            <button class="btn btn-ghost" style="font-size:13px;">
+              <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+              Subir manual
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Flags -->
+    <div class="card-paper panel">
+      <h2 class="panel-h2"><span class="num">05</span> Flags</h2>
+      <div class="switches">
+        <label class="switch"><span>Draft</span><input type="checkbox" /><div class="switch-track"></div></label>
+        <label class="switch"><span>Afiliados</span><input type="checkbox" /><div class="switch-track"></div></label>
+        <label class="switch"><span>Featured</span><input type="checkbox" checked /><div class="switch-track"></div></label>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ COL DER: EDITOR + PREVIEW ============ -->
+  <section>
+    <div class="tabs">
+      <button class="tab" data-active="true">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:6px;"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
+        Editar
+      </button>
+      <button class="tab">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:6px;"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8S1 12 1 12Z"/><circle cx="12" cy="12" r="3"/></svg>
+        Preview
+      </button>
+      <button class="tab">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:6px;"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+        Frontmatter raw
+      </button>
+    </div>
+
+    <textarea class="editor">A los 6 años, los **ejercicios de fútbol para niños** dejan de ser pura diversión y empiezan a tener objetivo. Tu hijo ya domina los movimientos básicos y está listo para que la actividad tenga estructura sin perder el juego.
+
+Esta guía te muestra 5 ejercicios fáciles de hacer en casa o en el parque, con un balón talla 3 como único material. Cada uno incluye duración, progresión y el error típico que cometen los padres al enseñarlo.
+
+## Antes de empezar: 3 reglas básicas
+
+1. **Sesión de 20 minutos máximo.** A los 6 años la atención cae rápido.
+2. **Una sola consigna por ejercicio.** "Apunta al cono" es mejor que "apunta, controla y luego corre".
+3. **Termina siempre con algo que sale bien.** Refuerza la motivación para mañana.
+
+## Ejercicio 1: Conducción estática (5 min)
+
+Coloca dos conos a 3 metros. Tu hijo conduce el balón con el interior del pie de un cono al otro, ida y vuelta…</textarea>
+
+    <div class="editor-meta">
+      <span><span class="saved-tag">guardado hace 2 min</span></span>
+      <span><strong>1850</strong> palabras · ~<strong>7 min</strong> lectura</span>
+    </div>
+
+    <p style="margin-top:32px; text-align:right;"><span class="anno">↑ todos los cambios autosaved</span></p>
+  </section>
+
+</div>
+</main>
+
+<!-- ============ FOOTER STICKY ============ -->
+<footer class="footer-sticky">
+  <div class="validation-line">
+    <span class="v-item v-ok">✓ Frontmatter válido</span>
+    <span class="v-item v-ok">✓ 2 internal links</span>
+    <span class="v-item v-ok">✓ Keyword en H1, intro y slug</span>
+    <span class="v-item v-warn">⚠ Falta keyword en H2</span>
+  </div>
+  <button class="btn btn-ghost" style="font-size:13px;">
+    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="9"/></svg>
+    Auditar SEO
+  </button>
+</footer>
+
+</body>
+</html>
