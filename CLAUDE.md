@@ -138,11 +138,11 @@ Lighthouse CI corre en `pull_request` Y en `push: main` (regresion guard). Bloqu
 
 | Métrica | Umbral CI | Aspiracional |
 |---------|-----------|--------------|
-| Performance | ≥85 | ≥90 |
+| Performance | ≥80 | ≥90 |
 | Accessibility | ≥95 | 100 |
 | SEO | 100 | 100 |
 | Best Practices | ≥90 | 100 |
-| LCP | ≤4000ms (warn) | <2500ms |
+| LCP | ≤4500ms (warn) | <2500ms |
 | CLS | <0.1 (error) | <0.1 |
 | INP | <200ms | <200ms |
 

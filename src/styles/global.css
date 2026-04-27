@@ -29,10 +29,10 @@
   --color-rule: #e8dec0;
   --color-rule-strong: #d4c691;
 
-  /* Texto */
+  /* Texto. `subtle` debe mantener ≥4.5:1 sobre paper crema (#fffcf1) y bg (#faf6e8). */
   --color-foreground: #1a1f2c;
   --color-foreground-muted: #4d5468;
-  --color-foreground-subtle: #6b7280;
+  --color-foreground-subtle: #5a6172;
   --color-handwritten: #1f3f8e;
   --color-marker: #ffd45e;
 

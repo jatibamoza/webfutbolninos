@@ -41,3 +41,7 @@ coverage/
 
 # Lighthouse CI local artifacts
 .lighthouseci/
+
+# Local Lighthouse fetched reports
+ci-*.html
+.claude/
