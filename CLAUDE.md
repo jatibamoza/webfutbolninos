@@ -138,15 +138,15 @@ Lighthouse CI corre en `pull_request` Y en `push: main` (regresion guard). Bloqu
 
 | Métrica | Umbral CI | Aspiracional |
 |---------|-----------|--------------|
-| Performance | ≥80 | ≥90 |
+| Performance | ≥90 | ≥95 |
 | Accessibility | ≥95 | 100 |
 | SEO | 100 | 100 |
 | Best Practices | ≥90 | 100 |
-| LCP | ≤4500ms (warn) | <2500ms |
+| LCP | ≤3500ms (warn) | <2500ms |
 | CLS | <0.1 (error) | <0.1 |
 | INP | <200ms | <200ms |
 
-LCP está en warn @4000ms (frontera Good/Needs-Improvement) por la realidad de CI emulado con throttling Slow 4G + GTM/AdSense scripts. Real-world LCP es ~1.8s. Aspiracional <2500ms cuando se mueva GTM a post-consent.
+LCP está en warn @3500ms. Tras Sprint 7 P1 los scripts GTM/AdSense cargan post-consent, por lo que el first-visit no incluye terceros y el LCP en CI es ~2.9s home / ~2.6s artículo. Aspiracional <2500ms con cover image() (Sprint 7 P4).
 
 Cada artículo debe tener: canonical, OG completo, Twitter card, JSON-LD `Article` + `BreadcrumbList`, breadcrumbs visibles, links internos, sitemap entry.
 

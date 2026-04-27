@@ -1,8 +1,71 @@
+---
+import { GA_ID, ADSENSE_CLIENT } from '@/consts';
+---
+
+<script define:vars={{ GA_ID, ADSENSE_CLIENT }}>
+  // Dynamic loaders idempotentes — solo se ejecutan si el usuario acepta la
+  // categoría correspondiente. La primera carga inyecta el <script>, las
+  // siguientes son no-op (flag en window). Compatible con el patrón de
+  // adsbygoogle.push({}) en AdSlot: el array acumula pushes hasta que el
+  // script de adsense carga y los procesa.
+  function loadGtag() {
+    if (window.__mgGtagLoaded) return;
+    window.__mgGtagLoaded = true;
+    const s = document.createElement('script');
+    s.async = true;
+    s.src = 'https://www.googletagmanager.com/gtag/js?id=' + GA_ID;
+    document.head.appendChild(s);
+    window.gtag('js', new Date());
+    window.gtag('config', GA_ID, { anonymize_ip: true });
+  }
+
+  function loadAdsense() {
+    if (!ADSENSE_CLIENT || window.__mgAdsenseLoaded) return;
+    window.__mgAdsenseLoaded = true;
+    const s = document.createElement('script');
+    s.async = true;
+    s.crossOrigin = 'anonymous';
+    s.src = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=' + ADSENSE_CLIENT;
+    document.head.appendChild(s);
+  }
+
+  // Exponer para llamarlas desde el módulo del banner (que es ESM async).
+  window.__mgLoadGtag = loadGtag;
+  window.__mgLoadAdsense = loadAdsense;
+</script>
+
 <script>
   import 'vanilla-cookieconsent/dist/cookieconsent.css';
   import * as CookieConsent from 'vanilla-cookieconsent';
 
-  declare function gtag(...args: unknown[]): void;
+  declare global {
+    interface Window {
+      gtag: (...args: unknown[]) => void;
+      __mgLoadGtag: () => void;
+      __mgLoadAdsense: () => void;
+      __mgGtagLoaded?: boolean;
+      __mgAdsenseLoaded?: boolean;
+    }
+  }
+
+  function syncConsent(categories: string[]) {
+    const analytics = categories.includes('analytics');
+    const ads = categories.includes('ads');
+
+    // Update Consent Mode v2 — base de Google para que cualquier script
+    // gtag/adsense que ya esté cargado respete el cambio en caliente.
+    window.gtag('consent', 'update', {
+      analytics_storage: analytics ? 'granted' : 'denied',
+      ad_storage: ads ? 'granted' : 'denied',
+      ad_user_data: ads ? 'granted' : 'denied',
+      ad_personalization: ads ? 'granted' : 'denied',
+    });
+
+    // Cargar los scripts solo si el usuario aceptó la categoría.
+    // Si rechaza después, el script queda cargado pero gtag respeta el denied.
+    if (analytics) window.__mgLoadGtag();
+    if (ads) window.__mgLoadAdsense();
+  }
 
   await CookieConsent.run({
     guiOptions: {
@@ -22,19 +85,11 @@
         readOnly: true,
       },
       analytics: {},
+      ads: {},
     },
 
-    onConsent: ({ cookie }) => {
-      gtag('consent', 'update', {
-        analytics_storage: cookie.categories.includes('analytics') ? 'granted' : 'denied',
-      });
-    },
-
-    onChange: ({ cookie }) => {
-      gtag('consent', 'update', {
-        analytics_storage: cookie.categories.includes('analytics') ? 'granted' : 'denied',
-      });
-    },
+    onConsent: ({ cookie }) => syncConsent(cookie.categories),
+    onChange: ({ cookie }) => syncConsent(cookie.categories),
 
     language: {
       default: 'es',
@@ -43,7 +98,7 @@
           consentModal: {
             title: 'Usamos cookies',
             description:
-              'Usamos cookies analíticas para entender cómo usas el sitio y mejorarlo. No compartimos datos con terceros ni usamos cookies de publicidad invasiva.',
+              'Cookies analíticas (entender cómo usas el sitio) y publicidad (Google AdSense). No compartimos datos con terceros más allá de Google. Puedes elegir qué aceptar.',
             acceptAllBtn: 'Aceptar todo',
             acceptNecessaryBtn: 'Solo necesarias',
             showPreferencesBtn: 'Gestionar',
@@ -60,14 +115,20 @@
               {
                 title: 'Cookies necesarias',
                 description:
-                  'Estas cookies son imprescindibles para que el sitio funcione correctamente. No se pueden desactivar.',
+                  'Imprescindibles para que el sitio funcione correctamente. No se pueden desactivar.',
                 linkedCategory: 'necessary',
               },
               {
                 title: 'Cookies analíticas',
                 description:
-                  'Nos ayudan a entender cómo navegas por el sitio (páginas visitadas, tiempo de lectura). Los datos son anónimos y no se usan para publicidad.',
+                  'Nos ayudan a entender cómo navegas por el sitio (páginas visitadas, tiempo de lectura). Datos anónimos vía Google Analytics 4 con IP anonimizada.',
                 linkedCategory: 'analytics',
+              },
+              {
+                title: 'Cookies de publicidad',
+                description:
+                  'Permiten mostrar anuncios de Google AdSense en algunas páginas. Si las rechazas no verás anuncios y la web sigue funcionando normalmente.',
+                linkedCategory: 'ads',
               },
             ],
           },
