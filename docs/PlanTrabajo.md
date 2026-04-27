@@ -186,6 +186,29 @@ P0 theme toggle claro/oscuro/sistema (#12), P1 GTM/AdSense post-consent (#14, LC
 
 ---
 
+## Pipeline social vídeo — TikTok + Instagram (post-Sprint-9)
+
+Decisión del usuario 2026-04-27: producir vídeos cortos para redes sociales como canal de tráfico complementario al SEO orgánico. **NO empezar antes de cerrar Sprint 9 (Content Manager Fase 2).**
+
+**Restricciones no negociables:**
+- Sin caras de menores ni padres reales. Solo ilustraciones, diagramas, animaciones de la Pizarra Táctica, voiceover IA.
+- CTA en cada vídeo apunta a un artículo concreto del sitio (no la home). El landing debe estar publicado antes del vídeo.
+- Tracking UTM `?utm_source=tiktok&utm_medium=reel&utm_campaign=<slug>` siempre.
+
+**Sprint dedicado a planificar (Sprint 10 candidato):**
+1. Definir formato base (15-30s vertical 9:16, 3 bloques: hook → ejercicio/dato → CTA)
+2. Cadencia mínima 3 vídeos/semana por plataforma
+3. Toolchain: CapCut o ffmpeg + plantillas SVG/Lottie reutilizables del propio sitio
+4. Pipeline reaprovechamiento: cada artículo del backlog 20 → 2-3 vídeos cortos
+5. Integración Pizarra Táctica como motor de creatividades visuales
+6. Doc nuevo: `docs/seo/EstrategiaSocialVideo.md`
+
+**Decisiones pendientes del usuario:** producción in-house vs freelance · TikTok+Reels vs incluir Shorts día 1 · cuenta @minigolclub nueva vs perfil personal.
+
+Memoria asociada: `project_social_video_strategy.md`.
+
+---
+
 ## Backlog "icebox" (sin sprint asignado)
 
 Ideas y mejoras a evaluar más adelante. **No empezar sin priorizar primero.**
@@ -193,7 +216,7 @@ Ideas y mejoras a evaluar más adelante. **No empezar sin priorizar primero.**
 - **Resultados en directo de competiciones** (Mundial 2026 → LaLiga → Champions). Análisis en `docs/seo/ResultadosEnDirecto.md`. Evaluar Sprint 9+ candidato.
 - Calculadora "¿en qué categoría jugaría mi hijo?"
 - Quiz "¿qué jugador eres?" para niños (viralidad)
-- Vídeo embebido propio (canal YouTube)
+- Canal YouTube propio (deriva del pipeline social vídeo)
 - App móvil PWA con notificaciones de ejercicios
 - Marketplace de entrenadores
 - Comunidad cerrada de pago
