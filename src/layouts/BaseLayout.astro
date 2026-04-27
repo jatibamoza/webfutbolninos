@@ -1,5 +1,7 @@
 ---
 import '@/styles/global.css';
+import fredokaWoff2 from '@fontsource-variable/fredoka/files/fredoka-latin-wght-normal.woff2?url';
+import nunitoWoff2 from '@fontsource-variable/nunito/files/nunito-latin-wght-normal.woff2?url';
 import { SITE, SITE_URL, GA_ID, ADSENSE_CLIENT } from '@/consts';
 import CookieBanner from '@/components/CookieBanner.astro';
 import StickyNewsletter from '@/components/ui/StickyNewsletter.astro';
@@ -53,17 +55,14 @@ const fullTitle = title === SITE.name ? title : `${title} · ${SITE.name}`;
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={ogImageURL} />
 
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      rel="preload"
-      as="style"
-      href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;500;600;700;800&family=Caveat:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
-    />
-    <link
-      rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;500;600;700;800&family=Caveat:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
-    />
+    <link rel="preload" as="font" type="font/woff2" href={fredokaWoff2} crossorigin />
+    <link rel="preload" as="font" type="font/woff2" href={nunitoWoff2} crossorigin />
+
+    <!-- Preconnect a destinos terceros usados temprano para ahorrar handshake TLS. -->
+    <link rel="preconnect" href="https://www.googletagmanager.com" />
+    <link rel="preconnect" href="https://region1.google-analytics.com" />
+    {ADSENSE_CLIENT && <link rel="preconnect" href="https://pagead2.googlesyndication.com" />}
+
     <slot name="head" />
 
     <!-- Consent Mode v2: defaults denied hasta que el banner de cookies lo actualice -->
@@ -96,7 +95,7 @@ const fullTitle = title === SITE.name ? title : `${title} · ${SITE.name}`;
   <body class="min-h-screen bg-background text-foreground">
     <a
       href="#main"
-      class="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-50 focus:rounded-button focus:bg-primary focus:px-4 focus:py-2 focus:text-white"
+      class="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-50 focus:rounded-button focus:bg-foreground focus:px-4 focus:py-2 focus:text-background"
     >
       Saltar al contenido
     </a>

@@ -20,6 +20,18 @@ importers:
       '@astrojs/sitemap':
         specifier: ^3.2.1
         version: 3.7.2
+      '@fontsource-variable/caveat':
+        specifier: ^5.2.8
+        version: 5.2.8
+      '@fontsource-variable/fredoka':
+        specifier: ^5.2.10
+        version: 5.2.10
+      '@fontsource-variable/jetbrains-mono':
+        specifier: ^5.2.8
+        version: 5.2.8
+      '@fontsource-variable/nunito':
+        specifier: ^5.2.7
+        version: 5.2.7
       '@tailwindcss/vite':
         specifier: ^4.0.0
         version: 4.2.4(vite@7.3.2(@types/node@25.6.0)(jiti@2.6.1)(lightningcss@1.32.0)(yaml@2.8.3))
@@ -394,6 +406,18 @@ packages:
   '@eslint/plugin-kit@0.4.1':
     resolution: {integrity: sha512-43/qtrDUokr7LJqoF2c3+RInu/t4zfrpYdoSDfYyhg52rwLV6TnOvdG4fXm7IkSB3wErkcmJS9iEhjVtOSEjjA==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
+
+  '@fontsource-variable/caveat@5.2.8':
+    resolution: {integrity: sha512-Iv+G8xn0pKG7RtanBmYGMjIfkO819N13LXZBwmRVcgfJvJwKVom/v3KT9pwANXTSoUbPeRp228twRDK7hcabLw==}
+
+  '@fontsource-variable/fredoka@5.2.10':
+    resolution: {integrity: sha512-W25a41EivYh8111C9x34ShRg+2kKGXnefg1Z9Zax5E0jOgOtGXn7UhoqVBvNLrJnWGv3hy8New0UiKDc/cYzPg==}
+
+  '@fontsource-variable/jetbrains-mono@5.2.8':
+    resolution: {integrity: sha512-WBA9elru6Jdp5df2mES55wuOO0WIrn3kpXnI4+W2ek5u3ZgLS9XS4gmIlcQhiZOWEKl95meYdvK7xI+ETLCq/Q==}
+
+  '@fontsource-variable/nunito@5.2.7':
+    resolution: {integrity: sha512-2N8QhatkyKgSUbAGZO2FYLioxA32+RyI1EplVLawbpkGjUeui9Qg9VMrpkCaik1ydjFjfLV+kzQ0cGEsMrMenQ==}
 
   '@humanfs/core@0.19.2':
     resolution: {integrity: sha512-UhXNm+CFMWcbChXywFwkmhqjs3PRCmcSa/hfBgLIb7oQ5HNb1wS0icWsGtSAUNgefHeI+eBrA8I1fxmbHsGdvA==}
@@ -3298,6 +3322,14 @@ snapshots:
     dependencies:
       '@eslint/core': 0.17.0
       levn: 0.4.1
+
+  '@fontsource-variable/caveat@5.2.8': {}
+
+  '@fontsource-variable/fredoka@5.2.10': {}
+
+  '@fontsource-variable/jetbrains-mono@5.2.8': {}
+
+  '@fontsource-variable/nunito@5.2.7': {}
 
   '@humanfs/core@0.19.2':
     dependencies:

@@ -1,5 +1,12 @@
 @import 'tailwindcss';
 
+/* Self-host variable fonts (latin subset). Quita el round-trip a Google Fonts
+   y reduce LCP/FCP. Variable = un solo woff2 cubre todos los weights. */
+@import '@fontsource-variable/fredoka/wght.css';
+@import '@fontsource-variable/nunito/wght.css';
+@import '@fontsource-variable/caveat/wght.css';
+@import '@fontsource-variable/jetbrains-mono/wght.css';
+
 @theme {
   /* Brand — categorías */
   --color-primary: #2563eb;
@@ -9,6 +16,10 @@
   --color-fun: #ec4899;
   --color-energy: #dc2626;
   --color-info: #0891b2;
+
+  /* Texto sobre fondos de marca (badges, dorsales) — negro fijo: WCAG-safe en
+     ambos modos porque los brand siempre tienen luminancia media-alta. */
+  --color-on-brand: #0a0d14;
 
   /* Surfaces — cuaderno de campo */
   --color-background: #faf6e8;
@@ -29,11 +40,11 @@
   --color-border: #e5dcc0;
   --color-border-strong: #c9bc91;
 
-  /* Tipografía */
-  --font-display: 'Fredoka', system-ui, sans-serif;
-  --font-body: 'Nunito', system-ui, sans-serif;
-  --font-hand: 'Caveat', cursive;
-  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+  /* Tipografía. Las variantes 'Variable' vienen de @fontsource-variable/*. */
+  --font-display: 'Fredoka Variable', 'Fredoka', system-ui, sans-serif;
+  --font-body: 'Nunito Variable', 'Nunito', system-ui, sans-serif;
+  --font-hand: 'Caveat Variable', 'Caveat', cursive;
+  --font-mono: 'JetBrains Mono Variable', 'JetBrains Mono', ui-monospace, monospace;
 
   /* Radios */
   --radius-sm: 6px;
@@ -58,7 +69,9 @@
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* Dark mode automático por preferencia del sistema */
+/* Dark mode automático por preferencia del sistema.
+   Los tokens de marca se aclaran (400-series) para superar 4.5:1 sobre
+   los fondos oscuros (#11151e / #181e2b / #232c3d). */
 @media (prefers-color-scheme: dark) {
   :root[data-theme='auto'],
   :root:not([data-theme]) {
@@ -69,12 +82,19 @@
     --color-rule: #2a3344;
     --color-rule-strong: #3a4556;
     --color-foreground: #eceff6;
-    --color-foreground-muted: #b7bfd0;
-    --color-foreground-subtle: #8c95a8;
+    --color-foreground-muted: #c4cbdc;
+    --color-foreground-subtle: #a0a8bb;
     --color-handwritten: #94b5ff;
-    --color-marker: #b58a2e;
+    --color-marker: #d4a02e;
     --color-border: #2a3344;
     --color-border-strong: #3a4556;
+    --color-primary: #60a5fa;
+    --color-primary-hover: #93c5fd;
+    --color-secondary: #4ade80;
+    --color-accent: #fbbf24;
+    --color-fun: #f472b6;
+    --color-energy: #f87171;
+    --color-info: #22d3ee;
   }
 }
 
