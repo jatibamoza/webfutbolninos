@@ -5,6 +5,7 @@ import Footer from '@/components/Footer.astro';
 import { SITE } from '@/consts';
 import { getCollection } from 'astro:content';
 import type { CollectionEntry } from 'astro:content';
+import { Image } from 'astro:assets';
 import { Icon } from 'astro-icon/components';
 import PitchLines from '@/components/ui/PitchLines.astro';
 import SectionHeader from '@/components/ui/SectionHeader.astro';
@@ -229,11 +230,11 @@ const ICON_BY_SLUG: Record<string, string> = {
               href={articleHref(article)}
               class="card-paper flex flex-col overflow-hidden"
             >
-              <img
+              <Image
                 src={article.data.cover}
                 alt={article.data.coverAlt}
-                width={article.data.coverWidth}
-                height={article.data.coverHeight}
+                widths={[320, 480, 640, 800, 1200]}
+                sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
                 loading="lazy"
                 decoding="async"
                 class="block w-full"
@@ -280,11 +281,11 @@ const ICON_BY_SLUG: Record<string, string> = {
               href={articleHref(article)}
               class="card-paper flex flex-col overflow-hidden"
             >
-              <img
+              <Image
                 src={article.data.cover}
                 alt={article.data.coverAlt}
-                width={article.data.coverWidth}
-                height={article.data.coverHeight}
+                widths={[320, 480, 640, 800, 1200]}
+                sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
                 loading="lazy"
                 decoding="async"
                 class="block w-full"

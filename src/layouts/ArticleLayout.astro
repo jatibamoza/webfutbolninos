@@ -7,6 +7,7 @@ import RelatedArticles from '@/components/RelatedArticles.astro';
 import CatChip from '@/components/ui/CatChip.astro';
 import Chrono from '@/components/ui/Chrono.astro';
 import AgeBadge from '@/components/ui/AgeBadge.astro';
+import { Image } from 'astro:assets';
 import { articleJsonLd } from '@/lib/seo';
 import { SITE_URL, AUTHOR } from '@/consts';
 import { categoryColorVar } from '@/lib/categories';
@@ -36,8 +37,6 @@ const {
   description,
   cover,
   coverAlt,
-  coverWidth,
-  coverHeight,
   pubDate,
   updatedDate,
   tieneAfiliados,
@@ -48,7 +47,9 @@ const {
 } = article.data;
 
 const canonicalUrl = new URL(`/${article.id.replace(/\.mdx?$/, '')}/`, SITE_URL).toString();
-const ogImageUrl = new URL(cover, SITE_URL).toString();
+// cover es ImageMetadata desde el schema image(); .src tiene la URL relativa
+// con hash de Astro (/_astro/cover.HASH.jpg). Para OG/JSON-LD necesitamos absoluta.
+const ogImageUrl = new URL(cover.src, SITE_URL).toString();
 const colorVar = categoryColorVar(categoriaColor);
 
 const jsonLd = articleJsonLd({
@@ -85,7 +86,7 @@ const authorInitials = AUTHOR.name
   title={title}
   description={description}
   canonical={canonicalUrl}
-  ogImage={cover}
+  ogImage={cover.src}
   ogType="article"
 >
   <Fragment slot="head">
@@ -183,14 +184,14 @@ const authorInitials = AUTHOR.name
           </div>
         </header>
 
-        <!-- Cover image con sello manuscrito -->
+        <!-- Cover image con sello manuscrito. Es el LCP candidate del articulo:
+             eager + fetchpriority high para que Astro lo priorice. -->
         <div class="relative mb-8" style="aspect-ratio: 16/9;">
-          <img
+          <Image
             src={cover}
             alt={coverAlt}
-            width={coverWidth}
-            height={coverHeight}
-            fetchpriority="high"
+            widths={[480, 800, 1200]}
+            sizes="(min-width: 800px) 800px, 100vw"
             loading="eager"
             decoding="async"
             class="h-full w-full overflow-hidden object-cover"
