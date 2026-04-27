@@ -3,6 +3,46 @@ import tseslint from '@typescript-eslint/eslint-plugin';
 import tsparser from '@typescript-eslint/parser';
 import astroPlugin from 'eslint-plugin-astro';
 
+const browserGlobals = {
+  window: 'readonly',
+  document: 'readonly',
+  navigator: 'readonly',
+  localStorage: 'readonly',
+  sessionStorage: 'readonly',
+  fetch: 'readonly',
+  URL: 'readonly',
+  URLSearchParams: 'readonly',
+  console: 'readonly',
+  setTimeout: 'readonly',
+  clearTimeout: 'readonly',
+  setInterval: 'readonly',
+  clearInterval: 'readonly',
+  requestAnimationFrame: 'readonly',
+  cancelAnimationFrame: 'readonly',
+  HTMLElement: 'readonly',
+  HTMLInputElement: 'readonly',
+  Element: 'readonly',
+  Event: 'readonly',
+  CustomEvent: 'readonly',
+  IntersectionObserver: 'readonly',
+  MutationObserver: 'readonly',
+  matchMedia: 'readonly',
+  dataLayer: 'writable',
+  gtag: 'readonly',
+};
+
+const nodeGlobals = {
+  process: 'readonly',
+  Buffer: 'readonly',
+  __dirname: 'readonly',
+  __filename: 'readonly',
+  console: 'readonly',
+  setTimeout: 'readonly',
+  clearTimeout: 'readonly',
+  URL: 'readonly',
+  URLSearchParams: 'readonly',
+};
+
 export default [
   js.configs.recommended,
   {
@@ -13,6 +53,7 @@ export default [
         ecmaVersion: 'latest',
         sourceType: 'module',
       },
+      globals: { ...browserGlobals, ...nodeGlobals },
     },
     plugins: {
       '@typescript-eslint': tseslint,
@@ -25,6 +66,21 @@ export default [
     },
   },
   ...astroPlugin.configs.recommended,
+  {
+    files: ['**/*.astro'],
+    languageOptions: {
+      globals: { ...browserGlobals, ...nodeGlobals },
+    },
+  },
+  {
+    files: ['scripts/**/*.{js,mjs,cjs}', '*.config.{js,mjs,cjs}'],
+    languageOptions: {
+      globals: nodeGlobals,
+    },
+    rules: {
+      'no-console': 'off',
+    },
+  },
   {
     ignores: ['dist/**', 'node_modules/**', '.astro/**', 'public/**'],
   },

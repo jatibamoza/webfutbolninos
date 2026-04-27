@@ -22,11 +22,11 @@ const COLOR_TO_VAR: Record<ColorName, string> = {
 };
 
 export function categoryColorHex(color: ColorName): string {
-  return COLOR_TO_HEX[color];
+  return COLOR_TO_HEX[color]!;
 }
 
 export function categoryColorVar(color: ColorName): string {
-  return COLOR_TO_VAR[color];
+  return COLOR_TO_VAR[color]!;
 }
 
 /** Devuelve la URL pública de la categoría (`/<slug>/`). */

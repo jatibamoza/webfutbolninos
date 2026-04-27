@@ -14,29 +14,34 @@ import CatChip from '@/components/ui/CatChip.astro';
 import Chrono from '@/components/ui/Chrono.astro';
 import { categoryColorVar, categoryHref } from '@/lib/categories';
 
+type ArticuloEntry = CollectionEntry<'articulos'>;
+type CategoriaEntry = CollectionEntry<'categorias'>;
+
 // Categorías ordenadas para el bento.
-const categorias = (await getCollection('categorias')).sort(
-  (a, b) => a.data.orden - b.data.orden,
+const allCategorias: CategoriaEntry[] = await getCollection('categorias');
+const categorias = allCategorias.sort(
+  (a: CategoriaEntry, b: CategoriaEntry) => a.data.orden - b.data.orden,
 );
 
 // Conteo de artículos publicados por categoría (sin drafts).
-const articulosPub = (await getCollection('articulos')).filter((a) => !a.data.draft);
-const countByCat = articulosPub.reduce<Record<string, number>>((acc, art) => {
-  acc[art.data.categoria] = (acc[art.data.categoria] ?? 0) + 1;
-  return acc;
-}, {});
+const allArticulos: ArticuloEntry[] = await getCollection('articulos');
+const articulosPub = allArticulos.filter((a: ArticuloEntry) => !a.data.draft);
+const countByCat: Record<string, number> = {};
+for (const art of articulosPub) {
+  countByCat[art.data.categoria] = (countByCat[art.data.categoria] ?? 0) + 1;
+}
 
 // "Lo más leído": como aún no tenemos GA4, mostramos los featured + recientes.
 const featured = articulosPub
-  .filter((a) => a.data.featured)
-  .sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime())
+  .filter((a: ArticuloEntry) => a.data.featured)
+  .sort((a: ArticuloEntry, b: ArticuloEntry) => b.data.pubDate.getTime() - a.data.pubDate.getTime())
   .slice(0, 3);
 
 // "Últimos artículos": los 3 más recientes que no estén ya en featured.
-const featuredIds = new Set(featured.map((a) => a.id));
+const featuredIds = new Set(featured.map((a: ArticuloEntry) => a.id));
 const ultimos = articulosPub
-  .filter((a) => !featuredIds.has(a.id))
-  .sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime())
+  .filter((a: ArticuloEntry) => !featuredIds.has(a.id))
+  .sort((a: ArticuloEntry, b: ArticuloEntry) => b.data.pubDate.getTime() - a.data.pubDate.getTime())
   .slice(0, 3);
 
 // Mes/edición visible en el sello del hero.
@@ -167,7 +172,7 @@ const ICON_BY_SLUG: Record<string, string> = {
         style="grid-template-columns: repeat(2, minmax(0,1fr));"
         data-bento
       >
-        {categorias.map((cat, i) => {
+        {categorias.map((cat: CategoriaEntry, i: number) => {
           const color = categoryColorVar(cat.data.color);
           const count = countByCat[cat.data.slug] ?? 0;
           const iconName = ICON_BY_SLUG[cat.data.slug] ?? 'lucide:flag';
@@ -219,7 +224,7 @@ const ICON_BY_SLUG: Record<string, string> = {
           subtitle="Lo que otros padres están leyendo esta semana."
         />
         <div class="mt-6 grid gap-3.5 md:grid-cols-3 md:gap-5">
-          {featured.map((article) => (
+          {featured.map((article: ArticuloEntry) => (
             <a
               href={articleHref(article)}
               class="card-paper flex flex-col overflow-hidden"
@@ -270,7 +275,7 @@ const ICON_BY_SLUG: Record<string, string> = {
           subtitle="Lo que acabamos de publicar."
         />
         <div class="mt-6 grid gap-3.5 md:grid-cols-3 md:gap-5">
-          {ultimos.map((article) => (
+          {ultimos.map((article: ArticuloEntry) => (
             <a
               href={articleHref(article)}
               class="card-paper flex flex-col overflow-hidden"
