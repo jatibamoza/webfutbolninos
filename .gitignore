@@ -45,3 +45,6 @@ coverage/
 # Local Lighthouse fetched reports
 ci-*.html
 .claude/
+
+# Handoffs de diseño (no forman parte del repo de producción)
+design_handoff_minigol_v3/
