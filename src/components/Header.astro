@@ -2,6 +2,7 @@
 import { NAV_PRIMARY, SITE } from '@/consts';
 import { Icon } from 'astro-icon/components';
 import Logo from '@/components/ui/Logo.astro';
+import ThemeToggle from '@/components/ui/ThemeToggle.astro';
 
 const currentPath = Astro.url.pathname;
 ---
@@ -59,6 +60,8 @@ const currentPath = Astro.url.pathname;
 
     <!-- Acciones -->
     <div class="flex items-center gap-2">
+      <ThemeToggle />
+
       <a
         href="/buscar/"
         class="flex h-11 w-11 items-center justify-center rounded-md transition-colors"

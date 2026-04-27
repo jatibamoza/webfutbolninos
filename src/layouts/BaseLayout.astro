@@ -35,6 +35,23 @@ const fullTitle = title === SITE.name ? title : `${title} · ${SITE.name}`;
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="generator" content={Astro.generator} />
+
+    <!-- Anti-FOUC theme bootstrap. Debe ejecutarse antes del primer paint:
+         lee localStorage (`mg.theme`) y aplica `data-theme` al <html>.
+         Si falta o vale 'auto', no añade atributo y el CSS sigue prefers-color-scheme. -->
+    <script is:inline>
+      (function () {
+        try {
+          var t = localStorage.getItem('mg.theme');
+          if (t === 'light' || t === 'dark') {
+            document.documentElement.setAttribute('data-theme', t);
+          } else if (t === 'auto' || t === null) {
+            document.documentElement.setAttribute('data-theme', 'auto');
+          }
+        } catch { /* localStorage no disponible: queda en auto */ }
+      })();
+    </script>
+
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 
     <title>{fullTitle}</title>
