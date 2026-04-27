@@ -35,6 +35,16 @@ const browserGlobals = {
   atob: 'readonly',
   Image: 'readonly',
   XMLSerializer: 'readonly',
+  PointerEvent: 'readonly',
+  KeyboardEvent: 'readonly',
+  MediaQueryListEvent: 'readonly',
+  SVGElement: 'readonly',
+  SVGSVGElement: 'readonly',
+  SVGGElement: 'readonly',
+  SVGPathElement: 'readonly',
+  SVGCircleElement: 'readonly',
+  HTMLButtonElement: 'readonly',
+  HTMLAnchorElement: 'readonly',
 };
 
 const nodeGlobals = {
