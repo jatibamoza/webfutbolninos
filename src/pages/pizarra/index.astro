@@ -75,6 +75,68 @@ const breadcrumbLd = JSON.stringify({
     <!-- Pizarra -->
     <div class="mx-auto max-w-5xl px-4" style="height: calc(100vh - 260px); min-height: 480px;">
       <Board preset="rondo-4v1" client:only="preact" class="h-full" />
+      <noscript>
+        <figure style="margin: 0; max-width: 640px; width: 100%;">
+          <svg
+            viewBox="0 0 100 100"
+            preserveAspectRatio="xMidYMid meet"
+            width="100%"
+            style="display: block; max-width: 640px; aspect-ratio: 1; background: #1a2e1a; border-radius: 8px;"
+            aria-label="Vista previa estática de la pizarra táctica — Rondo 4v1"
+            role="img"
+          >
+            <!-- Campo mini: borde + círculo central + línea vertical punteada -->
+            <g stroke="#FFFCF1" stroke-width="0.4" fill="none" opacity="0.85">
+              <rect x="2" y="2" width="96" height="96" />
+              <circle cx="50" cy="50" r="9" />
+              <line x1="50" y1="2" x2="50" y2="98" stroke-dasharray="2 2" />
+            </g>
+
+            <!-- Flecha de pase (cuadrática): amarillo — rondo-4v1 frame0: x1=28 y1=25 cx=50 cy=22 x2=72 y2=25 -->
+            <path d="M 28 25 Q 50 22 72 25" stroke="#fbbf24" stroke-width="0.6" fill="none" stroke-linecap="round" />
+            <!-- Punta de flecha manual -->
+            <polygon points="72,25 69,23 69,27" fill="#fbbf24" />
+
+            <!-- Jugador azul 1 en (25,25) -->
+            <g transform="translate(25 25)">
+              <circle r="2.6" fill="#3b82f6" stroke="#FFFCF1" stroke-width="0.4" />
+              <text text-anchor="middle" y="0.9" font-family="Fredoka Variable, Fredoka, sans-serif" font-size="2.6" font-weight="700" fill="#FFFCF1" pointer-events="none">1</text>
+            </g>
+            <!-- Jugador azul 2 en (75,25) -->
+            <g transform="translate(75 25)">
+              <circle r="2.6" fill="#3b82f6" stroke="#FFFCF1" stroke-width="0.4" />
+              <text text-anchor="middle" y="0.9" font-family="Fredoka Variable, Fredoka, sans-serif" font-size="2.6" font-weight="700" fill="#FFFCF1" pointer-events="none">2</text>
+            </g>
+            <!-- Jugador azul 3 en (75,75) -->
+            <g transform="translate(75 75)">
+              <circle r="2.6" fill="#3b82f6" stroke="#FFFCF1" stroke-width="0.4" />
+              <text text-anchor="middle" y="0.9" font-family="Fredoka Variable, Fredoka, sans-serif" font-size="2.6" font-weight="700" fill="#FFFCF1" pointer-events="none">3</text>
+            </g>
+            <!-- Jugador azul 4 en (25,75) -->
+            <g transform="translate(25 75)">
+              <circle r="2.6" fill="#3b82f6" stroke="#FFFCF1" stroke-width="0.4" />
+              <text text-anchor="middle" y="0.9" font-family="Fredoka Variable, Fredoka, sans-serif" font-size="2.6" font-weight="700" fill="#FFFCF1" pointer-events="none">4</text>
+            </g>
+            <!-- Jugador rojo X en (50,50) -->
+            <g transform="translate(50 50)">
+              <circle r="2.6" fill="#ef4444" stroke="#FFFCF1" stroke-width="0.4" />
+              <text text-anchor="middle" y="0.9" font-family="Fredoka Variable, Fredoka, sans-serif" font-size="2.6" font-weight="700" fill="#FFFCF1" pointer-events="none">X</text>
+            </g>
+
+            <!-- Balón en (25,25) — ligeramente desplazado sobre el jugador -->
+            <circle cx="25" cy="25" r="1.3" fill="#FFFCF1" stroke="#888" stroke-width="0.2" />
+
+            <!-- Nota del frame 0 -->
+            <text x="50" y="92" text-anchor="middle" font-family="Caveat Variable, Caveat, cursive" font-size="3.5" fill="#FFFCF1" opacity="0.9">4 pases seguidos = punto</text>
+
+            <!-- Watermark -->
+            <text x="98" y="98" text-anchor="end" font-family="Caveat Variable, Caveat, cursive" font-size="3" fill="rgba(255,255,255,0.35)">minigolclub.com</text>
+          </svg>
+          <figcaption style="margin-top: 8px; font-size: 0.85rem; color: #666; text-align: center;">
+            Activa JavaScript para usar la pizarra táctica interactiva.
+          </figcaption>
+        </figure>
+      </noscript>
     </div>
 
     <!-- Sección informativa con internal links -->
