@@ -46,7 +46,7 @@ export function Arrow({
   )} a ${Math.round(arrow.x2)} ${Math.round(arrow.y2)}${selected ? ', seleccionada' : ''}`;
 
   return (
-    <g aria-label={ariaLabel}>
+    <g role="img" aria-label={ariaLabel}>
       <defs>
         <marker
           id={markerId}

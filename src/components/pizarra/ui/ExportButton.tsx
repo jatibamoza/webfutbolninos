@@ -13,7 +13,7 @@ const CSS = `
   gap: 6px;
   min-height: 44px;
   padding: 8px 14px;
-  background: #3b82f6;
+  background: #2563eb;
   color: #fff;
   border: none;
   border-radius: 8px;
@@ -25,7 +25,7 @@ const CSS = `
 }
 
 .pizarra-export-btn:hover:not(:disabled) {
-  background: #2563eb;
+  background: #1d4ed8;
 }
 
 .pizarra-export-btn:disabled {
@@ -76,7 +76,6 @@ export function ExportButton({ svgRef }: ExportButtonProps) {
       <button
         type="button"
         class="pizarra-export-btn"
-        aria-label="Exportar pizarra como PNG"
         disabled={exporting}
         onClick={handleClick}
       >
