@@ -10,14 +10,19 @@ interface TopBarProps {
 }
 
 const selectStyle: preact.JSX.CSSProperties = {
-  background: 'rgba(255,255,255,0.15)',
-  color: 'inherit',
+  background: '#2d2d44',
+  color: '#f5f0e8',
   border: '1px solid rgba(255,255,255,0.3)',
   borderRadius: '6px',
   padding: '0 8px',
   height: '44px',
   minHeight: '44px',
   cursor: 'pointer',
+};
+
+const optionStyle: preact.JSX.CSSProperties = {
+  background: '#2d2d44',
+  color: '#f5f0e8',
 };
 
 const SKIN_LABELS: Record<Skin, string> = {
@@ -78,7 +83,7 @@ export function TopBar({ board, dispatch }: TopBarProps) {
         onChange={handlePresetChange}
       >
         {PRESETS.map((preset) => (
-          <option key={preset.id} value={preset.id}>
+          <option key={preset.id} value={preset.id} style={optionStyle}>
             {preset.nombre}
           </option>
         ))}
@@ -91,7 +96,7 @@ export function TopBar({ board, dispatch }: TopBarProps) {
         onChange={handleFieldTypeChange}
       >
         {FIELD_TYPES.map((ft) => (
-          <option key={ft} value={ft}>
+          <option key={ft} value={ft} style={optionStyle}>
             {FIELD_CONFIG[ft].label}
           </option>
         ))}
@@ -104,7 +109,7 @@ export function TopBar({ board, dispatch }: TopBarProps) {
         onChange={handleSkinChange}
       >
         {SKINS.map((skin) => (
-          <option key={skin} value={skin} disabled={skin === 'grass'}>
+          <option key={skin} value={skin} disabled={skin === 'grass'} style={optionStyle}>
             {SKIN_LABELS[skin]}
           </option>
         ))}

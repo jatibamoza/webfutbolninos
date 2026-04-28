@@ -14,8 +14,8 @@ const FILL: Record<Skin, string> = {
 export function Watermark({ skin }: WatermarkProps) {
   return (
     <text
-      x="98"
-      y="98"
+      x="97"
+      y="95"
       text-anchor="end"
       dominant-baseline="auto"
       font-family="'Caveat Variable', Caveat, cursive"
