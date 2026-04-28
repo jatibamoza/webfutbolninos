@@ -63,9 +63,8 @@ export default function Layout({ children }) {
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
           <button
             className="icon-btn"
-            title="Nuevo artículo (próximamente)"
-            disabled
-            style={{ opacity: 0.4, cursor: 'not-allowed' }}
+            title="Nuevo artículo"
+            onClick={() => navigate('/nuevo')}
           >
             <svg
               width={18}
