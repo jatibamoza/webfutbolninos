@@ -473,14 +473,16 @@ export function Board({ preset, class: className, readonly = false }: BoardProps
         {/* Field canvas */}
         <div
           class="pizarra-field-wrap"
-          style={{ flex: 1, position: 'relative', overflow: 'hidden' }}
+          style={{ flex: 1, minHeight: 0, overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
         >
           <svg
             ref={svgRef}
             viewBox="0 0 100 100"
             preserveAspectRatio="none"
             style={{
-              width: '100%',
+              height: '100%',
+              width: 'auto',
+              maxWidth: '100%',
               aspectRatio: String(ratio),
               display: 'block',
               touchAction: 'none',

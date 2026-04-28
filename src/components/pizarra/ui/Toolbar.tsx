@@ -210,6 +210,7 @@ export function Toolbar({ activeTool, setActiveTool, selected, frameIdx, dispatc
             type="button"
             class="pizarra-tool-btn"
             aria-label={label}
+            title={label}
             aria-pressed={activeTool === tool}
             onClick={() => setActiveTool(tool)}
           >
@@ -224,6 +225,7 @@ export function Toolbar({ activeTool, setActiveTool, selected, frameIdx, dispatc
               type="button"
               class="pizarra-delete-btn"
               aria-label="Eliminar elemento seleccionado"
+              title="Eliminar (tecla Delete)"
               onClick={handleDelete}
             >
               <Icon>
