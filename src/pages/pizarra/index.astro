@@ -3,18 +3,101 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
 import Header from '@/components/Header.astro';
 import Footer from '@/components/Footer.astro';
 import { Board } from '@/components/pizarra/Board';
+import { SITE_URL, SITE } from '@/consts';
 
-// F2.6 — Board montado. Noindex hasta que la landing real esté lista (F2.13).
+const canonicalUrl = `${SITE_URL}/pizarra/`;
+
+const softwareAppLd = JSON.stringify({
+  '@context': 'https://schema.org',
+  '@type': 'SoftwareApplication',
+  name: 'Pizarra Táctica MiniGol Club',
+  applicationCategory: 'SportsApplication',
+  operatingSystem: 'Web',
+  url: canonicalUrl,
+  description: 'Herramienta interactiva gratuita para diseñar ejercicios y jugadas de fútbol infantil. Sin registro, sin descargas.',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'EUR' },
+  inLanguage: 'es',
+  provider: { '@type': 'Organization', name: SITE.name, url: SITE_URL },
+});
+
+const breadcrumbLd = JSON.stringify({
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Inicio', item: SITE_URL },
+    { '@type': 'ListItem', position: 2, name: 'Pizarra Táctica', item: canonicalUrl },
+  ],
+});
 ---
 
 <BaseLayout
-  title="Pizarra táctica (beta)"
-  description="Herramienta interactiva en pruebas. La landing definitiva estará disponible próximamente."
-  noindex={true}
+  title="Pizarra Táctica de Fútbol Gratis para Niños"
+  description="Diseña ejercicios y jugadas de fútbol infantil con nuestra pizarra táctica interactiva gratuita. Sin registro, funciona en móvil y tablet. Para padres y entrenadores."
+  canonical={canonicalUrl}
+  ogImage="/og-default.jpg"
+  ogType="website"
 >
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={softwareAppLd} />
+    <script type="application/ld+json" set:html={breadcrumbLd} />
+  </Fragment>
+
   <Header />
-  <main id="main" style="height: calc(100vh - 128px); display: flex; flex-direction: column;">
-    <Board preset="rondo-4v1" client:only="preact" />
+
+  <main id="main">
+    <!-- Breadcrumb visible -->
+    <nav aria-label="Ruta de navegación" class="mx-auto max-w-5xl px-4 pt-4 pb-2 text-sm">
+      <ol class="flex items-center gap-1" itemscope itemtype="https://schema.org/BreadcrumbList">
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a itemprop="item" href="/" class="hover:underline text-foreground/70">
+            <span itemprop="name">Inicio</span>
+          </a>
+          <meta itemprop="position" content="1" />
+        </li>
+        <li aria-hidden="true" class="text-foreground/40">/</li>
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <span itemprop="name" class="font-medium">Pizarra Táctica</span>
+          <meta itemprop="position" content="2" />
+        </li>
+      </ol>
+    </nav>
+
+    <!-- Hero editorial -->
+    <section class="mx-auto max-w-5xl px-4 pb-4">
+      <h1 class="font-display text-2xl font-bold sm:text-3xl mb-2">
+        Pizarra táctica de fútbol para niños
+      </h1>
+      <p class="text-foreground/80 max-w-2xl">
+        Diseña ejercicios y jugadas de fútbol infantil de forma visual e interactiva. Mueve jugadores, dibuja pases y desplazamientos, anima la jugada frame a frame y comparte el enlace con otros padres o el entrenador del equipo. Gratis, sin registro y funciona en cualquier dispositivo.
+      </p>
+    </section>
+
+    <!-- Pizarra -->
+    <div class="mx-auto max-w-5xl px-4" style="height: calc(100vh - 260px); min-height: 480px;">
+      <Board preset="rondo-4v1" client:only="preact" class="h-full" />
+    </div>
+
+    <!-- Sección informativa con internal links -->
+    <section class="mx-auto max-w-5xl px-4 py-8 grid sm:grid-cols-2 gap-6 text-sm">
+      <div>
+        <h2 class="font-display font-semibold text-lg mb-2">¿Cómo usar la pizarra?</h2>
+        <ul class="space-y-1 text-foreground/80 list-disc list-inside">
+          <li>Elige un preset o empieza desde cero</li>
+          <li>Arrastra jugadores y objetos al campo</li>
+          <li>Dibuja pases, desplazamientos y movimientos</li>
+          <li>Añade frames para crear una secuencia animada</li>
+          <li>Pulsa el botón compartir para copiar el enlace</li>
+        </ul>
+      </div>
+      <div>
+        <h2 class="font-display font-semibold text-lg mb-2">Más recursos para entrenar</h2>
+        <ul class="space-y-1">
+          <li><a href="/ejercicios/" class="hover:underline text-primary">Ejercicios de fútbol por edad</a></li>
+          <li><a href="/juegos/" class="hover:underline text-primary">Juegos y actividades con balón</a></li>
+        </ul>
+      </div>
+    </section>
   </main>
+
   <Footer />
 </BaseLayout>
