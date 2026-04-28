@@ -24,3 +24,12 @@ export async function saveArticulo(slug, { frontmatter, body }) {
   }
   return res.json();
 }
+
+export async function deleteArticulo(slug) {
+  const res = await fetch(`${BASE}/${slug}`, { method: 'DELETE' });
+  const data = await res.json().catch(() => ({ ok: false, error: `Error ${res.status}` }));
+  if (!res.ok || data.ok === false) {
+    throw new Error(data.error || `Error ${res.status} al eliminar`);
+  }
+  return data;
+}

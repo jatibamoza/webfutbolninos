@@ -1,9 +1,9 @@
 import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Edit, Eye, Search } from 'lucide-react';
+import { Edit, Eye, Plus, Search, Trash2 } from 'lucide-react';
 import { useArticulosList } from '../hooks/useArticulos.js';
 
-const CATEGORIAS = ['ejercicios', 'juegos', 'equipamiento', 'iniciacion', 'mundial-2026'];
+const CATEGORIAS = ['ejercicios', 'juegos', 'equipamiento', 'iniciacion', 'recursos', 'mundial-2026'];
 const NIVELES = ['facil', 'media', 'reto'];
 
 function formatDate(val) {
@@ -17,8 +17,15 @@ function formatDate(val) {
 }
 
 export default function DashboardPage() {
-  const { articulos, loading, error } = useArticulosList();
+  const { articulos, loading, error, remove } = useArticulosList();
   const navigate = useNavigate();
+
+  const handleDelete = (e, slug, title) => {
+    e.stopPropagation();
+    if (window.confirm(`¿Eliminar "${title || slug}"?\n\nSe borrará el archivo .mdx y su cover. Esta acción no se puede deshacer (en local). Si ya estaba en una rama de Git puedes recuperarlo con git checkout.`)) {
+      remove(slug);
+    }
+  };
 
   const [catFilter, setCatFilter] = useState('todas');
   const [nivelFilter, setNivelFilter] = useState('todas');
@@ -93,6 +100,14 @@ export default function DashboardPage() {
             </span>
           </h1>
         </div>
+        <button
+          type="button"
+          className="btn btn-primary"
+          onClick={() => navigate('/nuevo')}
+        >
+          <Plus size={16} />
+          Nuevo artículo
+        </button>
       </div>
 
       {/* Stats */}
@@ -327,6 +342,26 @@ export default function DashboardPage() {
                       >
                         <Eye size={15} />
                       </a>
+                      <button
+                        className="icon-btn"
+                        title="Eliminar"
+                        onClick={(e) => handleDelete(e, a.slug, fm.title)}
+                        style={{
+                          width: 36,
+                          height: 36,
+                          color: 'var(--color-foreground-muted)',
+                        }}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.color = 'var(--color-energy)';
+                          e.currentTarget.style.background = 'color-mix(in oklab, var(--color-energy) 12%, transparent)';
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.color = 'var(--color-foreground-muted)';
+                          e.currentTarget.style.background = '';
+                        }}
+                      >
+                        <Trash2 size={15} />
+                      </button>
                     </div>
                   </td>
                 </tr>

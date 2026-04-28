@@ -3,6 +3,7 @@ import { ToastProvider } from './context/ToastContext.jsx';
 import Layout from './components/Layout.jsx';
 import DashboardPage from './pages/DashboardPage.jsx';
 import EditPage from './pages/EditPage.jsx';
+import NuevoArticuloPage from './pages/NuevoArticuloPage.jsx';
 
 export default function App() {
   return (
@@ -12,6 +13,7 @@ export default function App() {
           <Routes>
             <Route path="/" element={<DashboardPage />} />
             <Route path="/edit/:slug" element={<EditPage />} />
+            <Route path="/nuevo" element={<NuevoArticuloPage />} />
           </Routes>
         </Layout>
       </BrowserRouter>
