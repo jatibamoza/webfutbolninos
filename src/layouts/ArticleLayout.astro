@@ -91,6 +91,11 @@ const authorInitials = AUTHOR.name
 >
   <Fragment slot="head">
     <script type="application/ld+json" set:html={jsonLd} />
+    <meta name="pinterest-rich-pin" content="true" />
+    <meta property="article:section" content={categoriaNombre} />
+    {tags && tags.map((tag: string) => <meta property="article:tag" content={tag} />)}
+    <meta name="pinterest:description" content={description} />
+    <meta name="pinterest:media" content={ogImageUrl} />
   </Fragment>
 
   <Header />
