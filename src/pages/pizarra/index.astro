@@ -2,27 +2,19 @@
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import Header from '@/components/Header.astro';
 import Footer from '@/components/Footer.astro';
-import SmokeTest from '@/components/pizarra/SmokeTest';
+import { Board } from '@/components/pizarra/Board';
 
-// Placeholder de la futura landing /pizarra/ — sustituida en Fase 2 (Pizarra MVP).
-// Mantenido fuera de indexación hasta que la herramienta real esté lista.
+// F2.6 — Board montado. Noindex hasta que la landing real esté lista (F2.13).
 ---
 
 <BaseLayout
-  title="Pizarra (en construcción)"
-  description="Página en construcción. La herramienta de pizarra táctica estará disponible próximamente."
+  title="Pizarra táctica (beta)"
+  description="Herramienta interactiva en pruebas. La landing definitiva estará disponible próximamente."
   noindex={true}
 >
   <Header />
-  <main id="main" class="mx-auto max-w-3xl px-4 py-12 md:px-6">
-    <h1 class="display" style="font-size: 32px; font-weight: 700; margin-bottom: 16px;">
-      Pizarra táctica · en construcción
-    </h1>
-    <p style="color: var(--color-foreground-muted); margin-bottom: 24px;">
-      Esta página será reemplazada por la herramienta interactiva en la Fase 2 del producto.
-      Mientras tanto, sirve como verificación de la integración de Preact.
-    </p>
-    <SmokeTest client:only="preact" />
+  <main id="main" style="height: calc(100vh - 128px); display: flex; flex-direction: column;">
+    <Board preset="rondo-4v1" client:only="preact" />
   </main>
   <Footer />
 </BaseLayout>

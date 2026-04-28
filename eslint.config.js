@@ -45,6 +45,7 @@ const browserGlobals = {
   SVGCircleElement: 'readonly',
   HTMLButtonElement: 'readonly',
   HTMLAnchorElement: 'readonly',
+  performance: 'readonly',
 };
 
 const nodeGlobals = {
