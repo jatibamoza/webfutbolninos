@@ -22,6 +22,8 @@ import { useSvgDrag } from './hooks/useSvgDrag';
 import { useUrlHash, readInitialBoardFromHash } from './hooks/useUrlHash';
 import { useKeyboardNudge } from './hooks/useKeyboardNudge';
 import { usePrefersReducedMotion, useCoarsePointer } from './hooks/usePrefersReducedMotion';
+import { Toolbar } from './ui/Toolbar';
+import { TopBar } from './ui/TopBar';
 
 // ── Reducer ────────────────────────────────────────────────────────────────
 
@@ -412,12 +414,16 @@ export function Board({ preset, class: className }: BoardProps) {
       class={['pizarra-board', className].filter(Boolean).join(' ')}
       style={{ display: 'flex', flexDirection: 'column', height: '100%' }}
     >
-      {/* TopBar — preset/fieldType/skin selectors — wired in F2.7 */}
-      <div class="pizarra-topbar" role="toolbar" aria-label="Configuración del campo" />
+      <TopBar board={board} dispatch={dispatch} coarsePointer={coarsePointer} />
 
       <div style={{ display: 'flex', flex: 1, minHeight: 0, overflow: 'hidden' }}>
-        {/* Toolbar — tool picker + delete — wired in F2.7 */}
-        <div class="pizarra-toolbar" role="toolbar" aria-label="Herramientas de dibujo" />
+        <Toolbar
+          activeTool={activeTool}
+          setActiveTool={setActiveTool}
+          selected={selected}
+          frameIdx={frameIdx}
+          dispatch={dispatch}
+        />
 
         {/* Field canvas */}
         <div
