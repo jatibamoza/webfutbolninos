@@ -394,7 +394,7 @@ function articulosApiMiddleware() {
           let branchCreated = false;
           let branchName = '';
 
-          try {
+          (async () => { try {
             const articulos = readArticulosRecursive(ARTICULOS_DIR, ARTICULOS_DIR);
             const found = articulos.find((a) => a.slug === slug);
             if (!found) {
@@ -487,7 +487,7 @@ function articulosApiMiddleware() {
             }
             res.statusCode = 500;
             res.end(JSON.stringify({ ok: false, error: err.message }));
-          }
+          } })();
           return;
         }
 
