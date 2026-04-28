@@ -184,6 +184,7 @@ export function Timeline({
       {/* Add frame */}
       <button
         class="tl-btn"
+        data-coach="add-frame"
         style={BTN_BASE}
         aria-label="Añadir frame después del actual"
         onClick={() => dispatch({ type: 'ADD_FRAME', afterIdx: frameIdx })}

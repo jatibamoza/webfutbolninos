@@ -72,6 +72,7 @@ export function TopBar({ board, dispatch }: TopBarProps) {
 
       <select
         aria-label="Cargar preset"
+        data-coach="preset"
         style={selectStyle}
         defaultValue={PRESETS[0]!.id}
         onChange={handlePresetChange}

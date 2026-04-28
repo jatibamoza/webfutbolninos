@@ -30,6 +30,8 @@ import { ShareToast, useShareToast } from './ui/ShareToast';
 import { Watermark } from './ui/Watermark';
 import { ExportButton } from './ui/ExportButton';
 import { NudgePad } from './ui/NudgePad';
+import { WelcomeModal } from './ui/WelcomeModal';
+import { CoachMarks } from './ui/CoachMarks';
 
 // ── Reducer ────────────────────────────────────────────────────────────────
 
@@ -224,6 +226,11 @@ export function Board({ preset, class: className, readonly = false }: BoardProps
   } | null>(null);
 
   const [editingNoteId, setEditingNoteId] = useState<string | null>(null);
+
+  const [showWelcome, setShowWelcome] = useState(() =>
+    !readonly && !localStorage.getItem('pizarra-welcome-seen'),
+  );
+  const [showCoach, setShowCoach] = useState(false);
 
   const reducedMotion = usePrefersReducedMotion();
   const coarsePointer = useCoarsePointer();
@@ -437,7 +444,7 @@ export function Board({ preset, class: className, readonly = false }: BoardProps
       <div style={{ display: 'flex', background: 'rgba(0,0,0,0.7)' }}>
         <TopBar board={board} dispatch={dispatch} coarsePointer={coarsePointer} />
         {!readonly && (
-          <div style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '0 8px', flexShrink: 0 }}>
+          <div data-coach="share" style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '0 8px', flexShrink: 0 }}>
             <button
               type="button"
               aria-label="Compartir pizarra"
@@ -633,6 +640,24 @@ export function Board({ preset, class: className, readonly = false }: BoardProps
       )}
 
       <ShareToast visible={shareVisible} url={shareUrl} onDismiss={dismissShare} />
+
+      {showWelcome && (
+        <WelcomeModal
+          onStart={() => {
+            try { localStorage.setItem('pizarra-welcome-seen', '1'); } catch { /* private browsing */ }
+            setShowWelcome(false);
+            setShowCoach(true);
+          }}
+          onSkip={() => {
+            try { localStorage.setItem('pizarra-welcome-seen', '1'); } catch { /* private browsing */ }
+            setShowWelcome(false);
+          }}
+        />
+      )}
+
+      {showCoach && (
+        <CoachMarks onDone={() => setShowCoach(false)} />
+      )}
     </div>
   );
 }
