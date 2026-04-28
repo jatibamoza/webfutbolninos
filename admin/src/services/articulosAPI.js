@@ -25,6 +25,15 @@ export async function saveArticulo(slug, { frontmatter, body }) {
   return res.json();
 }
 
+export async function publicarArticulo(slug) {
+  const res = await fetch(`${BASE}/${slug}/publicar`, { method: 'POST' });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok || data.ok === false) {
+    throw new Error(data.error || `Error ${res.status} al publicar`);
+  }
+  return data;
+}
+
 export async function deleteArticulo(slug) {
   const res = await fetch(`${BASE}/${slug}`, { method: 'DELETE' });
   const data = await res.json().catch(() => ({ ok: false, error: `Error ${res.status}` }));
