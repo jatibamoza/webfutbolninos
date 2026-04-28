@@ -29,6 +29,7 @@ import { NoteEditor } from './ui/NoteEditor';
 import { ShareToast, useShareToast } from './ui/ShareToast';
 import { Watermark } from './ui/Watermark';
 import { ExportButton } from './ui/ExportButton';
+import { NudgePad } from './ui/NudgePad';
 
 // ── Reducer ────────────────────────────────────────────────────────────────
 
@@ -338,6 +339,13 @@ export function Board({ preset, class: className }: BoardProps) {
   );
   useKeyboardNudge(selected, handleNudge);
 
+  const onNudge = useCallback(
+    (dx: number, dy: number) => {
+      if (selected) handleNudge(selected, dx, dy);
+    },
+    [selected, handleNudge],
+  );
+
   // Screen → SVG viewBox coordinate transform
   const toLocal = useCallback((clientX: number, clientY: number) => {
     const svg = svgRef.current;
@@ -591,9 +599,8 @@ export function Board({ preset, class: className }: BoardProps) {
           </svg>
         </div>
 
-        {/* NudgePad mobile — wired in F2.11 */}
         {coarsePointer && (
-          <div class="pizarra-nudgepad" aria-label="Control táctil de movimiento" />
+          <NudgePad selected={selected} onNudge={onNudge} />
         )}
       </div>
 
