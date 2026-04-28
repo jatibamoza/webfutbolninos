@@ -207,9 +207,10 @@ export interface BoardPassthrough {
 interface BoardProps {
   preset?: string;
   class?: string;
+  readonly?: boolean;
 }
 
-export function Board({ preset, class: className }: BoardProps) {
+export function Board({ preset, class: className, readonly = false }: BoardProps) {
   const [board, dispatch] = useReducer(boardReducer, undefined, () => initBoard(preset));
   const [frameIdx, setFrameIdx] = useState(0);
   const [activeTool, setActiveTool] = useState<Tool>('select');
@@ -435,35 +436,39 @@ export function Board({ preset, class: className }: BoardProps) {
     >
       <div style={{ display: 'flex', background: 'rgba(0,0,0,0.7)' }}>
         <TopBar board={board} dispatch={dispatch} coarsePointer={coarsePointer} />
-        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '0 8px', flexShrink: 0 }}>
-          <button
-            type="button"
-            aria-label="Compartir pizarra"
-            title="Compartir enlace"
-            onClick={triggerShare}
-            style={{
-              display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-              minWidth: '44px', minHeight: '44px', border: '1px solid rgba(255,255,255,0.3)',
-              borderRadius: '8px', background: 'transparent', color: '#f5f0e8', cursor: 'pointer',
-            }}
-          >
-            <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="2" width="18" height="18" aria-hidden="true">
-              <circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/>
-              <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
-            </svg>
-          </button>
-          <ExportButton svgRef={svgRef} />
-        </div>
+        {!readonly && (
+          <div style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '0 8px', flexShrink: 0 }}>
+            <button
+              type="button"
+              aria-label="Compartir pizarra"
+              title="Compartir enlace"
+              onClick={triggerShare}
+              style={{
+                display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+                minWidth: '44px', minHeight: '44px', border: '1px solid rgba(255,255,255,0.3)',
+                borderRadius: '8px', background: 'transparent', color: '#f5f0e8', cursor: 'pointer',
+              }}
+            >
+              <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="2" width="18" height="18" aria-hidden="true">
+                <circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/>
+                <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
+              </svg>
+            </button>
+            <ExportButton svgRef={svgRef} />
+          </div>
+        )}
       </div>
 
       <div style={{ display: 'flex', flex: 1, minHeight: 0, overflow: 'hidden' }}>
-        <Toolbar
-          activeTool={activeTool}
-          setActiveTool={setActiveTool}
-          selected={selected}
-          frameIdx={frameIdx}
-          dispatch={dispatch}
-        />
+        {!readonly && (
+          <Toolbar
+            activeTool={activeTool}
+            setActiveTool={setActiveTool}
+            selected={selected}
+            frameIdx={frameIdx}
+            dispatch={dispatch}
+          />
+        )}
 
         {/* Field canvas */}
         <div
@@ -483,7 +488,7 @@ export function Board({ preset, class: className }: BoardProps) {
             }}
             aria-label="Pizarra táctica interactiva"
             role="application"
-            onPointerDown={onSvgPointerDown}
+            onPointerDown={readonly ? undefined : onSvgPointerDown}
           >
             {/* Field background (skin color) */}
             <rect x="0" y="0" width="100" height="100" fill={BG_BY_SKIN[board.skin]} />
@@ -599,22 +604,24 @@ export function Board({ preset, class: className }: BoardProps) {
           </svg>
         </div>
 
-        {coarsePointer && (
+        {coarsePointer && !readonly && (
           <NudgePad selected={selected} onNudge={onNudge} />
         )}
       </div>
 
-      <Timeline
-        board={board}
-        frameIdx={frameIdx}
-        setFrameIdx={setFrameIdx}
-        playing={playing}
-        setPlaying={setPlaying}
-        reducedMotion={reducedMotion}
-        dispatch={dispatch}
-      />
+      {!readonly && (
+        <Timeline
+          board={board}
+          frameIdx={frameIdx}
+          setFrameIdx={setFrameIdx}
+          playing={playing}
+          setPlaying={setPlaying}
+          reducedMotion={reducedMotion}
+          dispatch={dispatch}
+        />
+      )}
 
-      {editingNote && (
+      {editingNote && !readonly && (
         <NoteEditor
           note={editingNote}
           frameIdx={frameIdx}
