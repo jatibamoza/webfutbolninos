@@ -9,7 +9,7 @@
 
 - **Fecha:** 2026-04-28
 - **Fase:** 2 — Lanzamiento (identidad visual + monetización)
-- **Sprint activo:** **Sprint 10 — Bloque 3 en progreso.** Bloque 1 cerrado (Publicar endpoint + tests E2E + Dependabot). Bloque 2 pendiente (4 artículos → 25 total). Bloque 3 activo (EstrategiaSocialVideo.md + FlujoTrabajo.md + fix Playwright tests).
+- **Sprint activo:** **Sprint 12 — por planificar.** Sprint 10 cerrado. Sprint 11 cerrado (8 artículos → 29 total + Pinterest meta tags).
 - **Bloqueantes:** ninguno técnico — esperando aprobación AdSense + indexación SEO (4-8 semanas desde 2026-04-26).
 
 ---
@@ -41,11 +41,11 @@
 
 ## 🎯 Próximos pasos inmediatos (top 5)
 
-1. **[Bloque 2 pendiente]** 4 artículos → 25 total: `talla-balon-futbol-segun-edad`, `ejercicios-futbol-ninos-5-anos`, `calentamiento-futbol-ninos-10-minutos`, `juegos-futbol-conos-ninos`
-2. **Crear cuenta @minigolclub en Instagram** — primer Reel apunta a artículo ya publicado
-3. **Esperar aprobación AdSense** → me da slot IDs → los pego en `<AdSlot>` (acción manual usuario)
-4. **Bloque 2 Sprint 11** — completar backlog 20 restante (10 artículos pendientes)
-5. **Pizarra Táctica MVP** — isla Preact + backend Cloudflare-only (según `docs/PlanTrabajoPizarra.md` Fase 2)
+1. **Sprint 12** — próximos artículos del backlog (10 pendientes de los 20 núcleo originales)
+2. **Primer Reel @minigolclub** — cuenta creada; guión + publicación apuntando a artículo existente
+3. **Esperar aprobación AdSense** → recibir slot IDs → pegar en `<AdSlot>` (acción manual usuario)
+4. **Pizarra Táctica MVP** — isla Preact + backend Cloudflare-only (según `docs/PlanTrabajoPizarra.md` Fase 2)
+5. **Forzar reindex GSC** para 5 URLs prioritarias
 
 ---
 
@@ -53,14 +53,14 @@
 
 | Métrica | Objetivo año 1 | Actual | Última medición |
 |---------|----------------|--------|-----------------|
-| Artículos publicados | 50 | **21** | 2026-04-28 |
+| Artículos publicados | 50 | **29** | 2026-04-28 |
 | Visitas/mes (GA4) | 30.000 | 0 | — (indexación pendiente) |
 | Suscriptores newsletter | 1.000 | 0 | — |
 | Ingresos AdSense ($) | 200/mes | 0 | — (aprobación pendiente) |
 | Conversiones Amazon (clicks → ventas) | 50/mes | 0 | — |
 | Backlinks dofollow DA>30 | 10 | 0 | — |
 | CWV "Good" en CrUX | 100% URLs | n/a | — |
-| Seguidores Instagram @minigolclub | 500 (mes 3) | 0 | — (cuenta por crear) |
+| Seguidores Instagram @minigolclub | 500 (mes 3) | 0 | — (cuenta creada, pendiente primer Reel) |
 
 ---
 
@@ -161,36 +161,40 @@ Content Manager Fase 2 — wizard de creación con auto-PR.
 
 ---
 
-## 🔄 Sprint actual — Sprint 10 (2026-04-28)
+## ✅ Sprint 10 cerrado (2026-04-28, PR #38)
 
 ### Objetivo
-Deuda técnica admin + documentación estratégica + fix tests + 4 artículos → 25.
+Deuda técnica admin + documentación estratégica + fix tests.
 
-### Bloque 1 ✅ Cerrado
+### Cerradas
 
 - [x] Botón "Publicar" en `EditPage` — guarda + abre PR draft desde el editor (`POST /api/articulos/:slug/publicar`)
 - [x] Fix TypeCheck CI ts(1308) — endpoint `/publicar` usando IIFE async para evitar await en callback síncrono
-- [x] Dependabot PR #17 (Vite) + PR #18 (esbuild) mergeados con `--admin` flag
-- [x] PR #29 conducción-balón mergeado (artículo "conducción de balón fútbol niños", limpio desde main)
-
-### Bloque 2 ⏳ Pendiente
-
-- [ ] `talla-balon-futbol-segun-edad` (equipamiento, money keyword hub, ~2000w)
-- [ ] `ejercicios-futbol-ninos-5-anos` (ejercicios, age silo 5-6-7 cluster, ~1800w)
-- [ ] `calentamiento-futbol-ninos-10-minutos` (ejercicios, high search volume, ~1700w)
-- [ ] `juegos-futbol-conos-ninos` (juegos, viral Pinterest, ~1800w)
-
-### Bloque 3 🔄 En progreso
-
-- [x] `docs/seo/EstrategiaSocialVideo.md` — Instagram Reels, in-house + freelance, @minigolclub
-- [x] `docs/FlujoTrabajo.md` — actualizado Sprints 5-10
+- [x] Dependabot PR #17 (Vite) + PR #18 (esbuild) mergeados
+- [x] PR #29 conducción-balón mergeado (artículo 21)
 - [x] Fix Playwright tests — `Field` con `htmlFor` + `id` para que `getByLabel()` funcione
+- [x] `docs/seo/EstrategiaSocialVideo.md` — Instagram Reels, in-house + freelance, @minigolclub
 
-### Pendientes (acciones manuales del usuario)
+---
 
-- [ ] **3.7** Solicitar Google AdSense — checklist en `docs/GuiaMonetizacion.md §1`
-- [ ] **Crear cuenta @minigolclub** en Instagram — primer Reel apunta a artículo existente
-- [ ] **Forzar reindex GSC** para 5 URLs prioritarias
+## ✅ Sprint 11 cerrado (2026-04-28, PR #39)
+
+### Objetivo
+8 artículos del backlog + Pinterest Rich Pins → 29 artículos publicados.
+
+### Cerradas
+
+- [x] **8 artículos** — 21 → 29 publicados:
+  - `calentamiento-futbol-ninos-10-minutos` (ejercicios, ~1700w)
+  - `ejercicios-futbol-ninos-5-anos` (ejercicios, age silo 5-6-7, ~1800w)
+  - `ejercicios-futbol-ninos-9-anos` (ejercicios, age silo 9-10, ~1900w)
+  - `pase-control-balon-ninos` (ejercicios, técnica base, ~1800w)
+  - `talla-balon-futbol-segun-edad` (equipamiento, money keyword hub, ~2000w)
+  - `mejores-porterias-plegables-jardin` (equipamiento, Amazon afiliados, ~1900w)
+  - `juegos-futbol-conos-ninos` (juegos, viral Pinterest, ~1800w)
+  - `juegos-futbol-pequeno-espacio` (juegos, búsqueda alta, ~1900w)
+- [x] **Pinterest Rich Pins** — meta tags en `ArticleLayout.astro` (`pinterest-rich-pin`, `article:section`, `article:tag`, `pinterest:description`, `pinterest:media`)
+- [x] Fix 7 descripciones MDX >160 chars (Zod schema enforcement)
 
 ---
 
