@@ -17,7 +17,7 @@ Generar tráfico de descubrimiento hacia `minigolclub.com` desde Instagram Reels
 |----------|----------|-------|
 | Plataforma | **Instagram Reels** únicamente | Evitar sobrecarga inicial; TikTok y YouTube Shorts se evalúan al mes 3 con datos reales |
 | Producción | **In-house + freelance** | Máximo control de marca en inicio; escalar con freelance cuando el volumen supere 3 vídeos/semana |
-| Cuenta | **Nueva @minigolclub** (crear) | Separar identidad de marca de cuentas personales desde el día 1 |
+| Cuenta | **@minigolclub** ✅ creada (2026-04-28) | Separar identidad de marca de cuentas personales desde el día 1 |
 
 ---
 

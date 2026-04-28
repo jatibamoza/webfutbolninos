@@ -42,7 +42,7 @@
 ## 🎯 Próximos pasos inmediatos (top 5)
 
 1. **Sprint 12** — próximos artículos del backlog (10 pendientes de los 20 núcleo originales)
-2. **Primer Reel @minigolclub** — cuenta creada; guión + publicación apuntando a artículo existente
+2. **Primer Reel @minigolclub** — cuenta `instagram.com/minigolclub/` activa; guión + publicación apuntando a artículo existente
 3. **Esperar aprobación AdSense** → recibir slot IDs → pegar en `<AdSlot>` (acción manual usuario)
 4. **Pizarra Táctica MVP** — isla Preact + backend Cloudflare-only (según `docs/PlanTrabajoPizarra.md` Fase 2)
 5. **Forzar reindex GSC** para 5 URLs prioritarias
@@ -60,7 +60,7 @@
 | Conversiones Amazon (clicks → ventas) | 50/mes | 0 | — |
 | Backlinks dofollow DA>30 | 10 | 0 | — |
 | CWV "Good" en CrUX | 100% URLs | n/a | — |
-| Seguidores Instagram @minigolclub | 500 (mes 3) | 0 | — (cuenta creada, pendiente primer Reel) |
+| Seguidores Instagram @minigolclub | 500 (mes 3) | 0 | — (cuenta @minigolclub activa, 0 publicaciones) |
 
 ---
 
