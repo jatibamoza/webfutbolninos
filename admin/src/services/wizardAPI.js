@@ -16,6 +16,22 @@ export async function crearArticulo(data) {
   return json;
 }
 
+export async function crearPR({ slug, categoria, title, filePath, coverPath }) {
+  const res = await fetch(`${BASE}/pr`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ slug, categoria, title, filePath, coverPath }),
+  });
+
+  const json = await res.json().catch(() => ({ ok: false, error: `Error ${res.status}` }));
+
+  if (!res.ok || json.ok === false) {
+    throw new Error(json.error || `Error ${res.status} al crear PR`);
+  }
+
+  return json;
+}
+
 export async function checkSlugDisponible(slug) {
   try {
     const res = await fetch(BASE);

@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
-import { CheckCircle, AlertCircle } from 'lucide-react';
+import { CheckCircle, AlertCircle, ExternalLink } from 'lucide-react';
 import { checkSlugDisponible } from '../../services/wizardAPI.js';
 import { CATEGORIAS } from '../../services/wizardSchema.js';
 
-export default function Step4Preview({ state, submitting, onSubmit }) {
+export default function Step4Preview({ state, submitting, onSubmit, articuloCreado, prCreado, creandoPR, onCrearPR, onVolverDashboard }) {
   const { categoria, slug, title, description, edadMin, edadMax, nivel, outline, keyword } = state;
 
   const [slugDisponible, setSlugDisponible] = useState(null); // null = comprobando
@@ -40,6 +40,118 @@ export default function Step4Preview({ state, submitting, onSubmit }) {
       label: 'Cuerpo MDX vacío (rellena luego en el editor)',
     },
   ];
+
+  // Pantalla post-creación: el MDX ya está en disco, el usuario decide si abre PR
+  if (articuloCreado) {
+    return (
+      <section className="card-paper" style={{ padding: 28, marginBottom: 18 }}>
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: 10,
+            marginBottom: 16,
+            color: 'var(--color-secondary)',
+            fontWeight: 700,
+            fontSize: 16,
+          }}
+        >
+          <CheckCircle size={22} style={{ flexShrink: 0 }} />
+          Artículo creado en{' '}
+          <code
+            style={{
+              fontFamily: 'var(--font-mono)',
+              fontSize: 13,
+              background: 'var(--color-surface-alt)',
+              padding: '2px 8px',
+              borderRadius: 6,
+            }}
+          >
+            {articuloCreado.filePath}
+          </code>
+        </div>
+
+        {!prCreado ? (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+            <p style={{ fontSize: 14, color: 'var(--color-foreground-muted)', margin: 0 }}>
+              El archivo MDX y la cover ya están en disco. El siguiente paso es abrir un Pull Request draft en GitHub para revisión antes de publicar.
+            </p>
+            <div style={{ display: 'flex', gap: 10, alignItems: 'center', flexWrap: 'wrap' }}>
+              <button
+                type="button"
+                className="btn btn-primary"
+                onClick={onCrearPR}
+                disabled={creandoPR}
+                style={{ opacity: creandoPR ? 0.6 : 1 }}
+              >
+                {creandoPR ? 'Abriendo PR…' : 'Abrir Pull Request'}
+                {!creandoPR && <ExternalLink size={15} />}
+              </button>
+              <button
+                type="button"
+                className="btn btn-ghost"
+                onClick={onVolverDashboard}
+              >
+                Volver al dashboard (sin PR)
+              </button>
+            </div>
+            {creandoPR && (
+              <p style={{ fontSize: 12, color: 'var(--color-foreground-subtle)', fontFamily: 'var(--font-mono)', margin: 0 }}>
+                Creando rama, commit y push… puede tardar 5–15 segundos.
+              </p>
+            )}
+          </div>
+        ) : (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+            <div
+              style={{
+                padding: 16,
+                background: 'color-mix(in srgb, var(--color-secondary) 10%, transparent)',
+                border: '1.5px solid var(--color-secondary)',
+                borderRadius: 10,
+                display: 'flex',
+                flexDirection: 'column',
+                gap: 6,
+              }}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontWeight: 700, color: 'var(--color-secondary)' }}>
+                <CheckCircle size={18} />
+                PR #{prCreado.prNumber} abierto como draft
+              </div>
+              <div style={{ fontFamily: 'var(--font-mono)', fontSize: 12, color: 'var(--color-foreground-muted)' }}>
+                Branch: <strong>{prCreado.branch}</strong>
+              </div>
+              <a
+                href={prCreado.prUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: 6,
+                  fontSize: 14,
+                  fontWeight: 600,
+                  color: 'var(--color-accent)',
+                  textDecoration: 'none',
+                  marginTop: 4,
+                }}
+              >
+                Ver en GitHub
+                <ExternalLink size={14} />
+              </a>
+            </div>
+            <button
+              type="button"
+              className="btn btn-ghost"
+              onClick={onVolverDashboard}
+            >
+              Volver al dashboard
+            </button>
+          </div>
+        )}
+      </section>
+    );
+  }
 
   return (
     <section className="card-paper" style={{ padding: 28, marginBottom: 18 }}>

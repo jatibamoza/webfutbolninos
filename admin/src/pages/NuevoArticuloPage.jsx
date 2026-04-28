@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, ArrowRight, X } from 'lucide-react';
 import { toast } from '../services/toast.js';
-import { crearArticulo } from '../services/wizardAPI.js';
+import { crearArticulo, crearPR } from '../services/wizardAPI.js';
 import { step1Schema, step3Schema, wizardFullSchema } from '../services/wizardSchema.js';
 import Stepper from '../components/wizard/Stepper.jsx';
 import Step1Categoria from '../components/wizard/Step1Categoria.jsx';
@@ -50,6 +50,9 @@ export default function NuevoArticuloPage() {
   const [, forceRender] = useState(0); // para actualizar el relativo "hace Xs"
   const [step2Valid, setStep2Valid] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [articuloCreado, setArticuloCreado] = useState(null);
+  const [prCreado, setPrCreado] = useState(null);
+  const [creandoPR, setCreandoPR] = useState(false);
 
   // Debounce al guardar en localStorage
   const debounceRef = useRef(null);
@@ -116,14 +119,35 @@ export default function NuevoArticuloPage() {
     setSubmitting(true);
     try {
       const result = await crearArticulo(wizardState);
-      toast(`Artículo creado en ${result.filePath}. PR pendiente (Squad A3 lo automatizará).`, 'success');
+      toast(`Artículo creado en ${result.filePath}`, 'success');
       localStorage.removeItem(DRAFT_KEY);
-      navigate('/');
+      setArticuloCreado(result);
     } catch (err) {
       console.warn('[wizard] POST /api/articulos/crear falló:', err.message);
       toast(err.message, 'error');
     } finally {
       setSubmitting(false);
+    }
+  }
+
+  async function handleCrearPR() {
+    if (!articuloCreado) return;
+    setCreandoPR(true);
+    try {
+      const result = await crearPR({
+        slug: articuloCreado.slug,
+        categoria: articuloCreado.categoria,
+        title: wizardState.title,
+        filePath: articuloCreado.filePath,
+        coverPath: articuloCreado.coverPath,
+      });
+      setPrCreado(result);
+      toast(`PR #${result.prNumber} abierto`, 'success');
+    } catch (err) {
+      console.warn('[wizard] POST /api/articulos/pr falló:', err.message);
+      toast(err.message, 'error');
+    } finally {
+      setCreandoPR(false);
     }
   }
 
@@ -235,6 +259,11 @@ export default function NuevoArticuloPage() {
           state={wizardState}
           submitting={submitting}
           onSubmit={handleSubmit}
+          articuloCreado={articuloCreado}
+          prCreado={prCreado}
+          creandoPR={creandoPR}
+          onCrearPR={handleCrearPR}
+          onVolverDashboard={() => navigate('/')}
         />
       )}
 
@@ -272,7 +301,7 @@ export default function NuevoArticuloPage() {
               Continuar
               <ArrowRight size={16} />
             </button>
-          ) : (
+          ) : !articuloCreado ? (
             <button
               type="button"
               className="btn btn-primary"
@@ -283,7 +312,7 @@ export default function NuevoArticuloPage() {
               {submitting ? 'Generando…' : 'Generar artículo (draft)'}
               {!submitting && <ArrowRight size={16} />}
             </button>
-          )}
+          ) : null}
         </div>
       </nav>
     </div>
