@@ -24,6 +24,11 @@ import { useKeyboardNudge } from './hooks/useKeyboardNudge';
 import { usePrefersReducedMotion, useCoarsePointer } from './hooks/usePrefersReducedMotion';
 import { Toolbar } from './ui/Toolbar';
 import { TopBar } from './ui/TopBar';
+import { Timeline } from './ui/Timeline';
+import { NoteEditor } from './ui/NoteEditor';
+import { ShareToast, useShareToast } from './ui/ShareToast';
+import { Watermark } from './ui/Watermark';
+import { ExportButton } from './ui/ExportButton';
 
 // ── Reducer ────────────────────────────────────────────────────────────────
 
@@ -216,8 +221,11 @@ export function Board({ preset, class: className }: BoardProps) {
     y2: number;
   } | null>(null);
 
+  const [editingNoteId, setEditingNoteId] = useState<string | null>(null);
+
   const reducedMotion = usePrefersReducedMotion();
   const coarsePointer = useCoarsePointer();
+  const { triggerShare, visible: shareVisible, url: shareUrl, dismiss: dismissShare } = useShareToast();
 
   const svgRef = useRef<SVGSVGElement | null>(null);
   const startDrag = useSvgDrag(svgRef);
@@ -406,6 +414,9 @@ export function Board({ preset, class: className }: BoardProps) {
 
   const currentFrame = board.frames[frameIdx];
   const { ratio } = FIELD_CONFIG[board.fieldType];
+  const editingNote = editingNoteId
+    ? (currentFrame?.notes.find((n) => n.id === editingNoteId) ?? null)
+    : null;
 
   if (!currentFrame) return null;
 
@@ -414,7 +425,28 @@ export function Board({ preset, class: className }: BoardProps) {
       class={['pizarra-board', className].filter(Boolean).join(' ')}
       style={{ display: 'flex', flexDirection: 'column', height: '100%' }}
     >
-      <TopBar board={board} dispatch={dispatch} coarsePointer={coarsePointer} />
+      <div style={{ display: 'flex', background: 'rgba(0,0,0,0.7)' }}>
+        <TopBar board={board} dispatch={dispatch} coarsePointer={coarsePointer} />
+        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '0 8px', flexShrink: 0 }}>
+          <button
+            type="button"
+            aria-label="Compartir pizarra"
+            title="Compartir enlace"
+            onClick={triggerShare}
+            style={{
+              display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+              minWidth: '44px', minHeight: '44px', border: '1px solid rgba(255,255,255,0.3)',
+              borderRadius: '8px', background: 'transparent', color: '#f5f0e8', cursor: 'pointer',
+            }}
+          >
+            <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="2" width="18" height="18" aria-hidden="true">
+              <circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/>
+              <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
+            </svg>
+          </button>
+          <ExportButton svgRef={svgRef} />
+        </div>
+      </div>
 
       <div style={{ display: 'flex', flex: 1, minHeight: 0, overflow: 'hidden' }}>
         <Toolbar
@@ -537,11 +569,11 @@ export function Board({ preset, class: className }: BoardProps) {
                     dispatch({ type: 'MOVE_NOTE', frameIdx, id: note.id, x, y }),
                   );
                 }}
-                onDoubleClick={() => {
-                  // NoteEditor connected in F2.9
-                }}
+                onDoubleClick={() => setEditingNoteId(note.id)}
               />
             ))}
+
+            <Watermark skin={board.skin} />
 
             {/* Live arrow preview while drawing */}
             {drawPreview && (
@@ -565,12 +597,26 @@ export function Board({ preset, class: className }: BoardProps) {
         )}
       </div>
 
-      {/* Timeline — frame controls + play/pause — wired in F2.8 */}
-      <div
-        class="pizarra-timeline"
-        role="toolbar"
-        aria-label={`Frame ${frameIdx + 1} de ${board.frames.length}. ${playing ? 'Reproduciendo' : 'Pausado'}`}
+      <Timeline
+        board={board}
+        frameIdx={frameIdx}
+        setFrameIdx={setFrameIdx}
+        playing={playing}
+        setPlaying={setPlaying}
+        reducedMotion={reducedMotion}
+        dispatch={dispatch}
       />
+
+      {editingNote && (
+        <NoteEditor
+          note={editingNote}
+          frameIdx={frameIdx}
+          dispatch={dispatch}
+          onClose={() => setEditingNoteId(null)}
+        />
+      )}
+
+      <ShareToast visible={shareVisible} url={shareUrl} onDismiss={dismissShare} />
     </div>
   );
 }
