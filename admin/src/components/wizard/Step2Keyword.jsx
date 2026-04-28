@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { cloneElement, useEffect, useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { step2Schema } from '../../services/wizardSchema.js';
@@ -204,10 +204,21 @@ function slugRegexCheck(slug) {
   return /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug);
 }
 
+function fieldId(label) {
+  return label
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[̀-ͯ]/g, '')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '');
+}
+
 function Field({ label, hint, error, required, counter, counterWarn, counterError, children }) {
+  const id = fieldId(label);
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 6, marginBottom: 18 }}>
       <label
+        htmlFor={id}
         style={{
           fontWeight: 700,
           fontSize: 13,
@@ -219,10 +230,11 @@ function Field({ label, hint, error, required, counter, counterWarn, counterErro
       >
         {label}
         {required && (
-          <span style={{ color: 'var(--color-energy)', fontFamily: 'var(--font-mono)', fontSize: 12 }}>*</span>
+          <span aria-hidden="true" style={{ color: 'var(--color-energy)', fontFamily: 'var(--font-mono)', fontSize: 12 }}>*</span>
         )}
         {counter && (
           <span
+            aria-hidden="true"
             style={{
               marginLeft: 'auto',
               fontFamily: 'var(--font-mono)',
@@ -238,7 +250,7 @@ function Field({ label, hint, error, required, counter, counterWarn, counterErro
           </span>
         )}
       </label>
-      {children}
+      {cloneElement(children, { id })}
       {error ? (
         <span
           style={{
