@@ -432,7 +432,7 @@ export function Board({ preset, class: className, readonly = false }: BoardProps
   return (
     <div
       class={['pizarra-board', className].filter(Boolean).join(' ')}
-      style={{ display: 'flex', flexDirection: 'column', height: '100%' }}
+      style={{ display: 'flex', flexDirection: 'column', height: '100%', background: '#111' }}
     >
       <div style={{ display: 'flex', background: 'rgba(0,0,0,0.7)' }}>
         <TopBar board={board} dispatch={dispatch} coarsePointer={coarsePointer} />
