@@ -1,0 +1,45 @@
+{
+  "id": "pase-y-va",
+  "nombre": "Pase y va",
+  "edad": "6-10",
+  "descripcion": "Pasas, corres a la otra cono. El compañero te devuelve.",
+  "fieldType": "half",
+  "locked": false,
+  "board": {
+    "fieldType": "half",
+    "skin": "chalk",
+    "frames": [
+      {
+        "players": [
+          { "id": "pyv:p1", "kind": "player_blue", "x": 30, "y": 70, "num": "1" },
+          { "id": "pyv:p2", "kind": "player_blue", "x": 70, "y": 70, "num": "2" }
+        ],
+        "objects": [
+          { "id": "pyv:ball", "kind": "ball", "x": 30, "y": 70 },
+          { "id": "pyv:c1", "kind": "cone", "x": 30, "y": 30 },
+          { "id": "pyv:c2", "kind": "cone", "x": 70, "y": 30 }
+        ],
+        "arrows": [
+          { "id": "pyv:pass1", "kind": "pass", "x1": 32, "y1": 70, "x2": 68, "y2": 70, "cx": 50, "cy": 67 },
+          { "id": "pyv:move1", "kind": "move", "x1": 30, "y1": 70, "x2": 30, "y2": 32, "cx": 22, "cy": 50 }
+        ],
+        "notes": [{ "id": "pyv:note1", "x": 50, "y": 92, "text": "pasa y corre. siempre." }]
+      },
+      {
+        "players": [
+          { "id": "pyv:p1", "kind": "player_blue", "x": 30, "y": 30, "num": "1" },
+          { "id": "pyv:p2", "kind": "player_blue", "x": 70, "y": 70, "num": "2" }
+        ],
+        "objects": [
+          { "id": "pyv:ball", "kind": "ball", "x": 70, "y": 70 },
+          { "id": "pyv:c1", "kind": "cone", "x": 30, "y": 30 },
+          { "id": "pyv:c2", "kind": "cone", "x": 70, "y": 30 }
+        ],
+        "arrows": [
+          { "id": "pyv:pass2", "kind": "pass", "x1": 68, "y1": 70, "x2": 32, "y2": 30, "cx": 50, "cy": 42 }
+        ],
+        "notes": [{ "id": "pyv:note2", "x": 50, "y": 92, "text": "devolución al espacio" }]
+      }
+    ]
+  }
+}
