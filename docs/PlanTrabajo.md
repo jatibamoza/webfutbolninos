@@ -27,8 +27,9 @@
 | **2 — Identidad y monetización** | S4-S5 | Diseño 'Cuaderno de Campo', Pagefind, AmazonCard, AdSense script | ✅ COMPLETO |
 | **3 — Estabilización técnica** | S6 | Fix Lighthouse a11y/perf, schema nivel, CLAUDE.md alineado, Dependabot | ✅ COMPLETO |
 | **4 — UX + perf real** | S7 | Theme toggle, GTM/AdSense post-consent, cover image(), 4 artículos nuevos, vuln yaml | ✅ COMPLETO |
-| **5 — Content Manager + cierre backlog** | **S8** | **Admin local con wizard, cerrar 6 artículos backlog, página /autores/, lead-magnet PDF** | 🔴 **EN CURSO** |
-| **6 — Crecimiento** | S9-S11 | Llegar a 30+ artículos, Pinterest activo, newsletter, sistema tags | ⏳ |
+| **5 — Content Manager Fase 1** | S8 | Admin local edit, 6 artículos backlog 20, página /autores/ E-E-A-T | ✅ COMPLETO |
+| **5b — Content Manager Fase 2** | **S9** | **Wizard creación 4 pasos + auto-PR draft + delete artículo (PR #23)** | ✅ COMPLETO |
+| **6 — Crecimiento** | S10-S12 | Pipeline social vídeo TikTok+Instagram, llegar a 30+ artículos, Pinterest, newsletter | ⏳ |
 | **7 — Monetización plena** | S12+ | Lead-magnet gated, A/B test ads, comparativas Amazon completas | ⏳ |
 
 ---
