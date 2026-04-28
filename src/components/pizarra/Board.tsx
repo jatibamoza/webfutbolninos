@@ -20,6 +20,7 @@ import { Arrow as ArrowPrimitive } from './primitives/Arrow';
 import { Note as NotePrimitive } from './primitives/Note';
 import { useSvgDrag } from './hooks/useSvgDrag';
 import { useUrlHash, readInitialBoardFromHash } from './hooks/useUrlHash';
+import { buildHashForBoard } from './core/serialize';
 import { useKeyboardNudge } from './hooks/useKeyboardNudge';
 import { usePrefersReducedMotion, useCoarsePointer } from './hooks/usePrefersReducedMotion';
 import { Toolbar } from './ui/Toolbar';
@@ -185,6 +186,15 @@ const BG_BY_SKIN: Record<BoardModel['skin'], string> = {
   paper: '#f5f0e8',
   grass: '#2d5a1b',
 };
+
+const BOARD_CSS = `
+  .pizarra-mid-row { display: flex; flex: 1; min-height: 0; overflow: hidden; }
+  @media (max-width: 639px) {
+    .pizarra-mid-row { flex-direction: column; }
+    .pizarra-controls-wrap { order: 2; display: flex; flex-direction: row; flex-shrink: 0; align-items: center; }
+    .pizarra-field-wrap { order: 1; }
+  }
+`;
 
 // ── Public types for sub-panels (Toolbar / TopBar / Timeline) ─────────────
 
@@ -441,6 +451,7 @@ export function Board({ preset, class: className, readonly = false }: BoardProps
       class={['pizarra-board', className].filter(Boolean).join(' ')}
       style={{ display: 'flex', flexDirection: 'column', height: '100%', background: '#111' }}
     >
+      <style>{BOARD_CSS}</style>
       <div style={{ display: 'flex', background: 'rgba(0,0,0,0.7)' }}>
         <TopBar board={board} dispatch={dispatch} coarsePointer={coarsePointer} />
         {!readonly && (
@@ -449,7 +460,11 @@ export function Board({ preset, class: className, readonly = false }: BoardProps
               type="button"
               aria-label="Compartir pizarra"
               title="Compartir enlace"
-              onClick={triggerShare}
+              onClick={() => {
+                const hash = buildHashForBoard(board);
+                window.history.replaceState(null, '', `${window.location.pathname}${window.location.search}${hash}`);
+                triggerShare();
+              }}
               style={{
                 display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
                 minWidth: '44px', minHeight: '44px', border: '1px solid rgba(255,255,255,0.3)',
@@ -466,15 +481,18 @@ export function Board({ preset, class: className, readonly = false }: BoardProps
         )}
       </div>
 
-      <div style={{ display: 'flex', flex: 1, minHeight: 0, overflow: 'hidden' }}>
+      <div class="pizarra-mid-row">
         {!readonly && (
-          <Toolbar
-            activeTool={activeTool}
-            setActiveTool={setActiveTool}
-            selected={selected}
-            frameIdx={frameIdx}
-            dispatch={dispatch}
-          />
+          <div class="pizarra-controls-wrap">
+            <Toolbar
+              activeTool={activeTool}
+              setActiveTool={setActiveTool}
+              selected={selected}
+              frameIdx={frameIdx}
+              dispatch={dispatch}
+            />
+            {coarsePointer && <NudgePad selected={selected} onNudge={onNudge} />}
+          </div>
         )}
 
         {/* Field canvas */}
@@ -613,9 +631,6 @@ export function Board({ preset, class: className, readonly = false }: BoardProps
           </svg>
         </div>
 
-        {coarsePointer && !readonly && (
-          <NudgePad selected={selected} onNudge={onNudge} />
-        )}
       </div>
 
       {!readonly && (
