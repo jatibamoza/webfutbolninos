@@ -43,7 +43,7 @@ function articulosApiMiddleware() {
       server.middlewares.use('/api/articulos', (req, res, next) => {
         res.setHeader('Content-Type', 'application/json');
         res.setHeader('Access-Control-Allow-Origin', '*');
-        res.setHeader('Access-Control-Allow-Methods', 'GET, PUT, POST, OPTIONS');
+        res.setHeader('Access-Control-Allow-Methods', 'GET, PUT, POST, DELETE, OPTIONS');
         res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
         if (req.method === 'OPTIONS') {
@@ -382,6 +382,112 @@ function articulosApiMiddleware() {
               res.end(JSON.stringify({ ok: false, error: err.message }));
             }
           });
+          return;
+        }
+
+        // POST /api/articulos/:slug/publicar → worktree desde origin/main, commit solo el MDX+cover, PR draft
+        if (req.method === 'POST' && pathParts[1] === 'publicar') {
+          const slug = pathParts[0];
+          const repoRoot = path.join(__dirname, '..');
+          const worktreePath = path.join(repoRoot, '..', 'mg-pr-tmp');
+          let worktreeCreated = false;
+          let branchCreated = false;
+          let branchName = '';
+
+          (async () => { try {
+            const articulos = readArticulosRecursive(ARTICULOS_DIR, ARTICULOS_DIR);
+            const found = articulos.find((a) => a.slug === slug);
+            if (!found) {
+              res.statusCode = 404;
+              res.end(JSON.stringify({ ok: false, error: 'Artículo no encontrado' }));
+              return;
+            }
+
+            const { categoria, filePath: articleFilePath, frontmatter } = found;
+            const relFilePath = `src/content/articulos/${categoria}/${slug}.mdx`;
+            const coverFilePath = path.join(repoRoot, 'src', 'assets', 'articulos', categoria, `${slug}.jpg`);
+            const relCoverPath = `src/assets/articulos/${categoria}/${slug}.jpg`;
+            const hasCover = fs.existsSync(coverFilePath);
+
+            branchName = `content/${slug}`;
+            const commitMsg = `content: añadir ${(frontmatter.title || slug).slice(0, 45)}`;
+
+            // Verificar que la branch no existe ya
+            try {
+              await execFileAsync('git', ['rev-parse', '--verify', branchName], { cwd: repoRoot });
+              res.statusCode = 409;
+              res.end(JSON.stringify({ ok: false, error: `Branch ya existe: ${branchName}` }));
+              return;
+            } catch { /* no existe — OK */ }
+            try {
+              await execFileAsync('git', ['ls-remote', '--exit-code', '--heads', 'origin', branchName], { cwd: repoRoot });
+              res.statusCode = 409;
+              res.end(JSON.stringify({ ok: false, error: `Branch ya existe en origin: ${branchName}` }));
+              return;
+            } catch { /* no existe — OK */ }
+
+            // Limpiar worktree si quedó de antes
+            if (fs.existsSync(worktreePath)) {
+              await execFileAsync('git', ['worktree', 'remove', worktreePath, '--force'], { cwd: repoRoot });
+            }
+
+            // Worktree desde origin/main actualizado
+            await execFileAsync('git', ['fetch', 'origin', 'main'], { cwd: repoRoot });
+            await execFileAsync('git', ['worktree', 'add', '--no-checkout', worktreePath, 'origin/main'], { cwd: repoRoot });
+            worktreeCreated = true;
+
+            await execFileAsync('git', ['checkout', '-b', branchName], { cwd: worktreePath });
+            branchCreated = true;
+
+            // Copiar solo los archivos del artículo al worktree
+            const destMdx = path.join(worktreePath, relFilePath);
+            await fsp.mkdir(path.dirname(destMdx), { recursive: true });
+            await fsp.copyFile(articleFilePath, destMdx);
+
+            const filesToAdd = [relFilePath];
+            if (hasCover) {
+              const destCover = path.join(worktreePath, relCoverPath);
+              await fsp.mkdir(path.dirname(destCover), { recursive: true });
+              await fsp.copyFile(coverFilePath, destCover);
+              filesToAdd.push(relCoverPath);
+            }
+
+            await execFileAsync('git', ['add', ...filesToAdd], { cwd: worktreePath });
+            await execFileAsync('git', ['commit', '-m', commitMsg], { cwd: worktreePath });
+            await execFileAsync('git', ['push', '-u', 'origin', branchName], { cwd: worktreePath });
+
+            const prBody = [
+              `## Artículo: ${frontmatter.title || slug}`,
+              '',
+              `- **Categoría:** ${categoria}`,
+              `- **Keyword:** ${frontmatter.keyword || '—'}`,
+              `- **Edad:** ${frontmatter.edadMin}–${frontmatter.edadMax} años`,
+              `- **Nivel:** ${frontmatter.nivel || '—'}`,
+              '',
+              'Publicado desde el Content Manager (admin/) vía botón Publicar.',
+            ].join('\n');
+
+            const { stdout: prOut } = await execFileAsync(
+              'gh',
+              ['pr', 'create', '--base', 'main', '--head', branchName, '--title', commitMsg, '--body', prBody, '--draft'],
+              { cwd: worktreePath },
+            );
+
+            const prUrl = prOut.trim();
+            const prNumber = prUrl.match(/\/pull\/(\d+)$/)?.[1];
+
+            await execFileAsync('git', ['worktree', 'remove', worktreePath, '--force'], { cwd: repoRoot });
+            res.end(JSON.stringify({ ok: true, branch: branchName, prUrl, prNumber: prNumber ? parseInt(prNumber, 10) : null }));
+          } catch (err) {
+            if (worktreeCreated && fs.existsSync(worktreePath)) {
+              try { await execFileAsync('git', ['worktree', 'remove', worktreePath, '--force'], { cwd: repoRoot }); } catch { /* ignore */ }
+            }
+            if (branchCreated && branchName) {
+              try { await execFileAsync('git', ['branch', '-D', branchName], { cwd: repoRoot }); } catch { /* ignore */ }
+            }
+            res.statusCode = 500;
+            res.end(JSON.stringify({ ok: false, error: err.message }));
+          } })();
           return;
         }
 
