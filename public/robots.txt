@@ -1,6 +1,0 @@
-User-agent: *
-Allow: /
-Disallow: /buscar
-Disallow: /buscar/
-
-Sitemap: https://minigolclub.com/sitemap-index.xml
