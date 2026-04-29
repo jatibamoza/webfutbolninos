@@ -84,10 +84,28 @@ const recursosCollection = defineCollection({
   }),
 });
 
+const pizarrasCollection = defineCollection({
+  loader: glob({ pattern: '**/*.json', base: './src/content/pizarras' }),
+  schema: z.object({
+    id: z.string(),
+    nombre: z.string(),
+    edad: z.string(),
+    descripcion: z.string(),
+    fieldType: z.enum(['full', 'half', 'mini']),
+    locked: z.boolean().default(false),
+    board: z.object({
+      fieldType: z.enum(['full', 'half', 'mini']),
+      skin: z.enum(['chalk', 'paper', 'grass']),
+      frames: z.array(z.any()),
+    }),
+  }),
+});
+
 export const collections = {
   categorias: categoriasCollection,
   autores: autoresCollection,
   articulos: articulosCollection,
   'articulos-ca': articulosCaCollection,
   recursos: recursosCollection,
+  pizarras: pizarrasCollection,
 };

@@ -1,0 +1,24 @@
+---
+import { Board } from './Board';
+
+interface Props {
+  preset?: string;
+  readonly?: boolean;
+  height?: string;
+}
+
+const { preset = 'rondo-4v1', readonly = false, height = '480px' } = Astro.props;
+const label = readonly ? 'Visualización de pizarra táctica' : 'Pizarra táctica interactiva';
+---
+
+<div
+  class="pizarra-embed"
+  aria-label={label}
+  style={`min-height: ${height}; border-radius: 8px; overflow: hidden; position: relative;`}
+>
+  <Board
+    preset={preset}
+    readonly={readonly}
+    client:visible
+  />
+</div>
