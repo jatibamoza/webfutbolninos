@@ -7,10 +7,10 @@
 
 ## 📍 Estado actual
 
-- **Fecha:** 2026-04-28
-- **Fase:** 2 — Lanzamiento (identidad visual + monetización)
-- **Sprint activo:** **Sprint 12 — por planificar.** Sprint 10 cerrado. Sprint 11 cerrado (8 artículos → 29 total + Pinterest meta tags).
-- **Bloqueantes:** ninguno técnico — esperando aprobación AdSense + indexación SEO (4-8 semanas desde 2026-04-26).
+- **Fecha:** 2026-04-29
+- **Fase:** 2 — Lanzamiento (identidad visual + monetización + expansión idiomática)
+- **Sprint activo:** **Sprint 12 en curso.** Batch 1 (PR #40): pillar ejercicios-futbol-6-anos. Batch 2 (PR #41): 4 artículos pendientes plan — conos, sala, playa, 8 años. i18n Catalán (PR #42): infraestructura multiidioma + artículo piloto CA.
+- **Bloqueantes:** ninguno técnico — esperando aprobación AdSense + indexación SEO (4-8 semanas desde 2026-04-26). Instagram @minigolclub activa (0 publicaciones).
 
 ---
 
@@ -41,11 +41,11 @@
 
 ## 🎯 Próximos pasos inmediatos (top 5)
 
-1. **Sprint 12** — próximos artículos del backlog (10 pendientes de los 20 núcleo originales)
+1. **Merge PRs Sprint 12** — PR #40 (pillar 6 años), PR #41 (4 artículos batch 2) y PR #42 (i18n CA) cuando CI pase
 2. **Primer Reel @minigolclub** — cuenta `instagram.com/minigolclub/` activa; guión + publicación apuntando a artículo existente
 3. **Esperar aprobación AdSense** → recibir slot IDs → pegar en `<AdSlot>` (acción manual usuario)
-4. **Pizarra Táctica MVP** — isla Preact + backend Cloudflare-only (según `docs/PlanTrabajoPizarra.md` Fase 2)
-5. **Forzar reindex GSC** para 5 URLs prioritarias
+4. **Más artículos CA** — traducir los 5-10 artículos más populares al catalán tras validar pipeline con PR #42
+5. **Pizarra Táctica MVP** — isla Preact + backend Cloudflare-only (según `docs/PlanTrabajoPizarra.md` Fase 2)
 
 ---
 
@@ -53,7 +53,7 @@
 
 | Métrica | Objetivo año 1 | Actual | Última medición |
 |---------|----------------|--------|-----------------|
-| Artículos publicados | 50 | **29** | 2026-04-28 |
+| Artículos publicados | 50 | **33** (29 ES + 4 en PRs + 1 CA piloto) | 2026-04-29 |
 | Visitas/mes (GA4) | 30.000 | 0 | — (indexación pendiente) |
 | Suscriptores newsletter | 1.000 | 0 | — |
 | Ingresos AdSense ($) | 200/mes | 0 | — (aprobación pendiente) |
@@ -198,6 +198,26 @@ Deuda técnica admin + documentación estratégica + fix tests.
 
 ---
 
+## 🔄 Sprint 12 en curso (2026-04-29)
+
+### Objetivo
+Cerrar 4 artículos pendientes del plan editorial + infraestructura i18n Catalán.
+
+### Cerradas
+
+- [x] **Análisis gaps PlanContenidos** — sección §0 estado de publicación añadida (30 artículos al 29-04, 21 publicados del plan original + 9 extras)
+- [x] **PR #40 — pillar ejercicios-futbol-6-anos** (2500w, 8 ejercicios, 5-7 años). `ejercicios-futbol-ninos-6-anos` marcado `draft: true` para evitar canibalización
+- [x] **PR #41 — batch 2 artículos** — `conos-futbol-infantil-compra` (equipamiento, AmazonCard + ComparisonTable), `ejercicios-futbol-sala-ninos` (7 ejercicios, 7-9 años), `juegos-futbol-playa-verano` (5 juegos verano), `ejercicios-futbol-8-anos` (8 ejercicios)
+- [x] **PR #42 — i18n Catalán MVP** — routing `/ca/**`, colección `articulos-ca`, hreflang bidireccional, `useTranslations()`, artículo piloto CA validado
+
+### En progreso / pendiente
+
+- [ ] Primer Reel Instagram @minigolclub — guión pendiente
+- [ ] Merge PR #40, #41, #42 cuando CI pase
+- [ ] Traducciones CA: 5-10 artículos más populares
+
+---
+
 ## 🧠 ADRs y decisiones recientes
 
 > Lista resumen — el detalle de cada ADR vive en `Arquitectura.md` §13.
@@ -213,6 +233,7 @@ Deuda técnica admin + documentación estratégica + fix tests.
 | — | Admin en Vite middleware (no servidor separado) — comparte puerto 4322 con dev Vite, accede al filesystem del repo desde `__dirname` | 2026-04-27 |
 | — | Auto-PR: `git worktree add ../mg-pr-tmp` fuera del repo para no contaminar el working tree activo | 2026-04-28 |
 | — | Canal social: Instagram Reels únicamente (no TikTok en fase 1). Evaluar en mes 3 con datos. | 2026-04-28 |
+| ADR-007 | i18n multiidioma: colecciones paralelas (`articulos-ca`) + `prefixDefaultLocale: false`. Español en `/`, Catalán en `/ca/`. Inglés como fase futura. Rechazado: subdominos, frontmatter inline, locales anidados dentro de `articulos/`. | 2026-04-29 |
 
 ---
 
