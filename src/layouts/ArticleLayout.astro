@@ -11,16 +11,19 @@ import { Image } from 'astro:assets';
 import { articleJsonLd } from '@/lib/seo';
 import { SITE_URL, AUTHOR } from '@/consts';
 import { categoryColorVar } from '@/lib/categories';
+import { useTranslations, type Locale } from '@/i18n';
 import type { CollectionEntry } from 'astro:content';
 import type { MarkdownHeading } from 'astro';
 
 interface Props {
-  article: CollectionEntry<'articulos'>;
+  article: CollectionEntry<'articulos'> | CollectionEntry<'articulos-ca'>;
   categoriaNombre: string;
   categoriaSlug: string;
   categoriaColor?: 'primary' | 'secondary' | 'accent' | 'fun' | 'energy' | 'info';
   relatedArticles?: CollectionEntry<'articulos'>[];
   headings?: MarkdownHeading[];
+  hreflangs?: Array<{ lang: string; href: string }>;
+  canonicalOverride?: string;
 }
 
 const {
@@ -30,7 +33,13 @@ const {
   categoriaColor = 'secondary',
   relatedArticles = [],
   headings = [],
+  hreflangs,
+  canonicalOverride,
 } = Astro.props;
+
+const locale = (Astro.currentLocale ?? 'es') as Locale;
+const t = useTranslations(locale);
+const dateLocale = locale === 'ca' ? 'ca-ES' : 'es-ES';
 
 const {
   title,
@@ -46,7 +55,7 @@ const {
   tags,
 } = article.data;
 
-const canonicalUrl = new URL(`/${article.id.replace(/\.mdx?$/, '')}/`, SITE_URL).toString();
+const canonicalUrl = canonicalOverride ?? new URL(`/${article.id.replace(/\.mdx?$/, '')}/`, SITE_URL).toString();
 // cover es ImageMetadata desde el schema image(); .src tiene la URL relativa
 // con hash de Astro (/_astro/cover.HASH.jpg). Para OG/JSON-LD necesitamos absoluta.
 const ogImageUrl = new URL(cover.src, SITE_URL).toString();
@@ -64,7 +73,7 @@ const jsonLd = articleJsonLd({
   categoria: categoriaNombre,
 });
 
-const dateFormatted = pubDate.toLocaleDateString('es-ES', {
+const dateFormatted = pubDate.toLocaleDateString(dateLocale, {
   day: 'numeric',
   month: 'long',
   year: 'numeric',
@@ -88,6 +97,7 @@ const authorInitials = AUTHOR.name
   canonical={canonicalUrl}
   ogImage={cover.src}
   ogType="article"
+  hreflangs={hreflangs}
 >
   <Fragment slot="head">
     <script type="application/ld+json" set:html={jsonLd} />
@@ -178,7 +188,7 @@ const authorInitials = AUTHOR.name
                   {AUTHOR.name}
                 </a>
                 <div class="mono" style="font-size: 10px; color: var(--color-foreground-subtle); letter-spacing: 0.06em;">
-                  EDITOR · MINIGOL CLUB
+                  {t('author-role')}
                 </div>
               </div>
             </div>
@@ -189,7 +199,7 @@ const authorInitials = AUTHOR.name
                 class="mono"
                 style="font-size: 10px; letter-spacing: 0.08em; color: var(--color-foreground-subtle);"
               >
-                ACTUALIZADO {updatedDate.toLocaleDateString('es-ES', { day: 'numeric', month: 'short', year: 'numeric' }).toUpperCase()}
+                {t('updated')} {updatedDate.toLocaleDateString(dateLocale, { day: 'numeric', month: 'short', year: 'numeric' }).toUpperCase()}
               </span>
             )}
           </div>
@@ -212,7 +222,7 @@ const authorInitials = AUTHOR.name
             class="hand absolute"
             style="bottom: -10px; right: 14px; font-size: 22px; color: var(--color-handwritten); background: var(--color-paper); padding: 4px 10px; border-radius: 6px; border: 1px solid var(--color-border); transform: rotate(-3deg);"
           >
-            ¡plan de la sesión!
+            {t('session-stamp')}
           </span>
         </div>
 
@@ -226,8 +236,7 @@ const authorInitials = AUTHOR.name
               <path d="M6 3h12v18l-6-4-6 4V3Z"></path>
             </svg>
             <p class="m-0 text-xs leading-relaxed" style="color: var(--color-foreground-muted);">
-              Este artículo contiene enlaces afiliados de Amazon. Si compras algo, ganamos una pequeña
-              comisión sin coste extra para ti. Solo recomendamos lo que usaríamos con nuestros peques.
+              {t('affiliate-notice')}
             </p>
           </aside>
         )}
@@ -243,9 +252,9 @@ const authorInitials = AUTHOR.name
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                   <path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"></path>
                 </svg>
-                <span class="display" style="font-weight: 700; font-size: 14px;">Tabla de contenidos</span>
+                <span class="display" style="font-weight: 700; font-size: 14px;">{t('toc-title')}</span>
                 <span class="mono" style="font-size: 10px; color: var(--color-foreground-subtle);">
-                  {tocHeadings.length} secciones
+                  {tocHeadings.length} {t('toc-sections')}
                 </span>
               </span>
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -321,12 +330,10 @@ const authorInitials = AUTHOR.name
               class="mono mb-2"
               style="font-size: 11px; letter-spacing: 0.06em; color: var(--color-foreground-subtle);"
             >
-              EDITOR · FUNDADOR · PADRE
+              {t('author-bio-role')}
             </div>
             <p class="m-0 text-sm leading-relaxed" style="color: var(--color-foreground-muted);">
-              Padre de hijos en edad de fútbol base. No soy entrenador titulado: lo que escribo lo
-              investigo, lo cruzo con fuentes primarias y, cuando el tema lo pide, lo reviso con un
-              profesional. Más sobre cómo trabajamos en <a href="/sobre/" style="color: var(--color-primary); text-decoration: underline;">/sobre/</a>.
+              {t('author-bio')} <a href={t('about-href')} style="color: var(--color-primary); text-decoration: underline;">{t('about-label')}</a>.
             </p>
           </div>
         </aside>
@@ -356,7 +363,7 @@ const authorInitials = AUTHOR.name
                   class="mono"
                   style="font-size: 10px; letter-spacing: 0.12em; color: var(--color-foreground-subtle); text-transform: uppercase;"
                 >
-                  En este artículo
+                  {t('toc-sidebar-title')}
                 </span>
               </div>
               <ol class="m-0 flex list-none flex-col gap-1 p-0" id="toc-list">

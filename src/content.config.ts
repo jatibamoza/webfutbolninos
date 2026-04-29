@@ -1,4 +1,4 @@
-import { defineCollection, z } from 'astro:content';
+import { defineCollection, z, type SchemaContext } from 'astro:content';
 import { glob } from 'astro/loaders';
 
 const categoriasCollection = defineCollection({
@@ -31,31 +31,41 @@ const autoresCollection = defineCollection({
   }),
 });
 
+const articulosSchemaFactory = ({ image }: SchemaContext) =>
+  z.object({
+    title: z.string().max(70),
+    description: z.string().min(120).max(160),
+    keyword: z.string(),
+    categoria: z.string(),
+    autor: z.string(),
+    pubDate: z.coerce.date(),
+    updatedDate: z.coerce.date().optional(),
+    // image() valida que el path resuelve a un asset real en src/ y devuelve
+    // ImageMetadata { src, width, height, format } — para usar con <Image />
+    // de Astro y obtener WebP/AVIF + responsive srcset automáticos.
+    cover: image(),
+    coverAlt: z.string(),
+    edadMin: z.number().int().min(3).max(18),
+    edadMax: z.number().int().min(3).max(18),
+    nivel: z.enum(['facil', 'media', 'reto']),
+    tags: z.array(z.string()).default([]),
+    draft: z.boolean().default(false),
+    tiempoLectura: z.number().int().optional(),
+    tieneAfiliados: z.boolean().default(false),
+    featured: z.boolean().default(false),
+    // Slug del artículo español original — solo lo usan los artículos en catalán
+    // para construir hreflang bidireccional.
+    traduccionDe: z.string().optional(),
+  });
+
 const articulosCollection = defineCollection({
   loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/articulos' }),
-  schema: ({ image }) =>
-    z.object({
-      title: z.string().max(70),
-      description: z.string().min(120).max(160),
-      keyword: z.string(),
-      categoria: z.string(),
-      autor: z.string(),
-      pubDate: z.coerce.date(),
-      updatedDate: z.coerce.date().optional(),
-      // image() valida que el path resuelve a un asset real en src/ y devuelve
-      // ImageMetadata { src, width, height, format } — para usar con <Image />
-      // de Astro y obtener WebP/AVIF + responsive srcset automáticos.
-      cover: image(),
-      coverAlt: z.string(),
-      edadMin: z.number().int().min(3).max(18),
-      edadMax: z.number().int().min(3).max(18),
-      nivel: z.enum(['facil', 'media', 'reto']),
-      tags: z.array(z.string()).default([]),
-      draft: z.boolean().default(false),
-      tiempoLectura: z.number().int().optional(),
-      tieneAfiliados: z.boolean().default(false),
-      featured: z.boolean().default(false),
-    }),
+  schema: articulosSchemaFactory,
+});
+
+const articulosCaCollection = defineCollection({
+  loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/articulos-ca' }),
+  schema: articulosSchemaFactory,
 });
 
 const recursosCollection = defineCollection({
@@ -78,5 +88,6 @@ export const collections = {
   categorias: categoriasCollection,
   autores: autoresCollection,
   articulos: articulosCollection,
+  'articulos-ca': articulosCaCollection,
   recursos: recursosCollection,
 };
