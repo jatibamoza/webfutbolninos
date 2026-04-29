@@ -1,0 +1,39 @@
+---
+interface Props {
+  hreflangs: Array<{ lang: string; href: string }>;
+}
+
+const { hreflangs } = Astro.props;
+const currentLang = Astro.currentLocale ?? 'es';
+
+const esHref = hreflangs.find((h) => h.lang === 'es')?.href;
+const caHref = hreflangs.find((h) => h.lang === 'ca')?.href;
+
+if (!esHref || !caHref) return;
+---
+
+<div
+  class="mono flex items-center text-xs"
+  style="gap: 2px; color: var(--color-foreground-muted); letter-spacing: 0.06em;"
+  aria-label="Cambiar idioma"
+>
+  <a
+    href={esHref}
+    hreflang="es"
+    aria-current={currentLang === 'es' ? 'true' : undefined}
+    style={currentLang === 'es'
+      ? 'color: var(--color-foreground); font-weight: 700;'
+      : 'color: var(--color-foreground-muted);'}
+    class="rounded px-1.5 py-0.5 transition-colors hover:opacity-80"
+  >ES</a>
+  <span aria-hidden="true" style="opacity: 0.25; font-weight: 300;">|</span>
+  <a
+    href={caHref}
+    hreflang="ca"
+    aria-current={currentLang === 'ca' ? 'true' : undefined}
+    style={currentLang === 'ca'
+      ? 'color: var(--color-foreground); font-weight: 700;'
+      : 'color: var(--color-foreground-muted);'}
+    class="rounded px-1.5 py-0.5 transition-colors hover:opacity-80"
+  >CA</a>
+</div>
