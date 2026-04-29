@@ -14,4 +14,14 @@ export const es = {
   'affiliate-notice':
     'Este artículo contiene enlaces afiliados de Amazon. Si compras algo, ganamos una pequeña comisión sin coste extra para ti. Solo recomendamos lo que usaríamos con nuestros peques.',
   'og-locale': 'es_ES',
+  'nav-ejercicios': 'Ejercicios',
+  'nav-juegos': 'Juegos',
+  'nav-equipamiento': 'Equipamiento',
+  'nav-iniciacion': 'Iniciación',
+  'nav-recursos': 'Recursos',
+  'nav-aria-primary': 'Navegación principal',
+  'nav-aria-mobile-menu': 'Menú de navegación',
+  'nav-aria-open-menu': 'Abrir menú',
+  'nav-aria-search': 'Buscar',
+  'breadcrumb-home': 'Inicio',
 } as const;

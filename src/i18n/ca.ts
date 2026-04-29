@@ -14,4 +14,14 @@ export const ca = {
   'affiliate-notice':
     "Aquest article conté enllaços d'afiliats d'Amazon. Si compres alguna cosa, guanyem una petita comissió sense cost addicional per a tu. Només recomanem el que faríem servir amb els nostres fills.",
   'og-locale': 'ca_ES',
+  'nav-ejercicios': 'Exercicis',
+  'nav-juegos': 'Jocs',
+  'nav-equipamiento': 'Equipament',
+  'nav-iniciacion': 'Iniciació',
+  'nav-recursos': 'Recursos',
+  'nav-aria-primary': 'Navegació principal',
+  'nav-aria-mobile-menu': 'Menú de navegació',
+  'nav-aria-open-menu': 'Obrir menú',
+  'nav-aria-search': 'Cercar',
+  'breadcrumb-home': 'Inici',
 } as const;
