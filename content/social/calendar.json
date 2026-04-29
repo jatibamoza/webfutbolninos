@@ -1,0 +1,98 @@
+{
+  "$schema": "./calendar.schema.json",
+  "version": 1,
+  "generated_at": null,
+  "posts": [
+    {
+      "id": "2026-05-04-ig-exercicis-6-anys",
+      "platforms": ["instagram"],
+      "format": "carousel",
+      "scheduled_at": "2026-05-04T09:00:00+02:00",
+      "status": "draft",
+      "locale": "ca",
+      "article_slug": "exercicis-futbol-6-anys",
+      "target_url": "https://minigolclub.com/ca/ejercicios/exercicis-futbol-6-anys/?utm_source=instagram&utm_medium=carousel&utm_campaign=exercicis-futbol-6-anys",
+      "caption": "3 exercicis perquè el teu fill de 6 anys s'enganxi al futbol — ho pots fer al pati o al parc, sense material extra.\n\nGuia completa al link de la bio 👆",
+      "hashtags": [
+        "futbolinfantil",
+        "futbolcatalà",
+        "pares",
+        "entrenarafillsenfutbol",
+        "futbolcatalunya",
+        "escoladefutbol",
+        "futbolnens",
+        "esportencatalà"
+      ],
+      "media": [
+        {
+          "type": "image",
+          "path": "public/social/exercicis-futbol-6-anys/slide-1.jpg",
+          "alt": "Portada — 3 exercicis de futbol per a nens de 6 anys"
+        }
+      ],
+      "notes": "Hook: 'Si el teu fill de 6 anys es queda parat amb la pilota...'  Carrusel 5 slides: portada + 3 exercicis + CTA",
+      "published_at": null,
+      "publer_post_id": null
+    },
+    {
+      "id": "2026-05-06-ig-talla-pilota",
+      "platforms": ["instagram"],
+      "format": "single_image",
+      "scheduled_at": "2026-05-06T18:30:00+02:00",
+      "status": "draft",
+      "locale": "ca",
+      "article_slug": "talla-pilota-futbol-segons-edat",
+      "target_url": "https://minigolclub.com/ca/equipamiento/talla-pilota-futbol-segons-edat/?utm_source=instagram&utm_medium=feed&utm_campaign=talla-pilota",
+      "caption": "Quina talla de pilota necessita el teu fill segons l'edat? Guia ràpida per no equivocar-te.\n\nGuia completa al link de la bio 👆",
+      "hashtags": [
+        "futbolinfantil",
+        "pilotadefutbol",
+        "pares",
+        "futbolcatalunya",
+        "equipamentfutbol",
+        "tallapilota",
+        "regaldenadal"
+      ],
+      "media": [
+        {
+          "type": "image",
+          "path": "public/social/talla-pilota-futbol-segons-edat/feed.jpg",
+          "alt": "Tabla edad → talla de pilota de futbol"
+        }
+      ],
+      "notes": "Imagen estática tipo tabla. Generar con Satori desde el frontmatter del artículo si es posible.",
+      "published_at": null,
+      "publer_post_id": null
+    },
+    {
+      "id": "2026-05-08-ig-10-jocs",
+      "platforms": ["instagram"],
+      "format": "reel",
+      "scheduled_at": "2026-05-08T19:00:00+02:00",
+      "status": "draft",
+      "locale": "ca",
+      "article_slug": "10-jocs-futbol-divertits-facils",
+      "target_url": "https://minigolclub.com/ca/juegos/10-jocs-futbol-divertits-facils/?utm_source=instagram&utm_medium=reel&utm_campaign=10-jocs",
+      "caption": "10 jocs de futbol per fer al parc — sense entrenadors, sense pressió, només divertir-se.\n\nLlista completa al link de la bio 👆",
+      "hashtags": [
+        "futbolinfantil",
+        "jocsdefutbol",
+        "pares",
+        "futbolcatalunya",
+        "futbolalparc",
+        "nensifutbol",
+        "esportenfamília"
+      ],
+      "media": [
+        {
+          "type": "video",
+          "path": "public/social/10-jocs-futbol-divertits-facils/reel.mp4",
+          "alt": "Reel de 30s mostrando 3 jocs de futbol"
+        }
+      ],
+      "notes": "Reel piloto. Producir con CapCut. Subtítulos quemados. Sin caras de menores.",
+      "published_at": null,
+      "publer_post_id": null
+    }
+  ]
+}

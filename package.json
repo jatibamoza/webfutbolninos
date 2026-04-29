@@ -14,7 +14,10 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "format": "prettier --write \"**/*.{ts,tsx,astro,md,mdx,css,json}\"",
-    "format:check": "prettier --check \"**/*.{ts,tsx,astro,md,mdx,css,json}\""
+    "format:check": "prettier --check \"**/*.{ts,tsx,astro,md,mdx,css,json}\"",
+    "social:validate": "node scripts/social/validate-calendar.mjs",
+    "social:dry": "node scripts/social/scheduler.mjs --dry-run",
+    "social:accounts": "node scripts/social/list-accounts.mjs"
   },
   "dependencies": {
     "@astrojs/check": "^0.9.4",
