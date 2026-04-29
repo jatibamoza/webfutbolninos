@@ -45,7 +45,7 @@
 2. **Primer Reel @minigolclub** — cuenta `instagram.com/minigolclub/` activa; guión + publicación apuntando a artículo existente
 3. **Esperar aprobación AdSense** → recibir slot IDs → pegar en `<AdSlot>` (acción manual usuario)
 4. **Más artículos CA** — traducir los 5-10 artículos más populares al catalán tras validar pipeline con PR #42
-5. **Pizarra Táctica MVP** — isla Preact + backend Cloudflare-only (según `docs/PlanTrabajoPizarra.md` Fase 2)
+5. **Merge PR #37 Pizarra Táctica** — Fase 2 completa (mobile TopBar colapsable + skin papel mejorado). `gh pr merge 37 --merge` en worktree `../webfutbolniños-pizarra/`
 
 ---
 
@@ -246,7 +246,7 @@ Cerrar 4 artículos pendientes del plan editorial + infraestructura i18n Catalá
 | Mundial 2026 (jun-jul) — perdemos pico si no llegamos indexados a tiempo | 3 artículos Mundial publicados; 2 más en backlog | Tracking activo |
 | Playwright tests 6/10 fallan (getByLabel sin htmlFor) | Fix en Sprint 10 Bloque 3 | En proceso → cerrado en este sprint |
 | Logo MiniGol Club sin diseñar — afecta E-E-A-T | Decidir antes de campaña social media | Abierto |
-| Pizarra Táctica MVP pendiente — motor de creatividades para Reels | Fase 2 en `docs/PlanTrabajoPizarra.md` | Backlog sprint 11+ |
+| Pizarra Táctica Fase 2 completa, PR #37 pendiente de merge | `gh pr merge 37 --merge` en worktree `../webfutbolniños-pizarra/` | PR abierto — listo |
 
 ---
 
