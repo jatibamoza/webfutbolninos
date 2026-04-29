@@ -193,6 +193,13 @@ const BOARD_CSS = `
     .pizarra-mid-row { flex-direction: column; }
     .pizarra-controls-wrap { order: 2; display: flex; flex-direction: row; flex-shrink: 0; align-items: center; }
     .pizarra-field-wrap { order: 1; }
+
+    /* TopBar 2-row layout: actions on top-right, selects below full-width */
+    .pizarra-topbar-outer { flex-wrap: wrap; }
+    .pizarra-topbar { order: 2; flex: 0 0 100%; gap: 6px; padding: 4px 8px; }
+    .pizarra-topbar-title { display: none; }
+    .pizarra-topbar select { flex: 1; height: 36px !important; min-height: 36px !important; font-size: 0.8rem; }
+    .pizarra-topbar-actions { order: 1; flex: 1; justify-content: flex-end; }
   }
 `;
 
@@ -452,10 +459,10 @@ export function Board({ preset, class: className, readonly = false }: BoardProps
       style={{ display: 'flex', flexDirection: 'column', height: '100%', background: '#111' }}
     >
       <style>{BOARD_CSS}</style>
-      <div style={{ display: 'flex', background: 'rgba(0,0,0,0.7)' }}>
+      <div class="pizarra-topbar-outer" style={{ display: 'flex', background: 'rgba(0,0,0,0.7)' }}>
         <TopBar board={board} dispatch={dispatch} coarsePointer={coarsePointer} />
         {!readonly && (
-          <div data-coach="share" style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '0 8px', flexShrink: 0 }}>
+          <div class="pizarra-topbar-actions" data-coach="share" style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '0 8px', flexShrink: 0 }}>
             <button
               type="button"
               aria-label="Compartir pizarra"

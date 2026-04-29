@@ -54,6 +54,7 @@ export function TopBar({ board, dispatch }: TopBarProps) {
 
   return (
     <div
+      class="pizarra-topbar"
       style={{
         display: 'flex',
         alignItems: 'center',
@@ -61,9 +62,12 @@ export function TopBar({ board, dispatch }: TopBarProps) {
         padding: '8px 12px',
         background: 'rgba(0,0,0,0.7)',
         color: '#f5f0e8',
+        flex: 1,
+        minWidth: 0,
       }}
     >
       <span
+        class="pizarra-topbar-title"
         style={{
           fontFamily: "'Fredoka Variable', Fredoka, sans-serif",
           fontSize: '1.1rem',
