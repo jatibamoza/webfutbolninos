@@ -193,13 +193,6 @@ const BOARD_CSS = `
     .pizarra-mid-row { flex-direction: column; }
     .pizarra-controls-wrap { order: 2; display: flex; flex-direction: row; flex-shrink: 0; align-items: center; }
     .pizarra-field-wrap { order: 1; }
-
-    /* TopBar 2-row layout: actions on top-right, selects below full-width */
-    .pizarra-topbar-outer { flex-wrap: wrap; }
-    .pizarra-topbar { order: 2; flex: 0 0 100%; gap: 6px; padding: 4px 8px; }
-    .pizarra-topbar-title { display: none; }
-    .pizarra-topbar select { flex: 1; height: 36px !important; min-height: 36px !important; font-size: 0.8rem; }
-    .pizarra-topbar-actions { order: 1; flex: 1; justify-content: flex-end; }
   }
 `;
 
@@ -248,6 +241,7 @@ export function Board({ preset, class: className, readonly = false }: BoardProps
     !readonly && !localStorage.getItem('pizarra-welcome-seen'),
   );
   const [showCoach, setShowCoach] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const reducedMotion = usePrefersReducedMotion();
   const coarsePointer = useCoarsePointer();
@@ -459,10 +453,87 @@ export function Board({ preset, class: className, readonly = false }: BoardProps
       style={{ display: 'flex', flexDirection: 'column', height: '100%', background: '#111' }}
     >
       <style>{BOARD_CSS}</style>
-      <div class="pizarra-topbar-outer" style={{ display: 'flex', background: 'rgba(0,0,0,0.7)' }}>
-        <TopBar board={board} dispatch={dispatch} coarsePointer={coarsePointer} />
-        {!readonly && (
-          <div class="pizarra-topbar-actions" data-coach="share" style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '0 8px', flexShrink: 0 }}>
+      {/* Desktop: TopBar + actions in one row */}
+      {!coarsePointer && (
+        <div style={{ display: 'flex', background: 'rgba(0,0,0,0.7)' }}>
+          <TopBar board={board} dispatch={dispatch} coarsePointer={coarsePointer} />
+          {!readonly && (
+            <div data-coach="share" style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '0 8px', flexShrink: 0 }}>
+              <button
+                type="button"
+                aria-label="Compartir pizarra"
+                title="Compartir enlace"
+                onClick={() => {
+                  const hash = buildHashForBoard(board);
+                  window.history.replaceState(null, '', `${window.location.pathname}${window.location.search}${hash}`);
+                  triggerShare();
+                }}
+                style={{
+                  display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+                  minWidth: '44px', minHeight: '44px', border: '1px solid rgba(255,255,255,0.3)',
+                  borderRadius: '8px', background: 'transparent', color: '#f5f0e8', cursor: 'pointer',
+                }}
+              >
+                <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="2" width="18" height="18" aria-hidden="true">
+                  <circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/>
+                  <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
+                </svg>
+              </button>
+              <ExportButton svgRef={svgRef} />
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Mobile: compact header (siempre visible) */}
+      {coarsePointer && !readonly && (
+        <div style={{
+          display: 'flex', alignItems: 'center', gap: '8px', padding: '8px 12px',
+          background: 'rgba(0,0,0,0.7)', color: '#f5f0e8', flexShrink: 0,
+        }}>
+          <span style={{
+            fontFamily: "'Fredoka Variable', Fredoka, sans-serif",
+            fontSize: '1.1rem', fontWeight: 600, flex: 1,
+          }}>
+            Pizarra Táctica
+          </span>
+          <button
+            type="button"
+            aria-label={mobileMenuOpen ? 'Cerrar ajustes' : 'Ajustes de pizarra'}
+            aria-expanded={mobileMenuOpen}
+            onClick={() => setMobileMenuOpen((p) => !p)}
+            style={{
+              display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+              minWidth: '44px', minHeight: '44px', border: '1px solid rgba(255,255,255,0.3)',
+              borderRadius: '8px', color: '#f5f0e8', cursor: 'pointer',
+              background: mobileMenuOpen ? 'rgba(255,255,255,0.15)' : 'transparent',
+            }}
+          >
+            {mobileMenuOpen ? (
+              <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round" width="18" height="18" aria-hidden="true">
+                <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+              </svg>
+            ) : (
+              <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round" width="18" height="18" aria-hidden="true">
+                <line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/>
+                <line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/>
+                <line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/>
+                <line x1="1" y1="14" x2="7" y2="14"/>
+                <line x1="9" y1="8" x2="15" y2="8"/>
+                <line x1="17" y1="16" x2="23" y2="16"/>
+              </svg>
+            )}
+          </button>
+        </div>
+      )}
+
+      {/* Mobile: panel de ajustes colapsable */}
+      {coarsePointer && mobileMenuOpen && !readonly && (
+        <div
+          data-coach="share"
+          style={{ display: 'flex', flexDirection: 'column', background: 'rgba(0,0,0,0.7)', gap: '4px', paddingBottom: '6px' }}
+        >
+          <div style={{ display: 'flex', gap: '6px', justifyContent: 'flex-end', alignItems: 'center', padding: '4px 8px 0' }}>
             <button
               type="button"
               aria-label="Compartir pizarra"
@@ -485,8 +556,9 @@ export function Board({ preset, class: className, readonly = false }: BoardProps
             </button>
             <ExportButton svgRef={svgRef} />
           </div>
-        )}
-      </div>
+          <TopBar board={board} dispatch={dispatch} coarsePointer={coarsePointer} compact={true} />
+        </div>
+      )}
 
       <div class="pizarra-mid-row">
         {!readonly && (
