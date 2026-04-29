@@ -121,8 +121,67 @@ Esto convierte la Pizarra en motor de creatividades para Reels sin coste adicion
 
 ## 11. Pendientes antes de publicar el primer Reel
 
-- [ ] Crear cuenta @minigolclub en Instagram con bio + link minigolclub.com
+- [x] Crear cuenta @minigolclub en Instagram con bio + link minigolclub.com (2026-04-28)
 - [ ] Configurar cuenta como Creador (no Empresa — mejor alcance orgánico en Reels)
 - [ ] Producir 3 Reels piloto de los artículos semilla §6
 - [ ] Verificar que los artículos destino tienen UTM configurado y GA4 recibe las sesiones
+
+---
+
+## 12. Sistema de scheduling y publicación (roadmap)
+
+> **Decisión 2026-04-29:** análisis del repo `victorialozano0/LOVEYOURSELFJOURNAL` extrae aprendizajes
+> aplicables. Adoptamos un enfoque por fases — no construir infraestructura antes de validar producto-mercado.
+
+### Fase 0 — Manual (HOY → primeros 3-5 Reels)
+**Objetivo:** validar ángulo editorial, formato y respuesta de la audiencia antes de invertir en herramientas.
+
+- Producir vídeos en Reels nativo o CapCut
+- Publicar manualmente desde la app de Instagram
+- Trackear métricas en hoja de cálculo simple (alcance, guardados, link clicks)
+- **Coste:** 0€
+- **Cuándo pasar a Fase 1:** cuando se publique 1 Reel/semana de forma consistente durante 4 semanas
+
+### Fase 1 — Calendario versionado en Git + recordatorios (cuando estable)
+**Objetivo:** auditabilidad editorial + reducir fricción de "qué publico hoy".
+
+**Stack propuesto:**
+- `content/social/calendar.json` — array versionable con cada post: `{id, platform, scheduled_at, status, hook, caption, hashtags, asset_path, target_url, utm_campaign}`
+- `status: draft | approved | published | archived` — el flujo es PR review → merge a `main` = aprobado
+- Cloudflare Worker con Cron Trigger (estilo `bts-trending` de LYJ) que lee `calendar.json` desde GitHub raw, filtra `scheduled_at <= now AND status=approved`, y **NO publica** sino que envía email/Discord al editor con "publica esto ahora" + asset adjunto
+- Render de imagen social (cover Pinterest, OG card) generado en CI con Satori/Resvg desde el frontmatter del artículo asociado
+- **Coste:** 0€ (Cloudflare Workers free tier + email Brevo free)
+- **Cuándo pasar a Fase 2:** cuando se publique 3+ posts/semana en 2+ plataformas
+
+### Fase 2 — Publisher API real (cuando volumen lo justifique)
+**Objetivo:** automatizar la publicación cross-platform sin intervención.
+
+**Opciones:**
+1. **Publer** (~15€/mes) — soporta IG/TikTok/X/LinkedIn/Pinterest, evita la aprobación oficial Meta/TikTok que tarda semanas. Vendor lock-in pero ROI alto si publicamos 3+/semana.
+2. **Buffer** (~6€/mes una cuenta) — más barato, menos plataformas
+3. **n8n self-hosted** (gratis) — más complejo, requiere mantener servidor
+
+**Recomendación:** Publer cuando se cumpla el umbral. Lo que se construya en Fase 1 (calendar.json + worker scheduler) sigue siendo válido — solo se cambia el destino: del email "publica esto" pasa a `POST publer.com/api/v1/posts`.
+
+### Lo que NO replicamos del enfoque LYJ
+- **App React local con `localStorage`** como source of truth → frágil, no auditable, requiere máquina encendida.
+- **OAuth tokens propios para TikTok/Meta** → semanas de aprobación oficial. Si decidimos vídeo masivo, ir directo a Publer.
+- **Pipeline Remotion local** → over-engineering para nuestro caso (textos + imagen estática suficiente; los Reels los grabamos manualmente).
+
+### Lo que SÍ replicamos
+1. **Cloudflare Worker con Cron Trigger** estilo `bts-trending` — adaptado a "detectar tendencias futbol infantil" (LaLiga, Mundial 2026, fichajes) y notificar al editor con hooks reactivos.
+2. **Plan editorial en JSON único versionado** con flujo `status: draft|approved|scheduled|published`.
+3. **Distribución horaria por plataforma documentada** — adaptar a horarios España/LATAM padres (mañana 8-9h colegio, tarde 17-18h salida cole, noche 21-22h post-cena).
+4. **Aprobación humana antes de publicar** — el `status: approved` se hace vía PR review en Git, más auditable que un toggle en `localStorage`.
+
+### Riesgos identificados
+- **Datos de menores:** nuestro nicho es padres adultos. Nunca contenido que recoja datos del menor. Audiencia objetivo en redes = adulto siempre.
+- **Rate limits IG Graph API:** ~200 req/h. Suficiente para nuestro volumen previsto.
+- **TikTok Direct Post sin aprobación oficial:** publica como `SELF_ONLY` (luego manual a público). No es opción real → si vamos a TikTok será vía Publer.
+- **GDPR/RGPD con Publer:** procesa datos en EU/US. Chequear DPA antes de adoptar.
+- **Vendor lock-in Publer:** mitigado por mantener `calendar.json` en Git como source of truth — siempre se puede cambiar de publisher.
+
+### Métricas para decidir avance entre fases
+- **Fase 0 → Fase 1:** 4 semanas consecutivas con 1 Reel/semana publicado y >500 visualizaciones medias
+- **Fase 1 → Fase 2:** 3+ posts/semana en 2+ plataformas durante 4 semanas, o tiempo manual >1h/semana
 - [ ] Decidir si usar ElevenLabs o voz propia (probar ambas con un clip piloto)
