@@ -2,8 +2,26 @@
 import { NAV_FOOTER, NAV_PRIMARY, SITE, SITE_URL } from '@/consts';
 import Logo from '@/components/ui/Logo.astro';
 import { Icon } from 'astro-icon/components';
+import { useTranslations, type Locale } from '@/i18n';
 
 const year = new Date().getFullYear();
+
+const locale = (Astro.currentLocale ?? 'es') as Locale;
+const t = useTranslations(locale);
+
+const navLabelKey: Record<string, 'nav-ejercicios' | 'nav-juegos' | 'nav-equipamiento' | 'nav-iniciacion' | 'nav-recursos'> = {
+  '/ejercicios/': 'nav-ejercicios',
+  '/juegos/': 'nav-juegos',
+  '/equipamiento/': 'nav-equipamiento',
+  '/iniciacion/': 'nav-iniciacion',
+  '/recursos/': 'nav-recursos',
+};
+
+const legalLabelKey: Record<string, 'footer-privacy' | 'footer-cookies-policy' | 'footer-legal-notice'> = {
+  '/politica-privacidad/': 'footer-privacy',
+  '/politica-cookies/': 'footer-cookies-policy',
+  '/aviso-legal/': 'footer-legal-notice',
+};
 ---
 
 <footer class="mt-20" style="background: var(--color-paper); border-top: 1px solid var(--color-border);">
@@ -25,7 +43,7 @@ const year = new Date().getFullYear();
           {SITE.tagline}.
         </p>
         <p class="hand mt-4 text-2xl" style="color: var(--color-handwritten); transform: rotate(-1deg); display: inline-block;">
-          fútbol · sin presión
+          {t('footer-handwritten')}
         </p>
       </div>
 
@@ -35,21 +53,25 @@ const year = new Date().getFullYear();
           class="mono mb-4 text-xs font-medium uppercase"
           style="letter-spacing: 0.12em; color: var(--color-foreground-subtle);"
         >
-          Secciones
+          {t('footer-sections')}
         </p>
         <ul class="space-y-3">
           {
-            NAV_PRIMARY.map((item) => (
-              <li>
-                <a
-                  href={item.href}
-                  class="display text-base transition-colors hover:underline"
-                  style="font-weight: 600; color: var(--color-foreground);"
-                >
-                  {item.label}
-                </a>
-              </li>
-            ))
+            NAV_PRIMARY.map((item) => {
+              const labelKey = navLabelKey[item.href as keyof typeof navLabelKey];
+              const label = labelKey ? t(labelKey) : item.label;
+              return (
+                <li>
+                  <a
+                    href={item.href}
+                    class="display text-base transition-colors hover:underline"
+                    style="font-weight: 600; color: var(--color-foreground);"
+                  >
+                    {label}
+                  </a>
+                </li>
+              );
+            })
           }
         </ul>
       </div>
@@ -60,27 +82,27 @@ const year = new Date().getFullYear();
           class="mono mb-4 text-xs font-medium uppercase"
           style="letter-spacing: 0.12em; color: var(--color-foreground-subtle);"
         >
-          El sitio
+          {t('footer-site')}
         </p>
         <ul class="space-y-3">
           <li>
             <a href="/sobre/" class="text-sm transition-colors hover:underline" style="color: var(--color-foreground-muted);">
-              Sobre nosotros
+              {t('footer-about')}
             </a>
           </li>
           <li>
             <a href="/recursos/" class="text-sm transition-colors hover:underline" style="color: var(--color-foreground-muted);">
-              Recursos gratuitos
+              {t('footer-resources')}
             </a>
           </li>
           <li>
             <a href="/rss.xml" class="text-sm transition-colors hover:underline" style="color: var(--color-foreground-muted);">
-              Feed RSS
+              {t('footer-rss')}
             </a>
           </li>
           <li>
             <a href="/contacto/" class="text-sm transition-colors hover:underline" style="color: var(--color-foreground-muted);">
-              Contacto
+              {t('footer-contact')}
             </a>
           </li>
         </ul>
@@ -92,23 +114,27 @@ const year = new Date().getFullYear();
           class="mono mb-4 text-xs font-medium uppercase"
           style="letter-spacing: 0.12em; color: var(--color-foreground-subtle);"
         >
-          Legal
+          {t('footer-legal')}
         </p>
         <ul class="space-y-3">
           {
             NAV_FOOTER.filter((item) =>
               ['/politica-privacidad/', '/politica-cookies/', '/aviso-legal/'].includes(item.href)
-            ).map((item) => (
-              <li>
-                <a
-                  href={item.href}
-                  class="text-sm transition-colors hover:underline"
-                  style="color: var(--color-foreground-muted);"
-                >
-                  {item.label}
-                </a>
-              </li>
-            ))
+            ).map((item) => {
+              const labelKey = legalLabelKey[item.href as keyof typeof legalLabelKey];
+              const label = labelKey ? t(labelKey) : item.label;
+              return (
+                <li>
+                  <a
+                    href={item.href}
+                    class="text-sm transition-colors hover:underline"
+                    style="color: var(--color-foreground-muted);"
+                  >
+                    {label}
+                  </a>
+                </li>
+              );
+            })
           }
           <li>
             <button
@@ -117,7 +143,7 @@ const year = new Date().getFullYear();
               class="text-sm transition-colors hover:underline"
               style="color: var(--color-foreground-muted); background: transparent; padding: 0; border: none; cursor: pointer;"
             >
-              Gestionar cookies
+              {t('footer-cookies-manage')}
             </button>
           </li>
         </ul>
@@ -130,14 +156,14 @@ const year = new Date().getFullYear();
       style="border-top: 1px solid var(--color-border);"
     >
       <div class="flex items-center gap-4">
-        <span class="stamp">Hecho con cuaderno</span>
+        <span class="stamp">{t('footer-stamp')}</span>
         <a
           href={`https://twitter.com/${SITE.twitterHandle.replace('@', '')}`}
           target="_blank"
           rel="noopener noreferrer"
           class="flex h-9 w-9 items-center justify-center rounded-md transition-colors"
           style="color: var(--color-foreground-muted);"
-          aria-label="Síguenos en Twitter/X"
+          aria-label={t('footer-twitter-aria')}
         >
           <Icon name="lucide:twitter" class="h-4 w-4" />
         </a>
@@ -148,7 +174,7 @@ const year = new Date().getFullYear();
     </div>
 
     <p class="mt-8 text-xs leading-relaxed" style="color: var(--color-foreground-subtle); max-width: 60ch;">
-      Este sitio participa en el programa de afiliados de Amazon EU. Como afiliado de Amazon, obtenemos ingresos por las compras adscritas que cumplen los requisitos aplicables.
+      {t('footer-affiliate-disclosure')}
     </p>
   </div>
 </footer>
