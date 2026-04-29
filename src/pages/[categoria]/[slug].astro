@@ -1,6 +1,7 @@
 ---
 import { getCollection, getEntry, render, type CollectionEntry } from 'astro:content';
 import ArticleLayout from '@/layouts/ArticleLayout.astro';
+import { SITE_URL } from '@/consts';
 
 export async function getStaticPaths() {
   const articulos = await getCollection(
@@ -21,6 +22,27 @@ const { article } = Astro.props as { article: CollectionEntry<'articulos'> };
 const { Content, headings } = await render(article);
 
 const categoria = await getEntry('categorias', article.data.categoria);
+
+const esSlug = (article.id.split('/').pop() ?? article.id).replace(/\.mdx?$/, '');
+const articulosCa = await getCollection(
+  'articulos-ca',
+  ({ data }: CollectionEntry<'articulos-ca'>) => !data.draft
+);
+const caArticle = articulosCa.find(
+  (a: CollectionEntry<'articulos-ca'>) => a.data.traduccionDe === esSlug
+);
+
+let hreflangs: Array<{ lang: string; href: string }> | undefined;
+if (caArticle) {
+  const caSlug = (caArticle.id.split('/').pop() ?? caArticle.id).replace(/\.mdx?$/, '');
+  const esUrl = new URL(`/${article.data.categoria}/${esSlug}/`, SITE_URL).toString();
+  const caUrl = new URL(`/ca/${caArticle.data.categoria}/${caSlug}/`, SITE_URL).toString();
+  hreflangs = [
+    { lang: 'es', href: esUrl },
+    { lang: 'ca', href: caUrl },
+    { lang: 'x-default', href: esUrl },
+  ];
+}
 
 const allArticulos = await getCollection(
   'articulos',
@@ -47,6 +69,7 @@ const relatedArticles = allArticulos
   categoriaColor={categoria?.data.color ?? 'secondary'}
   relatedArticles={relatedArticles}
   headings={headings}
+  hreflangs={hreflangs}
 >
   <Content />
 </ArticleLayout>
