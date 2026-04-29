@@ -1,0 +1,283 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Header from '@/components/Header.astro';
+import Footer from '@/components/Footer.astro';
+import { Icon } from 'astro-icon/components';
+import { SITE_URL, SITE } from '@/consts';
+import SectionHeader from '@/components/ui/SectionHeader.astro';
+import PitchLines from '@/components/ui/PitchLines.astro';
+
+const canonicalUrl = `${SITE_URL}/recursos/`;
+
+// Listado curado de recursos. Cuando la colección `recursos` tenga entradas,
+// migrar a getCollection. Hoy es manual porque solo tenemos la Pizarra.
+const recursos = [
+  {
+    title: 'Pizarra Táctica Interactiva',
+    href: '/pizarra/',
+    description:
+      'Diseña ejercicios y jugadas paso a paso. Mueve jugadores, dibuja pases, anima la secuencia y comparte el enlace. Sin registro, gratis, en cualquier dispositivo.',
+    icon: 'lucide:clipboard-pen',
+    color: 'var(--color-primary)',
+    cta: 'Abrir pizarra',
+    badge: 'GRATIS',
+    featured: true,
+  },
+];
+
+const proximamente = [
+  {
+    title: 'Cuaderno de ejercicios 4 semanas',
+    description: 'PDF descargable con plan progresivo para edades 4-6, 7-9 y 10-12.',
+    icon: 'lucide:book-open',
+  },
+  {
+    title: 'Plantillas de alineaciones',
+    description: 'PDF imprimibles para fútbol 7, 8 y 11 con espacio para anotar.',
+    icon: 'lucide:layout-grid',
+  },
+  {
+    title: 'Calendario Mundial 2026',
+    description: 'Descargable con todos los partidos y zona horaria local.',
+    icon: 'lucide:calendar-days',
+  },
+];
+
+const collectionLd = JSON.stringify({
+  '@context': 'https://schema.org',
+  '@type': 'CollectionPage',
+  name: 'Recursos gratuitos para entrenar fútbol con niños',
+  description:
+    'Herramientas, plantillas y descargables gratuitos para padres y entrenadores de fútbol infantil.',
+  url: canonicalUrl,
+  isPartOf: { '@type': 'WebSite', name: SITE.name, url: SITE_URL },
+  mainEntity: {
+    '@type': 'ItemList',
+    itemListElement: recursos.map((r, i) => ({
+      '@type': 'ListItem',
+      position: i + 1,
+      url: new URL(r.href, SITE_URL).toString(),
+      name: r.title,
+    })),
+  },
+});
+
+const breadcrumbLd = JSON.stringify({
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Inicio', item: SITE_URL },
+    { '@type': 'ListItem', position: 2, name: 'Recursos', item: canonicalUrl },
+  ],
+});
+---
+
+<BaseLayout
+  title="Recursos gratuitos para entrenar fútbol infantil"
+  description="Herramientas, pizarra táctica interactiva y descargables gratuitos para padres y entrenadores de fútbol con niños de 4 a 12 años."
+  canonical={canonicalUrl}
+>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={collectionLd} />
+    <script type="application/ld+json" set:html={breadcrumbLd} />
+  </Fragment>
+
+  <Header />
+
+  <main id="main">
+    <!-- ============ HERO ============ -->
+    <section class="relative overflow-hidden" style="border-bottom: 1px solid var(--color-border);">
+      <div
+        class="pointer-events-none absolute inset-0"
+        style="color: var(--color-foreground);"
+        aria-hidden="true"
+      >
+        <PitchLines opacity={0.1} class="h-full w-full" />
+      </div>
+
+      <div class="relative mx-auto max-w-5xl px-4 py-10 md:px-6 md:py-16">
+        <nav aria-label="Migas de pan" class="mb-4 text-sm">
+          <ol class="flex flex-wrap items-center gap-1" style="color: var(--color-foreground-muted);">
+            <li><a href="/" class="hover:underline">Inicio</a></li>
+            <li aria-hidden="true" class="opacity-50">›</li>
+            <li class="font-semibold" style="color: var(--color-foreground);" aria-current="page">
+              Recursos
+            </li>
+          </ol>
+        </nav>
+
+        <div class="mb-3 flex flex-wrap items-center gap-3">
+          <span class="stamp">CAJA DE HERRAMIENTAS</span>
+          <span
+            class="hand inline-block"
+            style="font-size: 22px; color: var(--color-handwritten); transform: rotate(-3deg);"
+          >
+            ¡todo gratis!
+          </span>
+        </div>
+
+        <h1
+          class="display m-0"
+          style="font-size: clamp(2.25rem, 5vw, 3.5rem); line-height: 1; letter-spacing: -0.02em;"
+        >
+          Recursos para entrenar
+        </h1>
+
+        <p
+          class="mt-4 text-base leading-relaxed md:text-lg"
+          style="color: var(--color-foreground-muted); max-width: 640px;"
+        >
+          Herramientas y plantillas que hemos hecho para padres como nosotros.
+          Sin registro, sin coste, sin truco. Llévatelas al parque, al patio o
+          al campo.
+        </p>
+      </div>
+    </section>
+
+    <!-- ============ Recurso destacado ============ -->
+    <section class="mx-auto max-w-5xl px-4 pt-10 pb-4 md:px-6 md:pt-16">
+      <SectionHeader
+        number="01"
+        hand="el favorito"
+        title="Recurso destacado"
+        subtitle="El que más vais a usar."
+      />
+
+      <div class="mt-6">
+        {recursos.filter((r) => r.featured).map((r) => (
+          <a
+            href={r.href}
+            class="card-paper group relative flex flex-col gap-5 overflow-hidden p-6 md:flex-row md:items-center md:gap-8 md:p-8"
+            style="border: 2px solid var(--color-border);"
+          >
+            <div class="flex-shrink-0">
+              <span
+                class="grid h-16 w-16 place-items-center rounded-xl md:h-20 md:w-20"
+                style={`background: ${r.color}; color: var(--color-on-brand);`}
+                aria-hidden="true"
+              >
+                <Icon name={r.icon} class="h-8 w-8 md:h-10 md:w-10" />
+              </span>
+            </div>
+
+            <div class="flex-1">
+              <div class="mb-2 flex flex-wrap items-center gap-2">
+                <span
+                  class="mono inline-block rounded-full px-2.5 py-1 text-xs font-bold"
+                  style="background: var(--color-marker); color: var(--color-foreground); letter-spacing: 0.06em;"
+                >
+                  {r.badge}
+                </span>
+              </div>
+
+              <h2
+                class="display m-0 text-2xl md:text-3xl"
+                style="line-height: 1.1; font-weight: 700; color: var(--color-foreground);"
+              >
+                {r.title}
+              </h2>
+
+              <p
+                class="mt-3 text-sm leading-relaxed md:text-base"
+                style="color: var(--color-foreground-muted);"
+              >
+                {r.description}
+              </p>
+
+              <div
+                class="mt-4 inline-flex items-center gap-2 text-sm font-bold transition-transform group-hover:translate-x-0.5"
+                style="color: var(--color-primary);"
+              >
+                {r.cta}
+                <Icon name="lucide:arrow-right" class="h-4 w-4" />
+              </div>
+            </div>
+          </a>
+        ))}
+      </div>
+    </section>
+
+    <!-- ============ Próximamente ============ -->
+    <section class="mx-auto max-w-5xl px-4 pt-10 pb-4 md:px-6 md:pt-16">
+      <SectionHeader
+        number="02"
+        hand="en el horno"
+        title="Próximamente"
+        subtitle="Lo que estamos preparando."
+      />
+
+      <div class="mt-6 grid gap-3.5 md:grid-cols-3 md:gap-5">
+        {proximamente.map((r) => (
+          <article
+            class="relative flex flex-col gap-3 overflow-hidden rounded-xl p-5"
+            style="border: 1.5px dashed var(--color-border-strong); background: var(--color-paper);"
+          >
+            <div class="flex items-start justify-between">
+              <span
+                class="grid h-10 w-10 place-items-center rounded-md"
+                style="background: var(--color-surface-alt); color: var(--color-foreground-muted);"
+                aria-hidden="true"
+              >
+                <Icon name={r.icon} class="h-5 w-5" />
+              </span>
+              <span
+                class="mono"
+                style="font-size: 10px; letter-spacing: 0.1em; color: var(--color-foreground-subtle);"
+              >
+                PRÓXIMAMENTE
+              </span>
+            </div>
+            <h3
+              class="display m-0 text-base"
+              style="line-height: 1.2; font-weight: 700; color: var(--color-foreground);"
+            >
+              {r.title}
+            </h3>
+            <p
+              class="text-xs leading-relaxed"
+              style="color: var(--color-foreground-muted);"
+            >
+              {r.description}
+            </p>
+          </article>
+        ))}
+      </div>
+    </section>
+
+    <!-- ============ Internal linking ============ -->
+    <section class="mx-auto max-w-5xl px-4 pt-12 pb-16 md:px-6 md:pt-16 md:pb-20">
+      <div
+        class="card-paper p-6 text-center md:p-10"
+        style="background: var(--color-surface-alt);"
+      >
+        <p
+          class="mono text-xs font-medium uppercase"
+          style="letter-spacing: 0.12em; color: var(--color-foreground-subtle);"
+        >
+          ¿Qué buscas?
+        </p>
+        <h2
+          class="display m-2 text-xl md:text-2xl"
+          style="line-height: 1.15; font-weight: 700;"
+        >
+          Si vienes a buscar ideas concretas
+        </h2>
+        <p
+          class="mx-auto mt-3 max-w-xl text-sm leading-relaxed md:text-base"
+          style="color: var(--color-foreground-muted);"
+        >
+          Echa un vistazo también a nuestros artículos por categoría —
+          ejercicios paso a paso, juegos para divertirse y guías de
+          equipamiento por edad.
+        </p>
+        <div class="mt-5 flex flex-wrap justify-center gap-2.5">
+          <a href="/ejercicios/" class="btn btn-ghost">Ejercicios</a>
+          <a href="/juegos/" class="btn btn-ghost">Juegos</a>
+          <a href="/equipamiento/" class="btn btn-ghost">Equipamiento</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <Footer />
+</BaseLayout>
