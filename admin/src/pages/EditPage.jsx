@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { ArrowLeft, ExternalLink, Save } from 'lucide-react';
+import { ArrowLeft, ExternalLink, Save, Send } from 'lucide-react';
 import FrontmatterForm from '../components/FrontmatterForm.jsx';
 import MDXEditor from '../components/MDXEditor.jsx';
 import ValidationFooter from '../components/ValidationFooter.jsx';
 import { useArticulo } from '../hooks/useArticulos.js';
+import { publicarArticulo } from '../services/articulosAPI.js';
 import { validateArticulo } from '../services/schemaValidator.js';
 import { toast } from '../services/toast.js';
 
@@ -16,6 +17,8 @@ export default function EditPage() {
   const [frontmatter, setFrontmatter] = useState(null);
   const [body, setBody] = useState('');
   const [errors, setErrors] = useState({});
+  const [publishing, setPublishing] = useState(false);
+  const [prCreado, setPrCreado] = useState(null);
 
   // Inicializa estado local con los datos del API
   useEffect(() => {
@@ -38,6 +41,29 @@ export default function EditPage() {
     }
     setErrors({});
     save(cleanFm, body);
+  }
+
+  async function handlePublicar() {
+    if (!frontmatter) return;
+    const { _slug, _categoria, ...cleanFm } = frontmatter;
+    const { valid, errors: validationErrors } = validateArticulo(cleanFm);
+    if (!valid) {
+      setErrors(validationErrors);
+      toast('Corrige los errores antes de publicar', 'error');
+      return;
+    }
+    // Guardar cambios en disco antes de crear el PR
+    await save(cleanFm, body);
+    setPublishing(true);
+    try {
+      const result = await publicarArticulo(slug);
+      setPrCreado(result);
+      toast('PR draft abierto en GitHub', 'success');
+    } catch (err) {
+      toast(err.message, 'error');
+    } finally {
+      setPublishing(false);
+    }
   }
 
   function handleAudit() {
@@ -107,15 +133,33 @@ export default function EditPage() {
           </span>
         </div>
 
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
+          {prCreado && (
+            <a
+              href={prCreado.prUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{
+                display: 'inline-flex', alignItems: 'center', gap: 5,
+                fontSize: 12, fontFamily: 'var(--font-mono)',
+                color: 'var(--color-secondary)', fontWeight: 600,
+                textDecoration: 'none', padding: '4px 10px',
+                background: 'color-mix(in srgb, var(--color-secondary) 12%, transparent)',
+                borderRadius: 6,
+              }}
+            >
+              PR #{prCreado.prNumber} abierto
+              <ExternalLink size={12} />
+            </a>
+          )}
           <button
             className="btn btn-ghost"
             onClick={() => handleSave(true)}
-            disabled={saving}
+            disabled={saving || publishing}
             type="button"
           >
             <Save size={16} />
-            Guardar borrador
+            Borrador
           </button>
           <a
             href={`http://localhost:4321/${data?.categoria}/${slug}/`}
@@ -127,13 +171,23 @@ export default function EditPage() {
             <ExternalLink size={16} />
           </a>
           <button
-            className="btn btn-primary"
+            className="btn btn-ghost"
             onClick={() => handleSave(false)}
-            disabled={saving}
+            disabled={saving || publishing}
             type="button"
           >
             <Save size={16} />
-            {saving ? 'Guardando…' : 'Guardar publicado'}
+            {saving ? 'Guardando…' : 'Guardar'}
+          </button>
+          <button
+            className="btn btn-primary"
+            onClick={handlePublicar}
+            disabled={saving || publishing || !!prCreado}
+            type="button"
+            title={prCreado ? 'PR ya abierto' : 'Guarda + abre PR draft en GitHub'}
+          >
+            <Send size={16} />
+            {publishing ? 'Abriendo PR…' : 'Publicar'}
           </button>
         </div>
       </div>

@@ -7,10 +7,10 @@
 
 ## 📍 Estado actual
 
-- **Fecha:** 2026-04-26
-- **Fase:** 2 — Lanzamiento (identidad visual + monetización)
-- **Sprint activo:** **Sprint 4 — código completo.** Faltan acciones manuales: solicitar AdSense + Amazon Afiliados (ver `docs/GuiaMonetizacion.md`).
-- **Bloqueantes:** ninguno técnico — listo para someterse a AdSense.
+- **Fecha:** 2026-04-29
+- **Fase:** 2 — Lanzamiento (identidad visual + monetización + expansión idiomática)
+- **Sprint activo:** **Sprint 12 en curso.** Batch 1 (PR #40): pillar ejercicios-futbol-6-anos. Batch 2 (PR #41): 4 artículos pendientes plan — conos, sala, playa, 8 años. i18n Catalán (PR #42): infraestructura multiidioma + artículo piloto CA.
+- **Bloqueantes:** ninguno técnico — esperando aprobación AdSense + indexación SEO (4-8 semanas desde 2026-04-26). Instagram @minigolclub activa (0 publicaciones).
 
 ---
 
@@ -21,25 +21,31 @@
 | 2026-04-25 | Brief de producto inicial (CLAUDE.md original) |
 | 2026-04-25 | Análisis ChatGPT consolidado (`AnalisisWebFutbolparaNiños_ChatGPT.md`) |
 | 2026-04-25 | Decisión de marca: **MiniGol Club** |
-| 2026-04-25 | Decisión de dominio inicial: `futbolparaninos.club` (revisada) |
 | 2026-04-26 | Decisión de dominio final: **minigolclub.com** (comprado) |
-| 2026-04-25 | Decisión de stack: **Astro 5 + Tailwind 4 + Cloudflare Pages** (ADR-001, ADR-002) |
+| 2026-04-25 | Decisión de stack: **Astro 6 + Tailwind 4 + Cloudflare Workers** (ADR-001, ADR-002) |
 | 2026-04-25 | Sistema de diseño v1 definido (`DisenoUI.md`) |
 | 2026-04-25 | Posicionamiento de marca v1 definido (`MarcaPosicionamiento.md`) |
 | 2026-04-25 | Backlog 6 meses + 20 artículos núcleo (`PlanTrabajo.md`) |
-| 2026-04-25 | **Sprint 1 cerrado:** bootstrap Astro 5 + Tailwind 4, CI + Lighthouse, repo GitHub público, branch protection, labels, milestones |
-| 2026-04-25 | **Sprint 2 cerrado (PR #10 → main):** sistema editorial completo — content collections, layouts, componentes, primer artículo, Lighthouse CI verde |
-| 2026-04-26 | **Sprint 3 cerrado:** dominio + Cloudflare Workers + GA4 + cookie banner + 5 artículos + página /sobre/ + Astro 6 (XSS fix) |
+| 2026-04-25 | **Sprint 1 cerrado:** bootstrap Astro 5 + Tailwind 4, CI + Lighthouse, repo GitHub público, branch protection |
+| 2026-04-25 | **Sprint 2 cerrado (PR #10):** sistema editorial completo — content collections, layouts, componentes, 1 artículo, Lighthouse CI verde |
+| 2026-04-26 | **Sprint 3 cerrado:** dominio + Cloudflare Workers + GA4 + cookie banner + 6 artículos + /sobre/ + Astro 6 |
+| 2026-04-26 | **Sprint 4 cerrado:** Diseño v2 "Cuaderno de Campo" + páginas legales + Pagefind + 10 artículos + GuiaMonetizacion.md |
+| 2026-04-26 | **Sprint 5 cerrado:** Amazon afiliados (tag minigolclub-21) + AdSense script verificación + entrenamiento→ejercicios + CategoryLayout v2 + auditoría SEO + GSC dado de alta |
+| 2026-04-27 | **Sprint 6 cerrado:** fix Lighthouse a11y/perf + nivel filter activo + Dependabot TS6 + ESLint10 + CLAUDE.md actualizado + Lighthouse en push main |
+| 2026-04-27 | **Sprint 7 cerrado:** theme toggle + GTM/AdSense post-consent + yaml CVE fix + cover migrado a Astro image() + 4 artículos (14 total) |
+| 2026-04-27 | **Sprint 8 cerrado (PR #19):** Content Manager Fase 1 + 6 artículos (20 total) + página /autores/ E-E-A-T + PlanTrabajo sincronizado — 8 agentes en paralelo, -55% tokens |
+| 2026-04-28 | **Sprint 9 cerrado (PR #23):** Content Manager Fase 2 — wizard 4 pasos + auto-PR draft + delete artículo. 21 artículos. 6 squads paralelos. |
+| 2026-04-28 | **Sprint 10 Bloque 1 cerrado:** botón Publicar EditPage + endpoint `/publicar` auto-PR + Playwright E2E base + Dependabot #17/#18 (Vite+esbuild) + conducción-balón mergeado |
 
 ---
 
 ## 🎯 Próximos pasos inmediatos (top 5)
 
-1. **Conectar repo a Cloudflare Pages** (tarea 1.10 aplazada del Sprint 1)
-2. **Comprar dominio** `futbolparaninos.club` (tarea 1.11)
-3. **Apuntar dominio a Cloudflare Pages, HTTPS activo** (tarea 1.12)
-4. **Publicar OG image por defecto** `/og-default.jpg` (referenciada en BaseLayout, aún falta el asset)
-5. **Diseñar logo MiniGol Club** (afecta E-E-A-T y branding)
+1. **Merge PRs Sprint 12** — PR #40 (pillar 6 años), PR #41 (4 artículos batch 2) y PR #42 (i18n CA) cuando CI pase
+2. **Primer Reel @minigolclub** — cuenta `instagram.com/minigolclub/` activa; guión + publicación apuntando a artículo existente
+3. **Esperar aprobación AdSense** → recibir slot IDs → pegar en `<AdSlot>` (acción manual usuario)
+4. **Más artículos CA** — traducir los 5-10 artículos más populares al catalán tras validar pipeline con PR #42
+5. **Merge PR #37 Pizarra Táctica** — Fase 2 completa (mobile TopBar colapsable + skin papel mejorado). `gh pr merge 37 --merge` en worktree `../webfutbolniños-pizarra/`
 
 ---
 
@@ -47,101 +53,168 @@
 
 | Métrica | Objetivo año 1 | Actual | Última medición |
 |---------|----------------|--------|-----------------|
-| Artículos publicados | 50 | 1 | 2026-04-25 |
-| Visitas/mes (GA4) | 30.000 | 0 | — |
+| Artículos publicados | 50 | **33** (29 ES + 4 en PRs + 1 CA piloto) | 2026-04-29 |
+| Visitas/mes (GA4) | 30.000 | 0 | — (indexación pendiente) |
 | Suscriptores newsletter | 1.000 | 0 | — |
-| Ingresos AdSense ($) | 200/mes | 0 | — |
+| Ingresos AdSense ($) | 200/mes | 0 | — (aprobación pendiente) |
 | Conversiones Amazon (clicks → ventas) | 50/mes | 0 | — |
 | Backlinks dofollow DA>30 | 10 | 0 | — |
 | CWV "Good" en CrUX | 100% URLs | n/a | — |
+| Seguidores Instagram @minigolclub | 500 (mes 3) | 0 | — (cuenta @minigolclub activa, 0 publicaciones) |
 
 ---
 
-## ✅ Sprint 2 cerrado — Layouts y content collections (semanas 3-4)
-
-### Resultado
-Sistema editorial funcionando. Lighthouse CI verde en las 3 URLs de prueba (Perf ≥90, A11y ≥95, SEO=100, BP ≥90). Mergeado a `main` el 2026-04-25 (PR #10).
-
-### Cerradas en este sprint
-- [x] 2.1 `content/config.ts` — schemas Zod (PR #10)
-- [x] 2.2 Seed 6 categorías (PR #10)
-- [x] 2.3 Seed 1 autor (PR #10)
-- [x] 2.4 `<ArticleCard>` (PR #10)
-- [x] 2.6 `<Breadcrumb>` con JSON-LD BreadcrumbList (PR #10)
-- [x] 2.7 `<Header>` — logo, nav desktop, drawer mobile (PR #10)
-- [x] 2.8 `<Footer>` (PR #10)
-- [x] 2.9 `ArticleLayout` con prose + TOC sticky desktop + accordion mobile (PR #10)
-- [x] 2.10 `CategoryLayout` con hero + grid + paginación (PR #10)
-- [x] 2.11 Página `[categoria]/index.astro` (PR #10)
-- [x] 2.12 Página `[categoria]/[slug].astro` (PR #10)
-- [x] 2.13 `lib/seo.ts` — JSON-LD Article + BreadcrumbList + Organization (PR #10)
-- [x] 2.15 RSS `/rss.xml.ts` (PR #10)
-- [x] 2.16 `<RelatedArticles>` (PR #10)
-- [x] 2.17 Artículo de prueba: *5 ejercicios de fútbol para niños de 6 años* (PR #10)
-
-### Diferidas a Sprint 3
-- [ ] 2.5 `<CategoryHero>` como componente independiente — inline en `CategoryLayout` es suficiente por ahora
-- [ ] 2.14 OG image dinámica (Satori) — prioridad media, complejidad alta; entra en Sprint 3
-
-### Notas / aprendizajes
-- Astro 5 cambió la API de render: `render(entry)` importado desde `astro:content`, no `entry.render()`
-- `pnpm/action-setup@v4` no acepta `version` si `packageManager` está en `package.json` — usar sin `version`
-- En TypeScript strict, los callbacks de `getCollection` necesitan tipo explícito `CollectionEntry<'nombre'>`
-- Lighthouse axe: `text-{color}` sobre `bg-{color}/10` falla WCAG 1.4.3 — usar siempre `text-foreground` en badges tintados
-- Lighthouse axe: opacity modifier `/70` en colores de texto reduce el ratio a ~3.5:1 — evitar opacidad en texto pequeño
-- Lighthouse CI usa viewport 375px: `hidden sm:block` oculta texto que `aria-label` menciona → `label-content-name-mismatch`
-
----
-
-## ✅ Sprint 3 cerrado (2026-04-26)
+## ✅ Sprint 5 cerrado (2026-04-26)
 
 ### Objetivo
-Sitio listo para crawl + base editorial.
+Monetización operativa + rename categoría + primera auditoría SEO.
 
 ### Cerradas
-- [x] **1.10** Conectar repo a Cloudflare Workers (deploy automático en `main`) — 2026-04-26
-- [x] **1.11** Comprar dominio `minigolclub.com` — 2026-04-26
-- [x] **1.12** Apuntar `minigolclub.com` + `www.minigolclub.com` a Cloudflare Workers, HTTPS activo — 2026-04-26
-- [x] **3.1** Verificar dominio en Google Search Console — 2026-04-26 (verificación automática vía Cloudflare)
-- [x] **3.2** Submit sitemap en GSC (`https://minigolclub.com/sitemap-index.xml`) — 2026-04-26
-- [x] **3.3** Configurar GA4 (`G-705L75RTFB`) con Consent Mode v2 — 2026-04-26
-- [x] **3.4** Banner consentimiento cookies (Consent Mode v2) — 2026-04-26 (vanilla-cookieconsent v3.1.0; requiere `show(true)` manual tras `run()`)
-- [x] **3.5** Componente `<AdSlot>` con label "Publicidad" + placeholder — 2026-04-26 (`src/components/AdSlot.astro`, activable vía `PUBLIC_ADSENSE_CLIENT`)
-- [x] **3.12** Publicar 5 artículos más (total 6) — 2026-04-26
-- [x] **3.13** Página /sobre/ con bio autor (E-E-A-T) — 2026-04-26 (`src/pages/sobre.astro`, JSON-LD AboutPage + Person, declara afiliación Amazon, política de revisión por especialistas)
-- [x] OG image + covers de 6 artículos generados via scripts/sharp — 2026-04-26
-- [x] Astro 5→6 (cierra alertas XSS Dependabot) — 2026-04-26
+- [x] Amazon Afiliados España activo (tag `minigolclub-21`) + `<AmazonCard>` + `<ComparisonTable>` operativos
+- [x] AdSense script en `<head>` para verificación de cuenta
+- [x] Rename categoría `entrenamiento` → `ejercicios` (9 ficheros, 301 redirects en `wrangler.toml`)
+- [x] CategoryLayout v2 con filtros nivel/edad funcionales
+- [x] Auditoría SEO on-page de los 10 artículos existentes
+- [x] GSC verificado + sitemap enviado
 
 ---
 
-## 🔄 Sprint actual — Sprint 4 (semanas 7-8)
+## ✅ Sprint 6 cerrado (2026-04-27)
 
 ### Objetivo
-Sitio listo para AdSense submit + identidad visual definida. Diseño v2 "Cuaderno de Campo" entregado por Claude Design e integrado.
+Cerrar deuda técnica acumulada (Lighthouse + Dependabot) + CI en push a main.
+
+### Causa raíz
+Lighthouse fallaba desde Sprint 5 en main pero solo corría en `pull_request` — fallos invisibles hasta que llegó el primer PR.
 
 ### Cerradas
-- [x] **3.4-fix** Bug cookie banner reapareciendo entre páginas (validConsent guard) + tokens del cuaderno aplicados al modal — 2026-04-26
-- [x] **4.1** Páginas legales completas: `/politica-privacidad/`, `/politica-cookies/`, `/aviso-legal/`, `/contacto/` — 2026-04-26 (bloqueante AdSense desbloqueado)
-- [x] **4.2** Footer con botón "Gestionar cookies" (data-cc="show-preferencesModal") — 2026-04-26
-- [x] **4.3** Diseño v2 "Cuaderno de Campo" integrado en 6 fases — 2026-04-26
-  - Fase A: tokens + utility classes + UI primitives (CatChip, DorsalNumber, AgeBadge, Chrono, Stamp, PitchLines)
-  - Fase B: Logo escudo nuevo, Header/Footer rediseñados, favicon + OG + covers regenerados
-  - Fase C: Home v2 con hero cuaderno, bento de 6 categorías, lo más leído, últimos, NewsletterInline placeholder
-  - Fase D: Categoría v2 con dorsal gigante decorativo + AdSlot in-feed cada 6
-  - Fase E: Artículo v2 con TOC dorsales scroll-spy, prose con CSS counter en H2, blockquote "nota de coach" Caveat, sello manuscrito en cover
-  - Fase F: AdSlot dashed paper + StickyNewsletter mobile cerrable con persistencia 14 días
-- [x] **3.11** Search interna con Pagefind + página `/buscar` — 2026-04-26 (build script `astro build && pagefind --site dist`, UI con tokens del cuaderno, traducciones es)
-- [x] **3.12-cont** Publicar 4 artículos más (total 10) — 2026-04-26
-  - botas-futbol-ninos-tallas-30-32 (equipamiento, money, P0)
-  - ejercicios-coordinacion-futbol-ninos (entrenamiento, cluster 7-9)
-  - mundial-2026-explicado-ninos (mundial-2026, pillar estacional, featured)
-  - juegos-futbol-cumpleanos-ninos (juegos, cluster grupo)
+- [x] Fix touch targets <44px (Header, CategoryLayout chips, AmazonCard, StickyNewsletter)
+- [x] Fix color contrast WCAG AA en dark mode — tokens brand 600→400-series + `--color-on-brand`
+- [x] LCP home 5.9s → 2.9s (self-host fuentes @fontsource-variable, preload selectivo, preconnect GTM/GA/AdSense)
+- [x] Schema `nivel: z.enum(['facil','media','reto'])` obligatorio + filter activo en CategoryLayout
+- [x] Dependabot PR #6 (TypeScript 5.9→6.0) + PR #8 (ESLint 9→10) mergeados
+- [x] CI workflows: Node 20 → 22 (Astro 6 requiere ≥22.12)
+- [x] Lighthouse en `push: main` añadido (prevención regresión)
+- [x] CLAUDE.md alineado al stack actual (§2 stack, §5 UI/UX, §6 umbrales CI)
 
-### Pendientes (acciones manuales del usuario)
-- [ ] **3.7** Solicitar Google AdSense — checklist en `docs/GuiaMonetizacion.md §1`
-- [ ] **3.8** Solicitar Amazon Afiliados España — checklist en `docs/GuiaMonetizacion.md §2`
-- [ ] **1.12b** Redirect 301 `futbolpeques.com` → `minigolclub.com` — solo aplica si compras el defensivo (no comprado)
-- [x] Asset `/public/og-default.jpg` — 2026-04-26 (generado vía `scripts/generate-og-default.mjs` con sharp + SVG inline)
+---
+
+## ✅ Sprint 7 cerrado (2026-04-27)
+
+### Objetivo
+5 prioridades independientes cerradas en una sesión.
+
+### Cerradas
+- [x] **P0** Theme toggle claro/oscuro/sistema (PR #12) — anti-FOUC en `<head>`, 3 estados cíclicos, 44×44px
+- [x] **P1** GTM/AdSense post-consent (PR #14) — scripts cargados solo tras aceptar cookies; LCP home 3974→2942ms, perf 0.83→0.93
+- [x] **P2** Vulnerabilidad yaml CVE-2026-33532 (PR #13) — `pnpm.overrides` `"yaml": ">=2.8.3"`
+- [x] **P3** 4 artículos nuevos (PR #16) — ejercicios-futbol-7-anos, juegos-futbol-2-ninos, mejor-balon-futbol-7-anos, espinilleras-ninos-futbol (total 14)
+- [x] **P4** Cover migrado a Astro `image()` (PR #15) — covers a `src/assets/`, WebP + responsive srcset; LCP artículo 2563→2412ms (<2500ms aspiracional alcanzado)
+
+---
+
+## ✅ Sprint 8 cerrado (2026-04-27, PR #19)
+
+### Objetivo
+Content Manager Fase 1 + 6 artículos (threshold AdSense) + E-E-A-T autor.
+
+### Squads ejecutados (8 agentes en paralelo, -55% tokens)
+
+| Squad | Entrega |
+|-------|---------|
+| D (mockup) | `admin-mockup/Dashboard.html` + `EditPage.html` — tokens "Cuaderno de Campo" |
+| A (Sonnet) | `admin/` completo — React 19 + Vite + Tailwind + react-router + gray-matter, 22 archivos, 3 middlewares API |
+| B×6 (Haiku) | 6 artículos del backlog 20: beneficios-futbol-ninos-salud, calendario-mundial-2026-ninos, mejores-selecciones-mundial-ninos, 10-juegos-futbol-divertidos-faciles, ejercicios-futbol-ninos-en-casa, dinamicas-grupo-entrenamientos-futbol-infantil |
+| C (Sonnet) | `/autores/[slug].astro` dinámica + JSON-LD Person + ArticleLayout → autor link |
+| B-audit×2 (Haiku) | Auditorías retroactivas Batch 1 — 9/10 ambos; fix fechas Mundial |
+
+### Artículos al cierre: **20** (dentro del threshold AdSense 15-20)
+
+---
+
+## ✅ Sprint 9 cerrado (2026-04-28, PR #23)
+
+### Objetivo
+Content Manager Fase 2 — wizard de creación con auto-PR.
+
+### Squads ejecutados (6 squads en 3 batches)
+
+| Batch | Squad | Entrega |
+|-------|-------|---------|
+| 1 (paralelo) | D mockup + E cover endpoint | Mockup `WizardCrear.html` + `POST /api/articulos/cover` exportable |
+| 2 (paralelo) | A1 crear endpoint + A2 UI wizard | `POST /crear` con .mdx draft + cover; wizard 4 pasos React con dnd-kit + react-hook-form+zod + localStorage |
+| 3 (serial) | A3 auto-PR | `POST /api/articulos/pr` con worktree temp + `gh pr create --draft` + UI Step4 success |
+| 4 (serial) | F tests E2E | 4 specs Playwright: 4/10 pasan, 6 con selectores `getByLabel` frágiles (sin `htmlFor`) |
+
+### Contratos API admin tras Sprint 9
+- `POST /api/articulos/cover` → `{ ok, path, sizeKB }`
+- `POST /api/articulos/crear` → `{ ok, filePath, coverPath, slug, categoria }`
+- `POST /api/articulos/pr` → `{ ok, branch, prUrl, prNumber }`
+- `DELETE /api/articulos/:slug` → `{ ok, coverDeleted }`
+- `POST /api/articulos/:slug/publicar` → `{ ok, branch, prUrl, prNumber }` ← añadido en Sprint 10
+
+### Bugs resueltos en línea
+- Paso 4 en blanco: `ZodEffects.merge()` no existe — `step2Base` separado sin `.refine()`, refine al final del schema completo
+- Delete artículo faltante: añadido botón Trash2 en dashboard + `DELETE` endpoint
+
+### Artículos al cierre: **21** (conduccion-balon mergeado en Sprint 10 Bloque 1)
+
+---
+
+## ✅ Sprint 10 cerrado (2026-04-28, PR #38)
+
+### Objetivo
+Deuda técnica admin + documentación estratégica + fix tests.
+
+### Cerradas
+
+- [x] Botón "Publicar" en `EditPage` — guarda + abre PR draft desde el editor (`POST /api/articulos/:slug/publicar`)
+- [x] Fix TypeCheck CI ts(1308) — endpoint `/publicar` usando IIFE async para evitar await en callback síncrono
+- [x] Dependabot PR #17 (Vite) + PR #18 (esbuild) mergeados
+- [x] PR #29 conducción-balón mergeado (artículo 21)
+- [x] Fix Playwright tests — `Field` con `htmlFor` + `id` para que `getByLabel()` funcione
+- [x] `docs/seo/EstrategiaSocialVideo.md` — Instagram Reels, in-house + freelance, @minigolclub
+
+---
+
+## ✅ Sprint 11 cerrado (2026-04-28, PR #39)
+
+### Objetivo
+8 artículos del backlog + Pinterest Rich Pins → 29 artículos publicados.
+
+### Cerradas
+
+- [x] **8 artículos** — 21 → 29 publicados:
+  - `calentamiento-futbol-ninos-10-minutos` (ejercicios, ~1700w)
+  - `ejercicios-futbol-ninos-5-anos` (ejercicios, age silo 5-6-7, ~1800w)
+  - `ejercicios-futbol-ninos-9-anos` (ejercicios, age silo 9-10, ~1900w)
+  - `pase-control-balon-ninos` (ejercicios, técnica base, ~1800w)
+  - `talla-balon-futbol-segun-edad` (equipamiento, money keyword hub, ~2000w)
+  - `mejores-porterias-plegables-jardin` (equipamiento, Amazon afiliados, ~1900w)
+  - `juegos-futbol-conos-ninos` (juegos, viral Pinterest, ~1800w)
+  - `juegos-futbol-pequeno-espacio` (juegos, búsqueda alta, ~1900w)
+- [x] **Pinterest Rich Pins** — meta tags en `ArticleLayout.astro` (`pinterest-rich-pin`, `article:section`, `article:tag`, `pinterest:description`, `pinterest:media`)
+- [x] Fix 7 descripciones MDX >160 chars (Zod schema enforcement)
+
+---
+
+## 🔄 Sprint 12 en curso (2026-04-29)
+
+### Objetivo
+Cerrar 4 artículos pendientes del plan editorial + infraestructura i18n Catalán.
+
+### Cerradas
+
+- [x] **Análisis gaps PlanContenidos** — sección §0 estado de publicación añadida (30 artículos al 29-04, 21 publicados del plan original + 9 extras)
+- [x] **PR #40 — pillar ejercicios-futbol-6-anos** (2500w, 8 ejercicios, 5-7 años). `ejercicios-futbol-ninos-6-anos` marcado `draft: true` para evitar canibalización
+- [x] **PR #41 — batch 2 artículos** — `conos-futbol-infantil-compra` (equipamiento, AmazonCard + ComparisonTable), `ejercicios-futbol-sala-ninos` (7 ejercicios, 7-9 años), `juegos-futbol-playa-verano` (5 juegos verano), `ejercicios-futbol-8-anos` (8 ejercicios)
+- [x] **PR #42 — i18n Catalán MVP** — routing `/ca/**`, colección `articulos-ca`, hreflang bidireccional, `useTranslations()`, artículo piloto CA validado
+
+### En progreso / pendiente
+
+- [ ] Primer Reel Instagram @minigolclub — guión pendiente
+- [ ] Merge PR #40, #41, #42 cuando CI pase
+- [ ] Traducciones CA: 5-10 artículos más populares
 
 ---
 
@@ -152,11 +225,15 @@ Sitio listo para AdSense submit + identidad visual definida. Diseño v2 "Cuadern
 | ADR | Decisión | Fecha |
 |-----|----------|-------|
 | ADR-001 | Astro sobre Next.js / WordPress | 2026-04-25 |
-| ADR-002 | Cloudflare Pages sobre Vercel/Hostinger | 2026-04-25 |
+| ADR-002 | Cloudflare Workers sobre Vercel/Hostinger | 2026-04-25 |
 | ADR-003 | Markdown + content collections sobre headless CMS | 2026-04-25 |
 | ADR-004 | Pagefind sobre Algolia | 2026-04-25 |
 | ADR-005 | TypeScript strict desde día 1 | 2026-04-25 |
 | ADR-006 | Repo público desde el inicio (desbloquea branch protection sin GitHub Pro) | 2026-04-25 |
+| — | Admin en Vite middleware (no servidor separado) — comparte puerto 4322 con dev Vite, accede al filesystem del repo desde `__dirname` | 2026-04-27 |
+| — | Auto-PR: `git worktree add ../mg-pr-tmp` fuera del repo para no contaminar el working tree activo | 2026-04-28 |
+| — | Canal social: Instagram Reels únicamente (no TikTok en fase 1). Evaluar en mes 3 con datos. | 2026-04-28 |
+| ADR-007 | i18n multiidioma: colecciones paralelas (`articulos-ca`) + `prefixDefaultLocale: false`. Español en `/`, Catalán en `/ca/`. Inglés como fase futura. Rechazado: subdominos, frontmatter inline, locales anidados dentro de `articulos/`. | 2026-04-29 |
 
 ---
 
@@ -164,11 +241,12 @@ Sitio listo para AdSense submit + identidad visual definida. Diseño v2 "Cuadern
 
 | Riesgo | Mitigación | Estado |
 |--------|------------|--------|
-| AdSense rechazo inicial (contenido insuficiente) | Tener 10+ artículos antes de solicitar | Plan en sprint 3 |
-| Mundial 2026 (jun-jul) — perdemos pico si no llegamos a tiempo | Bloque 3 (5 artículos Mundial) prioritario en sprints 4-5 | Tracking |
-| Imagen OG por defecto `/og-default.jpg` no existe aún | Crear asset o placeholder antes de deploy | Abierto |
-| Logo MiniGol Club sin diseñar — afecta E-E-A-T | Decidir antes de lanzamiento público | Abierto |
-| 3 vulnerabilidades moderadas en dependencias (Dependabot alerts) | Revisar y mergear PRs de Dependabot | Abierto |
+| AdSense aprobación pendiente | 21 artículos publicados, contenido de calidad — dentro del umbral | Esperando respuesta |
+| Indexación SEO lenta (4-8 semanas) | Sitemaps enviados a GSC; forzar reindex de 5 URLs prioritarias | En progreso |
+| Mundial 2026 (jun-jul) — perdemos pico si no llegamos indexados a tiempo | 3 artículos Mundial publicados; 2 más en backlog | Tracking activo |
+| Playwright tests 6/10 fallan (getByLabel sin htmlFor) | Fix en Sprint 10 Bloque 3 | En proceso → cerrado en este sprint |
+| Logo MiniGol Club sin diseñar — afecta E-E-A-T | Decidir antes de campaña social media | Abierto |
+| Pizarra Táctica Fase 2 completa, PR #37 pendiente de merge | `gh pr merge 37 --merge` en worktree `../webfutbolniños-pizarra/` | PR abierto — listo |
 
 ---
 

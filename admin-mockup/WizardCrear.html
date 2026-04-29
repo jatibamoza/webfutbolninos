@@ -1,0 +1,546 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Wizard nuevo artículo · Admin MiniGol Club</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;700&family=Nunito:wght@400;600;700&family=Caveat:wght@500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --color-paper: #fffcf1; --color-background: #faf6e8; --color-surface-alt: #f4ebc8;
+    --color-foreground: #1a1f2c; --color-foreground-muted: #4d5468; --color-foreground-subtle: #5a6172;
+    --color-handwritten: #1f3f8e; --color-marker: #ffd45e;
+    --color-border: #e5dcc0; --color-border-strong: #c9bc91;
+    --color-primary: #2563eb; --color-secondary: #16a34a; --color-accent: #f59e0b;
+    --color-fun: #ec4899; --color-energy: #dc2626; --color-info: #0891b2;
+    --color-on-brand: #0a0d14;
+    --font-display: 'Fredoka', system-ui, sans-serif;
+    --font-body: 'Nunito', system-ui, sans-serif;
+    --font-hand: 'Caveat', cursive;
+    --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { font-family: var(--font-body); color: var(--color-foreground); background: var(--color-background); -webkit-font-smoothing: antialiased; }
+  body { min-height: 100vh; }
+  h1,h2,h3,h4 { font-family: var(--font-display); font-weight: 700; letter-spacing: -0.02em; }
+  .mono { font-family: var(--font-mono); letter-spacing: 0.04em; }
+  .hand { font-family: var(--font-hand); color: var(--color-handwritten); font-weight: 600; }
+  .card-paper { background: var(--color-paper); border: 1px solid var(--color-border); border-radius: 12px; box-shadow: 0 1px 0 rgba(26,31,44,.04), 0 8px 22px -10px rgba(26,31,44,.10); }
+  .btn { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 10px 18px; border-radius: 10px; border: none; font-weight: 700; cursor: pointer; font-family: var(--font-body); font-size: 14px; transition: transform 120ms ease; }
+  .btn-primary { background: var(--color-foreground); color: var(--color-background); }
+  .btn-ghost { background: transparent; color: var(--color-foreground); border: 1.5px solid var(--color-border-strong); }
+  .btn-success { background: var(--color-secondary); color: var(--color-on-brand); }
+  .btn:hover:not(:disabled) { transform: translateY(-1px); }
+  .btn:disabled { opacity: 0.45; cursor: not-allowed; }
+
+  /* TOPBAR (igual que Dashboard) */
+  .topbar { display: flex; align-items: center; justify-content: space-between; padding: 14px 20px; border-bottom: 1px solid var(--color-border); background: color-mix(in oklab, var(--color-background) 88%, transparent); backdrop-filter: blur(8px); position: sticky; top: 0; z-index: 50; }
+  .brand { display: flex; align-items: center; gap: 12px; text-decoration: none; color: inherit; }
+  .brand-logo { width: 40px; height: 40px; background: var(--color-foreground); border-radius: 50% 50% 50% 50% / 35% 35% 65% 65%; display: grid; place-items: center; color: var(--color-marker); font-family: var(--font-display); font-weight: 700; font-size: 22px; }
+  .brand-text { display: flex; flex-direction: column; line-height: 1.05; }
+  .brand-name { font-family: var(--font-display); font-weight: 700; font-size: 18px; }
+  .brand-name span { color: var(--color-handwritten); }
+  .brand-sub { font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.18em; color: var(--color-foreground-subtle); text-transform: uppercase; }
+  .topbar-actions { display: flex; align-items: center; gap: 8px; }
+  .icon-btn { width: 44px; height: 44px; display: grid; place-items: center; border-radius: 10px; background: transparent; border: none; cursor: pointer; color: var(--color-foreground-muted); }
+  .icon-btn:hover { background: var(--color-surface-alt); }
+  .crumbs { font-family: var(--font-mono); font-size: 11px; color: var(--color-foreground-subtle); letter-spacing: 0.06em; }
+  .crumbs a { color: var(--color-foreground-muted); text-decoration: none; }
+  .crumbs a:hover { color: var(--color-handwritten); }
+
+  .container { max-width: 980px; margin: 0 auto; padding: 28px 20px 60px; }
+
+  /* PAGE HEADER */
+  .page-header { display: flex; align-items: end; justify-content: space-between; gap: 18px; margin-bottom: 24px; flex-wrap: wrap; }
+  .page-header h1 { font-size: clamp(1.8rem, 4vw, 2.4rem); }
+  .page-header .stamp { display: inline-block; padding: 4px 10px; border: 1.5px dashed var(--color-border-strong); border-radius: 6px; font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.18em; color: var(--color-foreground-subtle); text-transform: uppercase; margin-bottom: 6px; }
+
+  /* STEPPER */
+  .stepper { display: flex; align-items: center; gap: 10px; margin-bottom: 28px; padding: 18px; background: var(--color-paper); border: 1px solid var(--color-border); border-radius: 12px; overflow-x: auto; }
+  .step { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+  .step-num { width: 36px; height: 36px; border-radius: 50%; display: grid; place-items: center; font-family: var(--font-display); font-weight: 700; font-size: 16px; background: var(--color-surface-alt); color: var(--color-foreground-muted); border: 2px solid var(--color-border-strong); flex-shrink: 0; }
+  .step[data-state="active"] .step-num { background: var(--color-foreground); color: var(--color-background); border-color: var(--color-foreground); }
+  .step[data-state="done"] .step-num { background: var(--color-secondary); color: var(--color-on-brand); border-color: var(--color-secondary); }
+  .step-label { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+  .step-name { font-weight: 700; font-size: 13px; line-height: 1.1; white-space: nowrap; }
+  .step-hint { font-family: var(--font-mono); font-size: 10px; color: var(--color-foreground-subtle); text-transform: uppercase; letter-spacing: 0.12em; white-space: nowrap; }
+  .step[data-state="pending"] .step-name { color: var(--color-foreground-muted); }
+  .step-sep { flex: 1; height: 2px; background: var(--color-border); border-radius: 2px; min-width: 16px; }
+  .step-sep[data-done="true"] { background: var(--color-secondary); }
+
+  /* PANEL */
+  .panel { padding: 28px; margin-bottom: 18px; }
+  .panel h2 { font-size: 1.4rem; margin-bottom: 6px; }
+  .panel .subtitle { color: var(--color-foreground-muted); font-size: 14px; margin-bottom: 24px; }
+
+  /* FORM */
+  .field { display: flex; flex-direction: column; gap: 6px; margin-bottom: 18px; }
+  .field-label { font-weight: 700; font-size: 13px; color: var(--color-foreground); display: flex; align-items: center; gap: 8px; }
+  .field-label .req { color: var(--color-energy); font-family: var(--font-mono); }
+  .field-hint { font-family: var(--font-mono); font-size: 11px; color: var(--color-foreground-subtle); }
+  .input, .select, .textarea { width: 100%; min-height: 44px; padding: 10px 14px; border-radius: 10px; border: 1.5px solid var(--color-border-strong); background: var(--color-paper); font-family: var(--font-body); font-size: 14px; color: var(--color-foreground); }
+  .textarea { min-height: 100px; resize: vertical; line-height: 1.5; }
+  .input:focus, .select:focus, .textarea:focus { outline: none; border-color: var(--color-foreground); box-shadow: 0 0 0 3px var(--color-marker); }
+  .field-row { display: grid; gap: 14px; grid-template-columns: 1fr; }
+  @media (min-width: 720px) { .field-row.cols-2 { grid-template-columns: 1fr 1fr; } .field-row.cols-3 { grid-template-columns: repeat(3, 1fr); } }
+
+  /* PASO 1 — categoria cards */
+  .cat-grid { display: grid; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); }
+  .cat-card { padding: 18px; border: 2px solid var(--color-border-strong); border-radius: 12px; background: var(--color-paper); cursor: pointer; display: flex; flex-direction: column; gap: 6px; align-items: flex-start; transition: all 150ms ease; min-height: 120px; }
+  .cat-card:hover { transform: translateY(-2px); box-shadow: 0 8px 20px -10px rgba(26,31,44,.18); }
+  .cat-card[data-selected="true"] { border-color: var(--color-foreground); background: var(--color-marker); }
+  .cat-dot { width: 32px; height: 32px; border-radius: 8px; display: grid; place-items: center; font-family: var(--font-mono); font-weight: 700; font-size: 14px; color: var(--color-on-brand); }
+  .cat-name { font-family: var(--font-display); font-weight: 700; font-size: 15px; }
+  .cat-count { font-family: var(--font-mono); font-size: 11px; color: var(--color-foreground-subtle); letter-spacing: 0.08em; text-transform: uppercase; }
+
+  /* PASO 2 — keyword card */
+  .keyword-preview { background: var(--color-surface-alt); border: 1.5px dashed var(--color-border-strong); border-radius: 10px; padding: 16px; margin-top: 14px; }
+  .keyword-preview-label { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.18em; color: var(--color-foreground-subtle); text-transform: uppercase; margin-bottom: 6px; }
+  .keyword-preview-slug { font-family: var(--font-mono); font-size: 13px; color: var(--color-handwritten); word-break: break-all; }
+
+  .check-list { display: flex; flex-direction: column; gap: 8px; margin-top: 14px; }
+  .check-item { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--color-foreground-muted); }
+  .check-item[data-ok="true"] { color: var(--color-secondary); font-weight: 600; }
+  .check-item[data-ok="false"] { color: var(--color-energy); }
+  .check-icon { width: 18px; height: 18px; flex-shrink: 0; }
+
+  /* PASO 3 — outline editor */
+  .outline-list { display: flex; flex-direction: column; gap: 8px; margin-top: 14px; }
+  .outline-row { display: flex; gap: 8px; align-items: center; padding: 10px; background: var(--color-paper); border: 1px solid var(--color-border); border-radius: 10px; }
+  .outline-tag { font-family: var(--font-mono); font-size: 11px; padding: 4px 8px; border-radius: 6px; background: var(--color-surface-alt); color: var(--color-foreground-muted); flex-shrink: 0; min-width: 36px; text-align: center; font-weight: 700; }
+  .outline-tag[data-h="2"] { background: var(--color-handwritten); color: var(--color-background); }
+  .outline-tag[data-h="3"] { background: var(--color-border-strong); color: var(--color-on-brand); padding-left: 14px; }
+  .outline-input { flex: 1; min-height: 36px; padding: 6px 10px; border-radius: 8px; border: 1px solid var(--color-border); background: var(--color-paper); font-family: var(--font-body); font-size: 14px; color: var(--color-foreground); }
+  .outline-input:focus { outline: none; border-color: var(--color-foreground); box-shadow: 0 0 0 2px var(--color-marker); }
+  .outline-actions { display: flex; gap: 4px; flex-shrink: 0; }
+  .mini-btn { width: 32px; height: 32px; border-radius: 6px; background: transparent; border: 1px solid var(--color-border); color: var(--color-foreground-muted); cursor: pointer; display: grid; place-items: center; }
+  .mini-btn:hover { background: var(--color-surface-alt); color: var(--color-foreground); }
+  .mini-btn.danger:hover { background: color-mix(in oklab, var(--color-energy) 12%, transparent); color: var(--color-energy); border-color: var(--color-energy); }
+  .add-h-row { display: flex; gap: 8px; margin-top: 10px; }
+  .add-h-btn { flex: 1; padding: 10px; border-radius: 8px; border: 1.5px dashed var(--color-border-strong); background: transparent; color: var(--color-foreground-muted); font-weight: 700; font-size: 13px; cursor: pointer; }
+  .add-h-btn:hover { background: var(--color-surface-alt); color: var(--color-foreground); border-color: var(--color-foreground); }
+
+  /* PASO 4 — preview */
+  .preview-grid { display: grid; gap: 18px; grid-template-columns: 1fr; }
+  @media (min-width: 900px) { .preview-grid { grid-template-columns: 1.4fr 1fr; } }
+  .preview-card { padding: 20px; border: 1px solid var(--color-border); border-radius: 12px; background: var(--color-paper); }
+  .preview-label { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.18em; color: var(--color-foreground-subtle); text-transform: uppercase; margin-bottom: 10px; }
+  .preview-title { font-family: var(--font-display); font-weight: 700; font-size: 22px; line-height: 1.2; margin-bottom: 8px; }
+  .preview-desc { font-size: 14px; color: var(--color-foreground-muted); line-height: 1.5; margin-bottom: 14px; }
+  .preview-meta { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; }
+  .meta-pill { font-family: var(--font-mono); font-size: 11px; padding: 4px 10px; border-radius: 9999px; background: var(--color-surface-alt); color: var(--color-foreground-muted); }
+  .preview-cover-mock { width: 100%; aspect-ratio: 16/10; background: linear-gradient(135deg, var(--color-surface-alt), var(--color-paper)); border: 1px solid var(--color-border); border-radius: 10px; margin-bottom: 14px; display: grid; place-items: center; color: var(--color-foreground-subtle); font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase; position: relative; overflow: hidden; }
+  .preview-cover-mock::before { content: ""; position: absolute; left: 24px; top: 0; bottom: 0; width: 1px; background: var(--color-energy); opacity: 0.32; }
+  .preview-outline { display: flex; flex-direction: column; gap: 4px; }
+  .preview-h { font-size: 13px; padding: 4px 0; color: var(--color-foreground); }
+  .preview-h.h3 { padding-left: 16px; font-size: 12px; color: var(--color-foreground-muted); }
+
+  .pr-card { padding: 18px; background: var(--color-marker); border: 2px solid var(--color-foreground); border-radius: 12px; }
+  .pr-label { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.18em; color: var(--color-on-brand); text-transform: uppercase; margin-bottom: 8px; }
+  .pr-title { font-family: var(--font-display); font-weight: 700; font-size: 16px; line-height: 1.3; margin-bottom: 10px; color: var(--color-on-brand); }
+  .pr-meta-row { display: flex; flex-direction: column; gap: 6px; font-family: var(--font-mono); font-size: 11px; color: var(--color-on-brand); }
+  .pr-meta-row span { display: flex; gap: 6px; }
+  .pr-meta-row strong { font-weight: 700; }
+
+  /* FOOTER NAV */
+  .wizard-nav { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 16px 0 0; border-top: 1px solid var(--color-border); margin-top: 4px; }
+  .wizard-nav .left, .wizard-nav .right { display: flex; gap: 8px; }
+  .save-draft { font-family: var(--font-mono); font-size: 11px; color: var(--color-foreground-subtle); letter-spacing: 0.04em; }
+
+  /* ANNOTATION (manuscrito) */
+  .annotation { font-family: var(--font-hand); color: var(--color-handwritten); font-size: 18px; font-weight: 600; transform: rotate(-1.5deg); display: inline-block; margin-top: 8px; }
+
+  /* ALERT */
+  .alert { padding: 14px 18px; border-radius: 10px; border: 1.5px solid; margin-bottom: 18px; font-size: 13px; }
+  .alert-info { background: color-mix(in oklab, var(--color-info) 8%, var(--color-paper)); border-color: var(--color-info); color: var(--color-foreground); }
+  .alert strong { color: var(--color-handwritten); }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <a class="brand" href="#">
+    <div class="brand-logo">M</div>
+    <div class="brand-text">
+      <div class="brand-name">MiniGol <span>Club</span></div>
+      <div class="brand-sub">Content Manager</div>
+    </div>
+  </a>
+  <div class="crumbs">
+    <a href="#">Dashboard</a> · <span>Nuevo artículo</span>
+  </div>
+  <div class="topbar-actions">
+    <button class="icon-btn" title="Cerrar y volver">
+      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+  </div>
+</header>
+
+<main class="container">
+
+  <div class="page-header">
+    <div>
+      <span class="stamp">Sprint 9 · Wizard</span>
+      <h1>Nuevo artículo</h1>
+      <p class="annotation">cuatro pasos, sin sustos</p>
+    </div>
+    <div class="save-draft">Borrador guardado · hace 12s</div>
+  </div>
+
+  <!-- STEPPER -->
+  <nav class="stepper" aria-label="Progreso del asistente">
+    <div class="step" data-state="done">
+      <div class="step-num">1</div>
+      <div class="step-label">
+        <div class="step-name">Categoría</div>
+        <div class="step-hint">Iniciación</div>
+      </div>
+    </div>
+    <div class="step-sep" data-done="true"></div>
+    <div class="step" data-state="done">
+      <div class="step-num">2</div>
+      <div class="step-label">
+        <div class="step-name">Keyword</div>
+        <div class="step-hint">Long-tail</div>
+      </div>
+    </div>
+    <div class="step-sep" data-done="true"></div>
+    <div class="step" data-state="active">
+      <div class="step-num">3</div>
+      <div class="step-label">
+        <div class="step-name">Estructura</div>
+        <div class="step-hint">H2 / H3</div>
+      </div>
+    </div>
+    <div class="step-sep" data-done="false"></div>
+    <div class="step" data-state="pending">
+      <div class="step-num">4</div>
+      <div class="step-label">
+        <div class="step-name">Vista previa</div>
+        <div class="step-hint">Crear PR</div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ============================================ -->
+  <!-- PASO 1: CATEGORÍA  (mostrado como referencia, oculto en runtime) -->
+  <!-- ============================================ -->
+  <section class="card-paper panel" hidden id="paso1">
+    <h2>Elige la categoría</h2>
+    <p class="subtitle">El silo de SEO al que pertenece el artículo. Determina la URL y los enlaces internos sugeridos.</p>
+
+    <div class="cat-grid">
+      <button class="cat-card" data-selected="false">
+        <div class="cat-dot" style="background: var(--color-primary);">IN</div>
+        <div class="cat-name">Iniciación</div>
+        <div class="cat-count">12 artículos</div>
+      </button>
+      <button class="cat-card" data-selected="true">
+        <div class="cat-dot" style="background: var(--color-secondary);">EJ</div>
+        <div class="cat-name">Ejercicios</div>
+        <div class="cat-count">5 artículos</div>
+      </button>
+      <button class="cat-card" data-selected="false">
+        <div class="cat-dot" style="background: var(--color-fun);">JU</div>
+        <div class="cat-name">Juegos</div>
+        <div class="cat-count">3 artículos</div>
+      </button>
+      <button class="cat-card" data-selected="false">
+        <div class="cat-dot" style="background: var(--color-accent);">EQ</div>
+        <div class="cat-name">Equipamiento</div>
+        <div class="cat-count">2 artículos</div>
+      </button>
+      <button class="cat-card" data-selected="false">
+        <div class="cat-dot" style="background: var(--color-info);">RC</div>
+        <div class="cat-name">Recursos</div>
+        <div class="cat-count">1 artículo</div>
+      </button>
+      <button class="cat-card" data-selected="false">
+        <div class="cat-dot" style="background: var(--color-energy);">M26</div>
+        <div class="cat-name">Mundial 2026</div>
+        <div class="cat-count">3 artículos</div>
+      </button>
+    </div>
+  </section>
+
+  <!-- ============================================ -->
+  <!-- PASO 2: KEYWORD + METADATOS BÁSICOS  (oculto) -->
+  <!-- ============================================ -->
+  <section class="card-paper panel" hidden id="paso2">
+    <h2>Keyword y título</h2>
+    <p class="subtitle">El long-tail principal que el artículo intentará rankear, más el H1 visible.</p>
+
+    <div class="field">
+      <label class="field-label" for="kw">
+        Keyword principal <span class="req">*</span>
+      </label>
+      <input class="input" id="kw" type="text" value="ejercicios fútbol niños en casa" />
+      <span class="field-hint">2-5 palabras · long-tail · validar en docs/seo/KeywordResearch.md</span>
+    </div>
+
+    <div class="field">
+      <label class="field-label" for="title">
+        Título (H1) <span class="req">*</span>
+        <span class="mono" style="margin-left: auto; font-size: 11px; color: var(--color-foreground-subtle);">52 / 70</span>
+      </label>
+      <input class="input" id="title" type="text" value="10 ejercicios de fútbol para niños en casa, sin balón pesado" />
+      <span class="field-hint">Debe contener la keyword. Máximo 70 caracteres.</span>
+    </div>
+
+    <div class="field">
+      <label class="field-label" for="desc">
+        Meta description <span class="req">*</span>
+        <span class="mono" style="margin-left: auto; font-size: 11px; color: var(--color-foreground-subtle);">142 / 160</span>
+      </label>
+      <textarea class="textarea" id="desc">Diez ejercicios de fútbol para niños 4-12 que se hacen en casa con un par de calcetines y poco espacio. Plan padre-friendly, sin material caro.</textarea>
+      <span class="field-hint">120-160 caracteres. Debe vender el clic, no resumir.</span>
+    </div>
+
+    <div class="keyword-preview">
+      <div class="keyword-preview-label">URL final</div>
+      <div class="keyword-preview-slug">/ejercicios/ejercicios-futbol-ninos-en-casa/</div>
+    </div>
+
+    <ul class="check-list">
+      <li class="check-item" data-ok="true">
+        <svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        Keyword presente en título
+      </li>
+      <li class="check-item" data-ok="true">
+        <svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        URL no canibaliza con artículo existente
+      </li>
+      <li class="check-item" data-ok="true">
+        <svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        Slug en kebab-case sin tildes
+      </li>
+    </ul>
+  </section>
+
+  <!-- ============================================ -->
+  <!-- PASO 3: OUTLINE H2/H3  (visible — paso activo) -->
+  <!-- ============================================ -->
+  <section class="card-paper panel" id="paso3">
+    <h2>Estructura del artículo</h2>
+    <p class="subtitle">Define los H2 (secciones principales) y opcionalmente los H3 (subsecciones). El cuerpo lo escribirás luego en el editor MDX.</p>
+
+    <div class="alert alert-info">
+      <strong>Recomendado:</strong> 5-8 H2 para un artículo de 1500-2000 palabras. La sección de FAQ va siempre al final como H2 con preguntas como H3.
+    </div>
+
+    <div class="outline-list">
+      <div class="outline-row">
+        <span class="outline-tag" data-h="2">H2</span>
+        <input class="outline-input" type="text" value="Por qué entrenar en casa funciona para niños 4-12" />
+        <div class="outline-actions">
+          <button class="mini-btn" title="Mover arriba" aria-label="Mover arriba">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><polyline points="18 15 12 9 6 15"/></svg>
+          </button>
+          <button class="mini-btn" title="Mover abajo" aria-label="Mover abajo">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+          <button class="mini-btn danger" title="Eliminar" aria-label="Eliminar">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-2 14a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2L5 6"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="outline-row">
+        <span class="outline-tag" data-h="2">H2</span>
+        <input class="outline-input" type="text" value="Material que vas a necesitar (todo lo tienes ya)" />
+        <div class="outline-actions">
+          <button class="mini-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><polyline points="18 15 12 9 6 15"/></svg></button>
+          <button class="mini-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><polyline points="6 9 12 15 18 9"/></svg></button>
+          <button class="mini-btn danger"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-2 14a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2L5 6"/></svg></button>
+        </div>
+      </div>
+
+      <div class="outline-row">
+        <span class="outline-tag" data-h="2">H2</span>
+        <input class="outline-input" type="text" value="Los 10 ejercicios paso a paso" />
+        <div class="outline-actions">
+          <button class="mini-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><polyline points="18 15 12 9 6 15"/></svg></button>
+          <button class="mini-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><polyline points="6 9 12 15 18 9"/></svg></button>
+          <button class="mini-btn danger"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-2 14a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2L5 6"/></svg></button>
+        </div>
+      </div>
+
+      <div class="outline-row" style="margin-left: 32px;">
+        <span class="outline-tag" data-h="3">H3</span>
+        <input class="outline-input" type="text" value="1-3: control y conducción de balón" />
+        <div class="outline-actions">
+          <button class="mini-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><polyline points="18 15 12 9 6 15"/></svg></button>
+          <button class="mini-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><polyline points="6 9 12 15 18 9"/></svg></button>
+          <button class="mini-btn danger"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-2 14a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2L5 6"/></svg></button>
+        </div>
+      </div>
+
+      <div class="outline-row" style="margin-left: 32px;">
+        <span class="outline-tag" data-h="3">H3</span>
+        <input class="outline-input" type="text" value="4-7: pase, recepción y precisión" />
+        <div class="outline-actions">
+          <button class="mini-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><polyline points="18 15 12 9 6 15"/></svg></button>
+          <button class="mini-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><polyline points="6 9 12 15 18 9"/></svg></button>
+          <button class="mini-btn danger"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-2 14a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2L5 6"/></svg></button>
+        </div>
+      </div>
+
+      <div class="outline-row" style="margin-left: 32px;">
+        <span class="outline-tag" data-h="3">H3</span>
+        <input class="outline-input" type="text" value="8-10: regate y juego 1v1 en pasillo" />
+        <div class="outline-actions">
+          <button class="mini-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><polyline points="18 15 12 9 6 15"/></svg></button>
+          <button class="mini-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><polyline points="6 9 12 15 18 9"/></svg></button>
+          <button class="mini-btn danger"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-2 14a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2L5 6"/></svg></button>
+        </div>
+      </div>
+
+      <div class="outline-row">
+        <span class="outline-tag" data-h="2">H2</span>
+        <input class="outline-input" type="text" value="Plan semanal: 4 sesiones de 25 minutos" />
+        <div class="outline-actions">
+          <button class="mini-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><polyline points="18 15 12 9 6 15"/></svg></button>
+          <button class="mini-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><polyline points="6 9 12 15 18 9"/></svg></button>
+          <button class="mini-btn danger"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-2 14a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2L5 6"/></svg></button>
+        </div>
+      </div>
+
+      <div class="outline-row">
+        <span class="outline-tag" data-h="2">H2</span>
+        <input class="outline-input" type="text" value="Errores típicos al entrenar en casa" />
+        <div class="outline-actions">
+          <button class="mini-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><polyline points="18 15 12 9 6 15"/></svg></button>
+          <button class="mini-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><polyline points="6 9 12 15 18 9"/></svg></button>
+          <button class="mini-btn danger"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-2 14a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2L5 6"/></svg></button>
+        </div>
+      </div>
+
+      <div class="outline-row">
+        <span class="outline-tag" data-h="2">H2</span>
+        <input class="outline-input" type="text" value="Preguntas frecuentes" />
+        <div class="outline-actions">
+          <button class="mini-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><polyline points="18 15 12 9 6 15"/></svg></button>
+          <button class="mini-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><polyline points="6 9 12 15 18 9"/></svg></button>
+          <button class="mini-btn danger"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-2 14a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2L5 6"/></svg></button>
+        </div>
+      </div>
+    </div>
+
+    <div class="add-h-row">
+      <button class="add-h-btn">+ Añadir H2</button>
+      <button class="add-h-btn">+ Añadir H3</button>
+    </div>
+
+    <div class="annotation">arrastra para reordenar →</div>
+  </section>
+
+  <!-- ============================================ -->
+  <!-- PASO 4: PREVIEW + CREAR PR  (oculto) -->
+  <!-- ============================================ -->
+  <section class="card-paper panel" hidden id="paso4">
+    <h2>Vista previa y publicación</h2>
+    <p class="subtitle">Revisa cómo quedará el artículo antes de generar el archivo MDX y abrir el Pull Request.</p>
+
+    <div class="preview-grid">
+      <div class="preview-card">
+        <div class="preview-label">Cómo se verá el artículo</div>
+
+        <div class="preview-cover-mock">cover · 1200×750 (autogenerada)</div>
+
+        <div class="preview-meta">
+          <span class="meta-pill">EJERCICIOS</span>
+          <span class="meta-pill">4-12 años</span>
+          <span class="meta-pill">Nivel: fácil</span>
+          <span class="meta-pill">~7 min lectura</span>
+        </div>
+
+        <div class="preview-title">10 ejercicios de fútbol para niños en casa, sin balón pesado</div>
+        <div class="preview-desc">Diez ejercicios de fútbol para niños 4-12 que se hacen en casa con un par de calcetines y poco espacio. Plan padre-friendly, sin material caro.</div>
+
+        <div class="preview-label" style="margin-top: 8px;">Estructura</div>
+        <div class="preview-outline">
+          <div class="preview-h">H2 · Por qué entrenar en casa funciona para niños 4-12</div>
+          <div class="preview-h">H2 · Material que vas a necesitar (todo lo tienes ya)</div>
+          <div class="preview-h">H2 · Los 10 ejercicios paso a paso</div>
+          <div class="preview-h h3">H3 · 1-3: control y conducción de balón</div>
+          <div class="preview-h h3">H3 · 4-7: pase, recepción y precisión</div>
+          <div class="preview-h h3">H3 · 8-10: regate y juego 1v1 en pasillo</div>
+          <div class="preview-h">H2 · Plan semanal: 4 sesiones de 25 minutos</div>
+          <div class="preview-h">H2 · Errores típicos al entrenar en casa</div>
+          <div class="preview-h">H2 · Preguntas frecuentes</div>
+        </div>
+      </div>
+
+      <div>
+        <div class="pr-card">
+          <div class="pr-label">Pull Request a abrir</div>
+          <div class="pr-title">content: añadir guía de ejercicios en casa</div>
+          <div class="pr-meta-row">
+            <span><strong>Branch:</strong> content/ejercicios-futbol-ninos-en-casa</span>
+            <span><strong>Archivo:</strong> src/content/articulos/ejercicios/ejercicios-futbol-ninos-en-casa.mdx</span>
+            <span><strong>Cover:</strong> src/assets/articulos/ejercicios/ejercicios-futbol-ninos-en-casa.jpg</span>
+            <span><strong>Estado:</strong> draft (no se publica al merge sin revisión)</span>
+          </div>
+        </div>
+
+        <ul class="check-list" style="margin-top: 18px;">
+          <li class="check-item" data-ok="true">
+            <svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            Frontmatter válido (Zod)
+          </li>
+          <li class="check-item" data-ok="true">
+            <svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            Cover generada (32 KB)
+          </li>
+          <li class="check-item" data-ok="true">
+            <svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            Slug único en la categoría
+          </li>
+          <li class="check-item" data-ok="true">
+            <svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            Branch limpia (working tree clean)
+          </li>
+          <li class="check-item" data-ok="false">
+            <svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            Cuerpo MDX vacío (rellena luego en el editor)
+          </li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- WIZARD NAV -->
+  <nav class="wizard-nav" aria-label="Navegación del asistente">
+    <div class="left">
+      <button class="btn btn-ghost">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+        Atrás
+      </button>
+    </div>
+    <div class="right">
+      <button class="btn btn-ghost">Guardar borrador</button>
+      <button class="btn btn-primary">
+        Continuar
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </button>
+    </div>
+  </nav>
+
+  <div style="margin-top: 40px; padding: 18px; background: var(--color-paper); border: 1.5px dashed var(--color-border-strong); border-radius: 12px;">
+    <div style="font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.18em; color: var(--color-foreground-subtle); text-transform: uppercase; margin-bottom: 10px;">Notas para Squad A1/A2/A3</div>
+    <ul style="font-size: 13px; color: var(--color-foreground-muted); line-height: 1.7; padding-left: 20px;">
+      <li><strong>Persistencia:</strong> el borrador del wizard vive en <code style="font-family: var(--font-mono); font-size: 12px;">localStorage['mg.admin.wizard.draft']</code> y se serializa en cada cambio (debounce 500ms). Se limpia al crear el PR con éxito.</li>
+      <li><strong>Validación:</strong> Zod cliente <strong>idéntica</strong> al schema de <code style="font-family: var(--font-mono); font-size: 12px;">src/content.config.ts</code>. Importar el schema vía workspace, no duplicar.</li>
+      <li><strong>Generar cover</strong> al pasar de paso 3 → 4 (Squad E ya monta el endpoint <code style="font-family: var(--font-mono); font-size: 12px;">POST /api/articulos/cover</code>).</li>
+      <li><strong>Generar PR:</strong> Squad A3 (simple-git + gh pr create). Branch pattern: <code style="font-family: var(--font-mono); font-size: 12px;">content/&lt;slug&gt;</code>. Commit: <code style="font-family: var(--font-mono); font-size: 12px;">content: añadir &lt;título corto&gt;</code>. Draft=true en el frontmatter generado para evitar publicación accidental.</li>
+      <li><strong>Touch ≥ 44px</strong> en todos los <code style="font-family: var(--font-mono); font-size: 12px;">.mini-btn</code> es 32px <em>a propósito</em> (acción secundaria sobre row de 50px de altura → área efectiva pasa). Si dudas, sube a 36px.</li>
+      <li><strong>Drag & drop:</strong> opcional Fase 2.1. Para el MVP, mover con flechas arriba/abajo es suficiente.</li>
+    </ul>
+  </div>
+
+</main>
+
+</body>
+</html>

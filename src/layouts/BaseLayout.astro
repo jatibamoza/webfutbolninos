@@ -13,6 +13,7 @@ interface Props {
   ogImage?: string;
   ogType?: 'website' | 'article';
   noindex?: boolean;
+  hreflangs?: Array<{ lang: string; href: string }>;
 }
 
 const {
@@ -22,7 +23,12 @@ const {
   ogImage = SITE.defaultOgImage,
   ogType = 'website',
   noindex = false,
+  hreflangs,
 } = Astro.props;
+
+const lang = Astro.currentLocale ?? 'es';
+const ogLocale = lang === 'ca' ? 'ca_ES' : SITE.locale;
+const skipLabel = lang === 'ca' ? 'Saltar al contingut' : 'Saltar al contenido';
 
 const canonicalURL = canonical ?? new URL(Astro.url.pathname, SITE_URL).toString();
 const ogImageURL = new URL(ogImage, SITE_URL).toString();
@@ -30,7 +36,7 @@ const fullTitle = title === SITE.name ? title : `${title} · ${SITE.name}`;
 ---
 
 <!doctype html>
-<html lang="es">
+<html lang={lang}>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -57,6 +63,9 @@ const fullTitle = title === SITE.name ? title : `${title} · ${SITE.name}`;
     <title>{fullTitle}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonicalURL} />
+    {hreflangs && hreflangs.map((hl) => (
+      <link rel="alternate" hreflang={hl.lang} href={hl.href} />
+    ))}
     {noindex && <meta name="robots" content="noindex, nofollow" />}
 
     <meta property="og:type" content={ogType} />
@@ -65,7 +74,7 @@ const fullTitle = title === SITE.name ? title : `${title} · ${SITE.name}`;
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonicalURL} />
     <meta property="og:image" content={ogImageURL} />
-    <meta property="og:locale" content={SITE.locale} />
+    <meta property="og:locale" content={ogLocale} />
 
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={fullTitle} />
@@ -102,7 +111,7 @@ const fullTitle = title === SITE.name ? title : `${title} · ${SITE.name}`;
       href="#main"
       class="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-50 focus:rounded-button focus:bg-foreground focus:px-4 focus:py-2 focus:text-background"
     >
-      Saltar al contenido
+      {skipLabel}
     </a>
     <slot />
     <CookieBanner />

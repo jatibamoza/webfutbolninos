@@ -11,7 +11,7 @@
 
 | Fase | Alcance | Estimación | Estado |
 |---|---|---|---|
-| **Fase 2** | MVP gratis, sin pagos, sin cuentas | ≈ 24 h netas en 1 PR | Pendiente de aprobación |
+| **Fase 2** | MVP gratis, sin pagos, sin cuentas | ≈ 24 h netas en 1 PR | ✅ Completa — PR #37 abierto, listo para merge |
 | **Fase 2.5** | Páginas evergreen `/pizarra/<preset>/` | ≈ 8 h en 1 PR | En backlog |
 | **Fase 3a** | Cuentas + biblioteca cloud (sin pagos) | ≈ 12 h | En backlog |
 | **Fase 3b** | Pagos Lemon Squeezy + paywall activo | ≈ 10 h | En backlog |
@@ -67,6 +67,8 @@ F2.1 ──► F2.2 ──► F2.3
 | F2.14 | `src/content/pizarras/*.json` (mover los 6 presets a content collection). Schema Zod en `content.config.ts`. | baja | F2.13 |
 | F2.15 | Fallback `<noscript>` con primer frame del preset como SVG estático. | media | F2.13 |
 | F2.16 | Audit final: Lighthouse, axe-core, prueba en iPhone real, Android real, navegación 100 % por teclado. | alta | todo lo anterior |
+| F2.17 | `Board.tsx` TopBar colapsable en mobile — header compacto siempre visible (título + toggle), panel ajustes desplegable (`mobileMenuOpen` state, condicionado por `coarsePointer`). Soluciona overflow horizontal en iPhone 14 Pro Max (430px). | media | F2.16 |
+| F2.18 | `primitives/Field.tsx` skin-aware — prop `skin: Skin`, `STROKE_BY_SKIN` (`paper: '#1e293b'`), fondo cuadriculado SVG `<pattern id="pz-paper-grid">` solo en skin paper. | baja | F2.16 |
 
 ### Tests obligatorios Fase 2
 
@@ -253,6 +255,21 @@ F2.1 ──► F2.2 ──► F2.3
 
 ## Tareas completadas
 
-_(Se mueven aquí cuando se mergean.)_
+_(Fase 2 — PR #37 abierto en feat/pizarra → main, 2026-04-28/29)_
 
-- _ninguna por ahora_
+- F2.1 ✅ — integración @astrojs/preact + smoke test /pizarra/ con noindex (PR #20)
+- F2.2 + F2.3 ✅ — core puro: types.ts (Zod), geometry.ts, tween.ts, serialize.ts, presets.ts. 34 tests vitest verdes.
+- F2.4 + F2.5 ✅ — primitives SVG (Field, Player, FieldObject, Arrow, Note) + hooks Preact (useSvgDrag, useUrlHash, useKeyboardNudge, usePrefersReducedMotion, useCoarsePointer).
+- F2.6 ✅ — Board.tsx orquestador (useReducer 14 acciones, play loop rAF, arrow drawing, keyboard shortcuts).
+- F2.7 ✅ — ui/Toolbar.tsx + ui/TopBar.tsx integrados en Board.tsx.
+- F2.8 ✅ — ui/Timeline.tsx (play/pause, dots, add/delete frame, live region a11y, reducedMotion).
+- F2.9 ✅ — ui/NoteEditor.tsx + ui/ShareToast.tsx (modal Caveat auto-focus + Esc, clipboard, auto-dismiss 4s).
+- F2.10 ✅ — ui/Watermark.tsx + exportPng.ts + ui/ExportButton.tsx (watermark SVG por skin, export PNG canvas).
+- F2.11 ✅ — ui/NudgePad.tsx + integración Board.tsx (d-pad 3×3 CSS grid, disabled sin selección).
+- F2.12 ✅ — PizarraEmbed.astro (client:visible, prop readonly, Toolbar/Timeline/NudgePad/NoteEditor/share ocultos en readonly).
+- F2.13 ✅ — /pizarra/ landing SEO (noindex eliminado, SoftwareApplication + BreadcrumbList JSON-LD, H1, intro, 2 internal links).
+- F2.14 ✅ — content/pizarras/*.json + pizarrasCollection en content.config.ts + presets.ts desde JSON.
+- F2.15 ✅ — `<noscript>` SVG estático en /pizarra/ (frame 0 rondo-4v1 hardcodeado).
+- F2.16 ✅ — Audit final Lighthouse: /pizarra/ Perf 95 · A11y 100 · SEO 100 · BP 100 · LCP 2.4s · CLS 0. Onboarding (WelcomeModal + CoachMarks). Bug fixes pre-merge (SVG sizing, tooltips, watermark posición, select options Windows).
+- F2.17 ✅ — TopBar colapsable en mobile (header compacto + panel ajustes desplegable, sin overflow horizontal).
+- F2.18 ✅ — Skin papel: líneas oscuras #1e293b + fondo cuadriculado SVG pz-paper-grid.

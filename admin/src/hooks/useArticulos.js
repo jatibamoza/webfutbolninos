@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-import { fetchArticulo, fetchArticulos, saveArticulo } from '../services/articulosAPI.js';
+import { deleteArticulo, fetchArticulo, fetchArticulos, saveArticulo } from '../services/articulosAPI.js';
 import { toast } from '../services/toast.js';
 
 export function useArticulosList() {
@@ -7,14 +7,35 @@ export function useArticulosList() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  useEffect(() => {
-    fetchArticulos()
-      .then(setArticulos)
+  const refetch = useCallback(() => {
+    setLoading(true);
+    return fetchArticulos()
+      .then((data) => {
+        setArticulos(data);
+        setError(null);
+      })
       .catch((err) => setError(err.message))
       .finally(() => setLoading(false));
   }, []);
 
-  return { articulos, loading, error };
+  useEffect(() => {
+    refetch();
+  }, [refetch]);
+
+  const remove = useCallback(
+    async (slug) => {
+      try {
+        const result = await deleteArticulo(slug);
+        toast(`Artículo "${slug}" eliminado${result.coverDeleted ? ' (con cover)' : ''}`, 'success');
+        await refetch();
+      } catch (err) {
+        toast(err.message, 'error');
+      }
+    },
+    [refetch],
+  );
+
+  return { articulos, loading, error, refetch, remove };
 }
 
 export function useArticulo(slug) {
