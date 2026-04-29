@@ -599,7 +599,7 @@ export function Board({ preset, class: className, readonly = false }: BoardProps
             {/* Field background (skin color) */}
             <rect x="0" y="0" width="100" height="100" fill={BG_BY_SKIN[board.skin]} />
 
-            <FieldLines type={board.fieldType} />
+            <FieldLines type={board.fieldType} skin={board.skin} />
 
             {/* Arrows under players so players appear on top */}
             {currentFrame.arrows.map((arrow) => (
