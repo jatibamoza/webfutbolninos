@@ -4,6 +4,7 @@ import { Icon } from 'astro-icon/components';
 import Logo from '@/components/ui/Logo.astro';
 import ThemeToggle from '@/components/ui/ThemeToggle.astro';
 import LangSwitcher from '@/components/ui/LangSwitcher.astro';
+import { useTranslations, type Locale } from '@/i18n';
 
 interface Props {
   hreflangs?: Array<{ lang: string; href: string }>;
@@ -11,6 +12,17 @@ interface Props {
 
 const { hreflangs } = Astro.props;
 const currentPath = Astro.url.pathname;
+
+const locale = (Astro.currentLocale ?? 'es') as Locale;
+const t = useTranslations(locale);
+
+const navLabelKey: Record<string, 'nav-ejercicios' | 'nav-juegos' | 'nav-equipamiento' | 'nav-iniciacion' | 'nav-recursos'> = {
+  '/ejercicios/': 'nav-ejercicios',
+  '/juegos/': 'nav-juegos',
+  '/equipamiento/': 'nav-equipamiento',
+  '/iniciacion/': 'nav-iniciacion',
+  '/recursos/': 'nav-recursos',
+};
 ---
 
 <header
@@ -33,11 +45,13 @@ const currentPath = Astro.url.pathname;
     </a>
 
     <!-- Nav desktop -->
-    <nav class="hidden lg:block" aria-label="Navegación principal">
+    <nav class="hidden lg:block" aria-label={t('nav-aria-primary')}>
       <ul class="flex items-center gap-1">
         {
           NAV_PRIMARY.map((item) => {
             const isActive = currentPath.startsWith(item.href);
+            const labelKey = navLabelKey[item.href as keyof typeof navLabelKey];
+            const label = labelKey ? t(labelKey) : item.label;
             return (
               <li>
                 <a
@@ -48,7 +62,7 @@ const currentPath = Astro.url.pathname;
                   style={`letter-spacing: 0.08em; color: ${isActive ? 'var(--color-foreground)' : 'var(--color-foreground-muted)'};`}
                   aria-current={isActive ? 'page' : undefined}
                 >
-                  {item.label}
+                  {label}
                   {isActive && (
                     <span
                       class="ml-2 inline-block h-1.5 w-1.5 rounded-full"
@@ -73,7 +87,7 @@ const currentPath = Astro.url.pathname;
         href="/buscar/"
         class="flex h-11 w-11 items-center justify-center rounded-md transition-colors"
         style="color: var(--color-foreground-muted);"
-        aria-label="Buscar"
+        aria-label={t('nav-aria-search')}
       >
         <Icon name="lucide:search" class="h-5 w-5" aria-hidden="true" />
       </a>
@@ -82,7 +96,7 @@ const currentPath = Astro.url.pathname;
         type="button"
         class="flex h-11 w-11 items-center justify-center rounded-md transition-colors lg:hidden"
         style="color: var(--color-foreground-muted);"
-        aria-label="Abrir menú"
+        aria-label={t('nav-aria-open-menu')}
         aria-expanded="false"
         aria-controls="mobile-menu"
         id="menu-toggle"
@@ -100,13 +114,15 @@ const currentPath = Astro.url.pathname;
     style="border-top: 1px solid var(--color-border); background: var(--color-paper);"
     role="dialog"
     aria-modal="true"
-    aria-label="Menú de navegación"
+    aria-label={t('nav-aria-mobile-menu')}
   >
     <nav class="mx-auto max-w-7xl px-4 py-4">
       <ul class="flex flex-col gap-1">
         {
           NAV_PRIMARY.map((item) => {
             const isActive = currentPath.startsWith(item.href);
+            const labelKey = navLabelKey[item.href as keyof typeof navLabelKey];
+            const label = labelKey ? t(labelKey) : item.label;
             return (
               <li>
                 <a
@@ -115,7 +131,7 @@ const currentPath = Astro.url.pathname;
                   style={`color: ${isActive ? 'var(--color-foreground)' : 'var(--color-foreground-muted)'}; background: ${isActive ? 'var(--color-surface-alt)' : 'transparent'};`}
                   aria-current={isActive ? 'page' : undefined}
                 >
-                  <span class="display text-base font-semibold">{item.label}</span>
+                  <span class="display text-base font-semibold">{label}</span>
                   <Icon name="lucide:chevron-right" class="h-4 w-4 opacity-50" aria-hidden="true" />
                 </a>
               </li>

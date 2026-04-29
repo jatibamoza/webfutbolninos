@@ -1,6 +1,7 @@
 ---
 import { breadcrumbJsonLd } from '@/lib/seo';
 import { SITE_URL } from '@/consts';
+import { useTranslations, type Locale } from '@/i18n';
 
 interface BreadcrumbItem {
   label: string;
@@ -13,7 +14,10 @@ interface Props {
 
 const { items } = Astro.props;
 
-const allItems = [{ label: 'Inicio', href: '/' }, ...items];
+const locale = (Astro.currentLocale ?? 'es') as Locale;
+const t = useTranslations(locale);
+
+const allItems = [{ label: t('breadcrumb-home'), href: '/' }, ...items];
 
 const jsonLdItems = allItems.map((item) => ({
   name: item.label,
