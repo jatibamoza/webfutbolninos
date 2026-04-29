@@ -1,0 +1,71 @@
+---
+import { getCollection, getEntry, render, type CollectionEntry } from 'astro:content';
+import ArticleLayout from '@/layouts/ArticleLayout.astro';
+import { SITE_URL } from '@/consts';
+
+export async function getStaticPaths() {
+  const articulos = await getCollection(
+    'articulos-ca',
+    ({ data }: CollectionEntry<'articulos-ca'>) => !data.draft
+  );
+
+  return articulos.map((article: CollectionEntry<'articulos-ca'>) => ({
+    params: {
+      categoria: article.data.categoria,
+      slug: (article.id.split('/').pop() ?? article.id).replace(/\.mdx?$/, ''),
+    },
+    props: { article },
+  }));
+}
+
+const { article } = Astro.props as { article: CollectionEntry<'articulos-ca'> };
+const { Content, headings } = await render(article);
+
+const categoria = await getEntry('categorias', article.data.categoria);
+
+const slug = (article.id.split('/').pop() ?? article.id).replace(/\.mdx?$/, '');
+const caUrl = new URL(`/ca/${article.data.categoria}/${slug}/`, SITE_URL).toString();
+
+// Build hreflang tags: this CA page + ES original if available
+const hreflangs: Array<{ lang: string; href: string }> = [
+  { lang: 'ca', href: caUrl },
+];
+
+if (article.data.traduccionDe) {
+  const esUrl = new URL(
+    `/${article.data.categoria}/${article.data.traduccionDe}/`,
+    SITE_URL
+  ).toString();
+  hreflangs.push({ lang: 'es', href: esUrl });
+  hreflangs.push({ lang: 'x-default', href: esUrl });
+}
+
+const allEsArticulos = await getCollection(
+  'articulos',
+  ({ data }: CollectionEntry<'articulos'>) => !data.draft
+);
+const relatedArticles = allEsArticulos
+  .filter(
+    (a: CollectionEntry<'articulos'>) =>
+      a.data.categoria === article.data.categoria ||
+      a.data.tags.some((tag: string) => article.data.tags.includes(tag))
+  )
+  .sort(
+    (a: CollectionEntry<'articulos'>, b: CollectionEntry<'articulos'>) =>
+      b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
+  )
+  .slice(0, 3);
+---
+
+<ArticleLayout
+  article={article}
+  categoriaNombre={categoria?.data.nombre ?? article.data.categoria}
+  categoriaSlug={article.data.categoria}
+  categoriaColor={categoria?.data.color ?? 'secondary'}
+  relatedArticles={relatedArticles}
+  headings={headings}
+  hreflangs={hreflangs}
+  canonicalOverride={caUrl}
+>
+  <Content />
+</ArticleLayout>
