@@ -1,0 +1,34 @@
+name = "minigolclub-trending"
+main = "src/index.ts"
+compatibility_date = "2026-04-01"
+
+# Cron: cada día a las 09:00 UTC (~10-11 Madrid). Tendencias diarias = más
+# útil que las horarias para nuestro nicho (no estamos haciendo trading).
+[triggers]
+crons = ["0 9 * * *"]
+
+[vars]
+# Override estos en el dashboard de Cloudflare antes de deploy.
+# DISCORD_WEBHOOK_URL es secret — usar `wrangler secret put DISCORD_WEBHOOK_URL`.
+
+# Lista de queries de Google Trends España a vigilar. JSON-string porque
+# wrangler no soporta arrays nativos en vars.
+TRENDS_QUERIES = '["fútbol infantil","fútbol niños","ejercicios fútbol","balón fútbol talla","Mundial 2026"]'
+
+# Feeds RSS de fuentes oficiales (federaciones, ligas, Mundial 2026).
+# Discord se entera de cualquier noticia nueva → editor decide si la
+# convierte en post o artículo.
+RSS_FEEDS = '["https://www.rfef.es/rss/news","https://www.fcf.cat/feed/","https://www.uefa.com/uefachampionsleague/news/rss.xml"]'
+
+# Umbral de "interés" en Google Trends para notificar. Trends es 0-100.
+TRENDS_THRESHOLD = "60"
+
+# KV para persistir IDs ya notificados (evita re-spammear el mismo trend).
+# Crear con: wrangler kv namespace create SEEN_TRENDS
+[[kv_namespaces]]
+binding = "SEEN_TRENDS"
+id = "REEMPLAZAR_TRAS_CREAR_KV"
+preview_id = "REEMPLAZAR_TRAS_CREAR_KV_PREVIEW"
+
+[observability]
+enabled = true
