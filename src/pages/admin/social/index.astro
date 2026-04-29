@@ -1,0 +1,416 @@
+---
+import { readFileSync, existsSync, statSync } from 'node:fs';
+import { resolve } from 'node:path';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Header from '@/components/Header.astro';
+import Footer from '@/components/Footer.astro';
+import { Icon } from 'astro-icon/components';
+
+// noindex — esta página NO debe indexarse en Google
+const calPath = resolve(process.cwd(), 'content/social/calendar.json');
+
+interface CalendarPost {
+  id: string;
+  platforms: string[];
+  format: string;
+  scheduled_at: string;
+  status: 'draft' | 'approved' | 'published' | 'failed' | 'archived';
+  locale: string;
+  article_slug?: string;
+  target_url?: string;
+  caption: string;
+  hashtags?: string[];
+  media: Array<{ type: string; path: string; alt?: string }>;
+  notes?: string;
+  published_at?: string | null;
+  publer_post_id?: string | null;
+  error?: string | null;
+}
+
+interface Calendar {
+  version: number;
+  generated_at?: string | null;
+  posts: CalendarPost[];
+}
+
+let calendar: Calendar | null = null;
+let calendarError: string | null = null;
+try {
+  if (existsSync(calPath)) {
+    calendar = JSON.parse(readFileSync(calPath, 'utf8')) as Calendar;
+  } else {
+    calendarError = `No existe ${calPath}. Crea content/social/calendar.json primero.`;
+  }
+} catch (e) {
+  calendarError = e instanceof Error ? e.message : String(e);
+}
+
+const posts: CalendarPost[] = calendar?.posts ?? [];
+
+// Agrupar por día (YYYY-MM-DD), orden cronológico ascendente
+function dayKey(iso: string) {
+  const d = new Date(iso);
+  return d.toISOString().slice(0, 10);
+}
+
+const sorted = [...posts].sort(
+  (a, b) => Date.parse(a.scheduled_at) - Date.parse(b.scheduled_at),
+);
+const grouped = new Map<string, CalendarPost[]>();
+for (const p of sorted) {
+  const key = dayKey(p.scheduled_at);
+  if (!grouped.has(key)) grouped.set(key, []);
+  grouped.get(key)!.push(p);
+}
+
+// Métricas
+const counts: Record<string, number> = {};
+for (const p of posts) counts[p.status] = (counts[p.status] ?? 0) + 1;
+
+const nowMs = Date.now();
+const upcomingApproved = posts.filter(
+  (p) => p.status === 'approved' && Date.parse(p.scheduled_at) >= nowMs,
+).length;
+const overdueApproved = posts.filter(
+  (p) => p.status === 'approved' && Date.parse(p.scheduled_at) < nowMs,
+).length;
+
+// Status → tokens
+const STATUS_STYLE: Record<CalendarPost['status'], { bg: string; fg: string; label: string }> = {
+  draft:     { bg: '#e5e7eb', fg: '#374151', label: 'Borrador' },
+  approved:  { bg: '#FACC15', fg: '#1a1f2c', label: 'Aprobado' },
+  published: { bg: '#16A34A', fg: '#ffffff', label: 'Publicado' },
+  failed:    { bg: '#DC2626', fg: '#ffffff', label: 'Falló' },
+  archived:  { bg: '#9ca3af', fg: '#1a1f2c', label: 'Archivado' },
+};
+
+const PLATFORM_ICON: Record<string, string> = {
+  instagram: 'lucide:instagram',
+  facebook: 'lucide:facebook',
+  tiktok: 'lucide:music',
+  x: 'lucide:twitter',
+  linkedin: 'lucide:linkedin',
+  pinterest: 'lucide:image',
+  youtube: 'lucide:youtube',
+};
+
+const FORMAT_LABEL: Record<string, string> = {
+  single_image: 'Imagen',
+  carousel: 'Carrusel',
+  reel: 'Reel',
+  story: 'Story',
+  video: 'Vídeo',
+  text: 'Texto',
+};
+
+function fmtTime(iso: string) {
+  const d = new Date(iso);
+  return d.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
+}
+
+function fmtDay(iso: string) {
+  const d = new Date(`${iso}T12:00:00`);
+  return d.toLocaleDateString('es-ES', {
+    weekday: 'long',
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+  });
+}
+
+function assetExists(relativePath: string) {
+  try {
+    const abs = resolve(process.cwd(), relativePath);
+    return existsSync(abs) && statSync(abs).isFile();
+  } catch {
+    return false;
+  }
+}
+
+function previewCaption(caption: string, max = 140) {
+  if (caption.length <= max) return caption;
+  return caption.slice(0, max).trim() + '…';
+}
+---
+
+<BaseLayout
+  title="Calendar Social — Admin"
+  description="Vista interna del calendario de publicaciones a redes sociales"
+  noindex={true}
+>
+  <Header />
+
+  <main id="main" class="mx-auto max-w-5xl px-4 py-10 md:px-6">
+    <header class="mb-8">
+      <p
+        class="mono text-xs font-medium uppercase"
+        style="letter-spacing: 0.12em; color: var(--color-foreground-subtle);"
+      >
+        Admin · solo visualización
+      </p>
+      <h1
+        class="display m-0 mt-2"
+        style="font-size: clamp(2rem, 4vw, 2.75rem); line-height: 1; letter-spacing: -0.02em;"
+      >
+        Calendar Social
+      </h1>
+      <p class="mt-3 text-sm" style="color: var(--color-foreground-muted);">
+        Lectura de <code style="font-family: var(--font-mono, monospace); padding: 2px 6px; background: var(--color-surface-alt); border-radius: 4px;">content/social/calendar.json</code>.
+        Para editar, modifica el JSON en Git y abre PR.
+      </p>
+    </header>
+
+    {calendarError && (
+      <div
+        class="mb-8 rounded-lg p-5"
+        style="background: #FEE2E2; color: #991B1B; border: 1px solid #DC2626;"
+        role="alert"
+      >
+        <strong>Error:</strong> {calendarError}
+      </div>
+    )}
+
+    {calendar && (
+      <>
+        <!-- Métricas -->
+        <section class="mb-10 grid gap-3 grid-cols-2 md:grid-cols-5">
+          {(['draft', 'approved', 'published', 'failed', 'archived'] as const).map((s) => (
+            <div
+              class="rounded-lg p-4"
+              style={`background: var(--color-paper); border: 1px solid var(--color-border);`}
+            >
+              <div
+                class="mono text-xs font-medium uppercase"
+                style={`letter-spacing: 0.08em; color: ${STATUS_STYLE[s].bg};`}
+              >
+                {STATUS_STYLE[s].label}
+              </div>
+              <div
+                class="display mt-1 text-3xl"
+                style="font-weight: 700; line-height: 1;"
+              >
+                {counts[s] ?? 0}
+              </div>
+            </div>
+          ))}
+        </section>
+
+        <!-- Banner alertas -->
+        {(overdueApproved > 0 || upcomingApproved > 0) && (
+          <section class="mb-8 grid gap-3 md:grid-cols-2">
+            {overdueApproved > 0 && (
+              <div
+                class="flex items-start gap-3 rounded-lg p-4"
+                style="background: #FEF3C7; border: 1px solid #D97706;"
+              >
+                <Icon name="lucide:alert-triangle" class="h-5 w-5 flex-shrink-0" style="color: #92400E;" />
+                <div>
+                  <p class="text-sm font-bold" style="color: #92400E;">
+                    {overdueApproved} post(s) approved con fecha pasada
+                  </p>
+                  <p class="mt-1 text-xs" style="color: #92400E;">
+                    El próximo cron del scheduler los marcará como <code>failed</code> si quedan fuera de la ventana.
+                  </p>
+                </div>
+              </div>
+            )}
+            {upcomingApproved > 0 && (
+              <div
+                class="flex items-start gap-3 rounded-lg p-4"
+                style="background: #DCFCE7; border: 1px solid #16A34A;"
+              >
+                <Icon name="lucide:calendar-check" class="h-5 w-5 flex-shrink-0" style="color: #166534;" />
+                <div>
+                  <p class="text-sm font-bold" style="color: #166534;">
+                    {upcomingApproved} post(s) approved en la cola
+                  </p>
+                  <p class="mt-1 text-xs" style="color: #166534;">
+                    El scheduler los enviará a Publer cuando llegue su <code>scheduled_at</code>.
+                  </p>
+                </div>
+              </div>
+            )}
+          </section>
+        )}
+
+        <!-- Timeline por día -->
+        {grouped.size === 0 ? (
+          <div
+            class="card-paper p-8 text-center"
+            style="border: 1.5px dashed var(--color-border-strong);"
+          >
+            <Icon name="lucide:inbox" class="mx-auto h-10 w-10" style="color: var(--color-foreground-subtle);" />
+            <p class="mt-3 text-sm" style="color: var(--color-foreground-muted);">
+              El calendar.json está vacío. Añade el primer post en Git.
+            </p>
+          </div>
+        ) : (
+          <section class="space-y-10">
+            {Array.from(grouped.entries()).map(([day, dayPosts]) => (
+              <div>
+                <h2
+                  class="display m-0 mb-4 text-lg"
+                  style="font-weight: 700; text-transform: capitalize;"
+                >
+                  {fmtDay(day)}
+                </h2>
+                <div class="space-y-3">
+                  {dayPosts.map((post) => {
+                    const status = STATUS_STYLE[post.status];
+                    const isOverdue =
+                      post.status === 'approved' &&
+                      Date.parse(post.scheduled_at) < nowMs;
+                    const firstAsset = post.media?.[0];
+                    const assetReady = firstAsset ? assetExists(firstAsset.path) : false;
+
+                    return (
+                      <article
+                        class="card-paper relative p-5"
+                        style={`border-left: 6px solid ${status.bg};`}
+                      >
+                        <header class="flex flex-wrap items-start justify-between gap-3">
+                          <div class="flex flex-wrap items-center gap-2">
+                            <span
+                              class="mono inline-block rounded-full px-3 py-1 text-xs font-bold"
+                              style={`background: ${status.bg}; color: ${status.fg}; letter-spacing: 0.05em;`}
+                            >
+                              {status.label}
+                            </span>
+                            {post.platforms.map((pl) => (
+                              <span
+                                class="inline-flex items-center gap-1.5 rounded-md px-2 py-1 text-xs font-medium"
+                                style="background: var(--color-surface-alt); color: var(--color-foreground);"
+                              >
+                                <Icon name={PLATFORM_ICON[pl] ?? 'lucide:globe'} class="h-3.5 w-3.5" />
+                                {pl}
+                              </span>
+                            ))}
+                            <span
+                              class="mono inline-block rounded-md px-2 py-1 text-xs"
+                              style="background: var(--color-surface-alt); color: var(--color-foreground-muted);"
+                            >
+                              {FORMAT_LABEL[post.format] ?? post.format}
+                            </span>
+                            <span
+                              class="mono inline-block rounded-md px-2 py-1 text-xs uppercase"
+                              style="background: var(--color-surface-alt); color: var(--color-foreground-muted); letter-spacing: 0.06em;"
+                            >
+                              {post.locale}
+                            </span>
+                            {isOverdue && (
+                              <span
+                                class="inline-flex items-center gap-1 rounded-md px-2 py-1 text-xs font-bold"
+                                style="background: #FEF3C7; color: #92400E;"
+                              >
+                                <Icon name="lucide:alert-triangle" class="h-3.5 w-3.5" />
+                                vencido
+                              </span>
+                            )}
+                          </div>
+                          <time
+                            class="mono text-xs font-bold"
+                            style="color: var(--color-foreground-muted);"
+                            datetime={post.scheduled_at}
+                          >
+                            {fmtTime(post.scheduled_at)}
+                          </time>
+                        </header>
+
+                        <p
+                          class="mt-3 text-sm leading-relaxed"
+                          style="color: var(--color-foreground); white-space: pre-line;"
+                        >
+                          {previewCaption(post.caption)}
+                        </p>
+
+                        <div class="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2 text-xs">
+                          {post.target_url && (
+                            <a
+                              href={post.target_url}
+                              target="_blank"
+                              rel="noopener"
+                              class="inline-flex items-center gap-1"
+                              style="color: var(--color-primary);"
+                            >
+                              <Icon name="lucide:external-link" class="h-3.5 w-3.5" />
+                              {post.article_slug ?? 'destino'}
+                            </a>
+                          )}
+                          {firstAsset && (
+                            <span
+                              class="inline-flex items-center gap-1"
+                              style={`color: ${assetReady ? 'var(--color-secondary)' : 'var(--color-energy)'};`}
+                            >
+                              <Icon
+                                name={assetReady ? 'lucide:check-circle' : 'lucide:circle-x'}
+                                class="h-3.5 w-3.5"
+                              />
+                              {firstAsset.path}
+                            </span>
+                          )}
+                          {post.hashtags && post.hashtags.length > 0 && (
+                            <span
+                              class="mono"
+                              style="color: var(--color-foreground-muted);"
+                            >
+                              {post.hashtags.length} hashtags
+                            </span>
+                          )}
+                          <span
+                            class="mono"
+                            style="color: var(--color-foreground-subtle);"
+                          >
+                            id: {post.id}
+                          </span>
+                        </div>
+
+                        {post.error && (
+                          <div
+                            class="mt-3 rounded p-3 text-xs"
+                            style="background: #FEE2E2; color: #991B1B;"
+                          >
+                            <strong>Error:</strong> {post.error}
+                          </div>
+                        )}
+
+                        {post.notes && (
+                          <p
+                            class="hand mt-3 text-base"
+                            style="color: var(--color-handwritten);"
+                          >
+                            ✏ {post.notes}
+                          </p>
+                        )}
+
+                        {post.publer_post_id && (
+                          <p
+                            class="mono mt-3 text-xs"
+                            style="color: var(--color-foreground-subtle);"
+                          >
+                            Publer job: {post.publer_post_id}
+                          </p>
+                        )}
+                      </article>
+                    );
+                  })}
+                </div>
+              </div>
+            ))}
+          </section>
+        )}
+
+        <footer class="mt-12 text-xs" style="color: var(--color-foreground-subtle);">
+          <p>
+            Última generación: {calendar.generated_at ?? 'nunca (manual)'}
+          </p>
+          <p class="mt-1">
+            Para editar: modifica <code>content/social/calendar.json</code> y abre un PR.
+            Más info en <a href="https://github.com/jatibamoza/webfutbolninos/blob/main/docs/SchedulerPubler.md" target="_blank" rel="noopener" style="color: var(--color-primary);">docs/SchedulerPubler.md</a>.
+          </p>
+        </footer>
+      </>
+    )}
+  </main>
+
+  <Footer />
+</BaseLayout>
