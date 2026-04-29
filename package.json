@@ -17,7 +17,8 @@
     "format:check": "prettier --check \"**/*.{ts,tsx,astro,md,mdx,css,json}\"",
     "social:validate": "node scripts/social/validate-calendar.mjs",
     "social:dry": "node scripts/social/scheduler.mjs --dry-run",
-    "social:accounts": "node scripts/social/list-accounts.mjs"
+    "social:accounts": "node scripts/social/list-accounts.mjs",
+    "social:image": "node scripts/social/generate-image.mjs"
   },
   "dependencies": {
     "@astrojs/check": "^0.9.4",
@@ -42,14 +43,17 @@
   "devDependencies": {
     "@eslint/js": "^10.0.1",
     "@iconify-json/lucide": "^1.2.104",
+    "@resvg/resvg-js": "^2.6.2",
     "@typescript-eslint/eslint-plugin": "^8.59.1",
     "@typescript-eslint/parser": "^8.59.1",
     "@vitest/coverage-v8": "^4.1.5",
     "eslint": "^10.2.1",
     "eslint-plugin-astro": "^1.3.1",
+    "gray-matter": "^4.0.3",
     "pagefind": "^1.5.2",
     "prettier": "^3.4.2",
     "prettier-plugin-astro": "^0.14.1",
+    "satori": "^0.26.0",
     "vitest": "^4.1.5"
   },
   "packageManager": "pnpm@10.33.2",
