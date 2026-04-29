@@ -3,8 +3,8 @@
  *
  * Cliente mínimo de la API de Publer v1 para programar posts a redes sociales.
  *
- * Auth: Bearer-Api token + Workspace ID en cabeceras.
- * Docs: https://app.publer.io/api-docs (requiere cuenta business).
+ * Auth: Bearer-API token + Workspace ID en cabeceras.
+ * Docs: https://publer.com/docs (requiere cuenta business para API access).
  *
  * Uso:
  *   import { createPublerClient } from './publer-client.mjs';
@@ -16,7 +16,7 @@
  * (scheduler.mjs) decide cómo manejar errores y rate limits.
  */
 
-const BASE = 'https://app.publer.io/api/v1';
+const BASE = 'https://app.publer.com/api/v1';
 
 class PublerError extends Error {
   constructor(message, { status, body } = {}) {
@@ -35,7 +35,7 @@ export function createPublerClient({ apiKey, workspaceId, accountIds }) {
   }
 
   const headers = {
-    'Authorization': `Bearer-Api ${apiKey}`,
+    'Authorization': `Bearer-API ${apiKey}`,
     'Publer-Workspace-Id': workspaceId,
     'Content-Type': 'application/json',
   };

@@ -40,10 +40,10 @@ git commit "chore(social): scheduler ... — actualizar status"
 
 ### 1. Crear cuenta Publer y conectar redes
 
-1. Cuenta business en [publer.io](https://publer.io)
-2. **Settings → Workspaces** — crear "MiniGol Club" (o usar el default), copiar **Workspace ID** (formato UUID).
-3. **Accounts** — conectar `@minigolclub` Instagram, Pinterest, TikTok... según las que vayas a usar.
-4. **Settings → Developer API** — generar **API Key** (Bearer-Api token).
+1. Cuenta **Business** en [publer.com](https://publer.com) — el plan Professional NO incluye API access. Hay trial gratis 14 días.
+2. **Workspace ID:** consíguelo via API (ver paso 2 abajo) o desde la URL del workspace en la UI.
+3. **Accounts** — conectar `@minigolclub` Instagram (debe ser cuenta Creator o Business, no Personal). Publer redirige a Facebook OAuth porque Instagram requiere conexión via Facebook Page.
+4. **Settings → Access & Login → Manage API Keys → Generate API Key** — scopes: Workspaces, Accounts, Posts (write), Media (write). Copia la key INMEDIATAMENTE (solo se muestra 1 vez).
 
 ### 2. Descubrir account IDs
 
@@ -67,7 +67,7 @@ Salida esperada:
 
 | Secret | Valor |
 |--------|-------|
-| `PUBLER_API_KEY` | El token Bearer-Api del paso 1 |
+| `PUBLER_API_KEY` | El token Bearer-API del paso 1 |
 | `PUBLER_WORKSPACE_ID` | El UUID del workspace |
 | `PUBLER_ACCOUNT_INSTAGRAM` | Account ID de @minigolclub |
 | `PUBLER_ACCOUNT_TIKTOK` | (opcional) Account ID TikTok |

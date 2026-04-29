@@ -9,7 +9,7 @@
  * Pensado para ejecutarse desde GitHub Actions cada 30 minutos.
  *
  * ENV requerido:
- *   PUBLER_API_KEY        — Bearer-Api token (Settings → API en Publer)
+ *   PUBLER_API_KEY        — Bearer-API token (Settings → Access & Login → Manage API Keys en Publer)
  *   PUBLER_WORKSPACE_ID   — Workspace UUID
  *   PUBLER_ACCOUNT_INSTAGRAM — Account ID de la cuenta @minigolclub
  *   PUBLER_ACCOUNT_TIKTOK    — opcional, para TikTok
