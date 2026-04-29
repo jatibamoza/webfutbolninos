@@ -6,6 +6,42 @@
 
 ---
 
+## 0. Estado de Publicación (actualizado 2026-04-29)
+
+| Semana | Slug | Estado | Notas |
+|--------|------|--------|-------|
+| 18 | `ejercicios-futbol-6-anos` | 🔄 PR #40 | Pillar hub — en revisión CI |
+| 18 | `mejor-balon-futbol-ninos-5-anos` | ✅ Publicado | |
+| 19 | `como-ensenar-futbol-nino-desde-cero` | ✅ Publicado | |
+| 19 | `ejercicios-futbol-4-anos-sin-material` | ✅ Publicado | |
+| 20 | `juegos-futbol-parque-ninos` | ✅ Publicado | |
+| 20 | `a-que-edad-empezar-futbol` | ✅ Publicado | |
+| 21 | `botas-futbol-ninos-tallas-30-32` | ✅ Publicado | |
+| 21 | `ejercicios-coordinacion-futbol-ninos` | ✅ Publicado | |
+| 23 | `ejercicios-futbol-7-anos` | ✅ Publicado | |
+| 23 | `juegos-futbol-2-ninos` | ✅ Publicado | |
+| 24 | `beneficios-futbol-ninos-salud` | ✅ Publicado | |
+| 24 | `conos-futbol-infantil-compra` | ❌ Pendiente | Sprint 12 — redactando |
+| 25 | `mundial-2026-explicado-ninos` | ✅ Publicado | |
+| 25 | `ejercicios-futbol-ninos-9-anos` | ✅ Publicado | slug difiere del plan |
+| 26 | `juegos-futbol-pequeno-espacio` | ✅ Publicado | |
+| 26 | `mejor-balon-futbol-7-anos` | ✅ Publicado | |
+| 27 | `ejercicios-futbol-ninos-5-anos` | ✅ Publicado | slug difiere del plan |
+| 27 | `juegos-futbol-cumpleanos-ninos` | ✅ Publicado | |
+| 28 | `talla-balon-futbol-segun-edad` | ✅ Publicado | slug difiere del plan |
+| 28 | `calendario-mundial-2026-ninos` | ✅ Publicado | |
+| 29 | `ejercicios-futbol-sala-ninos` | ❌ Pendiente | Sprint 12 — redactando |
+| 29 | `pase-control-balon-ninos` | ✅ Publicado | |
+| 30 | `juegos-futbol-playa-verano` | ❌ Pendiente | Sprint 12 — redactando |
+| 30 | `espinilleras-ninos-futbol` | ✅ Publicado | |
+| 31 | `ejercicios-futbol-8-anos` | ❌ Pendiente | Sprint 12 — redactando |
+
+**Total plan 3 meses:** 25 artículos · **Publicados:** 21 ✅ · **En PR:** 1 🔄 · **Pendientes:** 4 ❌
+
+> **Nota:** 8 artículos adicionales publicados en Sprints 3-5 no formaban parte de este plan calendario. Total real en producción al 2026-04-29: **30 artículos**.
+
+---
+
 ## 1. Estrategia Editorial (Visión 3 Meses)
 
 ### 1.1 Cadencia objetivo
