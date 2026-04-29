@@ -45,6 +45,13 @@ const browserGlobals = {
   SVGCircleElement: 'readonly',
   HTMLButtonElement: 'readonly',
   HTMLAnchorElement: 'readonly',
+  HTMLCanvasElement: 'readonly',
+  HTMLImageElement: 'readonly',
+  HTMLSelectElement: 'readonly',
+  HTMLTextAreaElement: 'readonly',
+  Blob: 'readonly',
+  DOMRect: 'readonly',
+  preact: 'readonly',
   performance: 'readonly',
 };
 
