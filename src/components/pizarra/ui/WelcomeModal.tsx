@@ -165,7 +165,7 @@ const btnPrimaryStyle: JSX.CSSProperties = {
 const btnSkipStyle: JSX.CSSProperties = {
   background: 'transparent',
   border: 'none',
-  color: '#64748b',
+  color: '#94a3b8',
   cursor: 'pointer',
   fontSize: '0.8rem',
   width: '100%',
