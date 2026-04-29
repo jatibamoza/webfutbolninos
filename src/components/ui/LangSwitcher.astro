@@ -1,21 +1,23 @@
 ---
 interface Props {
-  hreflangs: Array<{ lang: string; href: string }>;
+  hreflangs?: Array<{ lang: string; href: string }>;
 }
 
 const { hreflangs } = Astro.props;
 const currentLang = Astro.currentLocale ?? 'es';
 
-const esHref = hreflangs.find((h) => h.lang === 'es')?.href;
-const caHref = hreflangs.find((h) => h.lang === 'ca')?.href;
-
-if (!esHref || !caHref) return;
+// Si la página declara hreflangs explícitos (ej. artículo con traducción
+// pareada) usamos esos URLs precisos. Si no, fallback a la home del otro
+// idioma — siempre garantiza que el switcher sea funcional, no solo
+// visible en pares ya traducidos.
+const esHref = hreflangs?.find((h) => h.lang === 'es')?.href ?? '/';
+const caHref = hreflangs?.find((h) => h.lang === 'ca')?.href ?? '/ca/';
 ---
 
 <div
   class="mono flex items-center text-xs"
   style="gap: 2px; color: var(--color-foreground-muted); letter-spacing: 0.06em;"
-  aria-label="Cambiar idioma"
+  aria-label="Cambiar idioma / Canviar idioma"
 >
   <a
     href={esHref}
