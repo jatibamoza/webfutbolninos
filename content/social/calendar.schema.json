@@ -1,0 +1,116 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "MiniGol Club — Social Calendar",
+  "description": "Calendario editorial de publicaciones a redes sociales. Source of truth versionada en Git. El scheduler de GitHub Actions lee este archivo, filtra los posts approved cuyo scheduled_at ya llegó, los publica via Publer y actualiza status a published.",
+  "type": "object",
+  "required": ["version", "posts"],
+  "properties": {
+    "version": { "type": "integer", "const": 1 },
+    "generated_at": { "type": ["string", "null"], "format": "date-time" },
+    "posts": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/post" }
+    }
+  },
+  "definitions": {
+    "post": {
+      "type": "object",
+      "required": [
+        "id",
+        "platforms",
+        "format",
+        "scheduled_at",
+        "status",
+        "locale",
+        "caption",
+        "media"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}-[a-z]{2,5}-[a-z0-9-]+$",
+          "description": "Convención: YYYY-MM-DD-<plataforma>-<slug-corto>. Único."
+        },
+        "platforms": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "enum": ["instagram", "facebook", "tiktok", "x", "linkedin", "pinterest", "youtube"]
+          }
+        },
+        "format": {
+          "enum": ["single_image", "carousel", "reel", "story", "video", "text"]
+        },
+        "scheduled_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "ISO 8601 con timezone (recomendado +02:00 Madrid)"
+        },
+        "status": {
+          "enum": ["draft", "approved", "published", "failed", "archived"],
+          "description": "draft = en construcción · approved = listo para publicar · published = ya enviado · failed = error en último intento · archived = no publicar"
+        },
+        "locale": {
+          "enum": ["es", "ca"]
+        },
+        "article_slug": {
+          "type": ["string", "null"],
+          "description": "Slug del artículo del sitio al que apunta (sin /). Opcional."
+        },
+        "target_url": {
+          "type": "string",
+          "format": "uri",
+          "description": "URL final con UTM. Si vacía, el post no enlaza."
+        },
+        "caption": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2200,
+          "description": "Texto del post. Instagram máx 2200 chars."
+        },
+        "hashtags": {
+          "type": "array",
+          "maxItems": 30,
+          "items": {
+            "type": "string",
+            "pattern": "^[a-zA-Z0-9_à-ÿ]+$"
+          }
+        },
+        "media": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 10,
+          "items": {
+            "type": "object",
+            "required": ["type", "path"],
+            "properties": {
+              "type": { "enum": ["image", "video"] },
+              "path": {
+                "type": "string",
+                "description": "Path relativo desde la raíz del repo. Sube a R2/CDN o usa raw GitHub para Publer."
+              },
+              "alt": { "type": "string" }
+            }
+          }
+        },
+        "notes": {
+          "type": "string",
+          "description": "Notas internas del editor. No se publica."
+        },
+        "published_at": {
+          "type": ["string", "null"],
+          "format": "date-time",
+          "description": "Set automático por el scheduler tras éxito"
+        },
+        "publer_post_id": {
+          "type": ["string", "null"],
+          "description": "ID Publer devuelto. Útil para debugging."
+        },
+        "error": {
+          "type": ["string", "null"],
+          "description": "Último mensaje de error si status=failed"
+        }
+      }
+    }
+  }
+}
