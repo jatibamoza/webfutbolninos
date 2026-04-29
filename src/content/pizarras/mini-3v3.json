@@ -1,0 +1,31 @@
+{
+  "id": "mini-3v3",
+  "nombre": "Mini partido 3v3",
+  "edad": "6-12",
+  "descripcion": "Tres contra tres, sin porteros. Gol vale doble si toca tres.",
+  "fieldType": "mini",
+  "locked": false,
+  "board": {
+    "fieldType": "mini",
+    "skin": "chalk",
+    "frames": [
+      {
+        "players": [
+          { "id": "3v3:b1", "kind": "player_blue", "x": 25, "y": 35, "num": "1" },
+          { "id": "3v3:b2", "kind": "player_blue", "x": 25, "y": 65, "num": "2" },
+          { "id": "3v3:b3", "kind": "player_blue", "x": 40, "y": 50, "num": "3" },
+          { "id": "3v3:r1", "kind": "player_red", "x": 60, "y": 50, "num": "1" },
+          { "id": "3v3:r2", "kind": "player_red", "x": 75, "y": 35, "num": "2" },
+          { "id": "3v3:r3", "kind": "player_red", "x": 75, "y": 65, "num": "3" }
+        ],
+        "objects": [
+          { "id": "3v3:ball", "kind": "ball", "x": 50, "y": 50 },
+          { "id": "3v3:g1", "kind": "goal", "x": 8, "y": 50 },
+          { "id": "3v3:g2", "kind": "goal", "x": 92, "y": 50 }
+        ],
+        "arrows": [],
+        "notes": [{ "id": "3v3:note", "x": 50, "y": 92, "text": "3 toques = gol doble" }]
+      }
+    ]
+  }
+}

@@ -51,11 +51,11 @@ F2.1 ──► F2.2 ──► F2.3
 
 | ID | Tarea | Complejidad | Depende de |
 |---|---|---|---|
-| F2.1 | Instalar `@astrojs/preact` + `preact` + alias `preact/compat`. Registrar integración en `astro.config.mjs`. Verificar que el build sigue verde. | baja | — |
-| F2.2 | `core/types.ts` + `core/serialize.ts` (base64-url-safe + Zod) + `core/tween.ts` + `core/geometry.ts`. Tests vitest del round-trip. | media | F2.1 |
-| F2.3 | `core/presets.ts` con los 6 presets del mockup, IDs estables hardcodeados. Schema Zod del preset. | media | F2.2 |
-| F2.4 | `primitives/{Field,Player,FieldObject,Arrow,Note}.tsx`. Corregir bug de `FIELD_TYPES.ratio` invertido del mockup. | media | F2.2 |
-| F2.5 | `hooks/{useSvgDrag,useUrlHash,useKeyboardNudge,usePrefersReducedMotion}.ts`. Pointer events con CTM inverse. Clamp 0-100. | media | F2.4 |
+| ✅ F2.1 | ~~Instalar `@astrojs/preact` + `preact` + alias `preact/compat`. Registrar integración en `astro.config.mjs`. Verificar que el build sigue verde.~~ — PR #20 (commit `2d9e3d9`) | baja | — |
+| ✅ F2.2 | ~~`core/types.ts` + `core/serialize.ts` (base64-url-safe + Zod) + `core/tween.ts` + `core/geometry.ts`. Tests vitest del round-trip.~~ — 27 tests verdes | media | F2.1 |
+| ✅ F2.3 | ~~`core/presets.ts` con los 6 presets del mockup, IDs estables hardcodeados. Schema Zod del preset.~~ — 7 tests verdes incluyendo round-trip serializable | media | F2.2 |
+| ✅ F2.4 | ~~`primitives/{Field,Player,FieldObject,Arrow,Note}.tsx`. Corregir bug de `FIELD_TYPES.ratio` invertido del mockup.~~ — A11y: aria-label, aria-pressed, role en cada item | media | F2.2 |
+| ✅ F2.5 | ~~`hooks/{useSvgDrag,useUrlHash,useKeyboardNudge,usePrefersReducedMotion}.ts`. Pointer events con CTM inverse. Clamp 0-100.~~ — Bonus: `useCoarsePointer` exportado desde `usePrefersReducedMotion.ts` | media | F2.4 |
 | F2.6 | `Board.tsx` orquestador (estado de frames, tool, selected, mutadores). Corrige stale closure del play loop del mockup. | alta | F2.3 + F2.4 + F2.5 |
 | F2.7 | `ui/Toolbar.tsx` + `ui/TopBar.tsx`. Aria-labels, aria-pressed, iconos lucide. | media | F2.6 |
 | F2.8 | `ui/Timeline.tsx` con play/pause via `requestAnimationFrame`. Frame increment correcto. Live region para a11y. | alta | F2.6 |

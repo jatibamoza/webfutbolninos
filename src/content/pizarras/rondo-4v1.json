@@ -1,0 +1,42 @@
+{
+  "id": "rondo-4v1",
+  "nombre": "Rondo 4v1",
+  "edad": "7-12",
+  "descripcion": "Cuatro pasan, uno persigue. Si te lo quitan, te toca a ti.",
+  "fieldType": "mini",
+  "locked": false,
+  "board": {
+    "fieldType": "mini",
+    "skin": "chalk",
+    "frames": [
+      {
+        "players": [
+          { "id": "rondo:p1", "kind": "player_blue", "x": 25, "y": 25, "num": "1" },
+          { "id": "rondo:p2", "kind": "player_blue", "x": 75, "y": 25, "num": "2" },
+          { "id": "rondo:p3", "kind": "player_blue", "x": 75, "y": 75, "num": "3" },
+          { "id": "rondo:p4", "kind": "player_blue", "x": 25, "y": 75, "num": "4" },
+          { "id": "rondo:px", "kind": "player_red", "x": 50, "y": 50, "num": "X" }
+        ],
+        "objects": [{ "id": "rondo:ball", "kind": "ball", "x": 25, "y": 25 }],
+        "arrows": [
+          { "id": "rondo:arrow1", "kind": "pass", "x1": 28, "y1": 25, "x2": 72, "y2": 25, "cx": 50, "cy": 22 }
+        ],
+        "notes": [{ "id": "rondo:note1", "x": 50, "y": 92, "text": "4 pases seguidos = punto" }]
+      },
+      {
+        "players": [
+          { "id": "rondo:p1", "kind": "player_blue", "x": 25, "y": 25, "num": "1" },
+          { "id": "rondo:p2", "kind": "player_blue", "x": 75, "y": 25, "num": "2" },
+          { "id": "rondo:p3", "kind": "player_blue", "x": 75, "y": 75, "num": "3" },
+          { "id": "rondo:p4", "kind": "player_blue", "x": 25, "y": 75, "num": "4" },
+          { "id": "rondo:px", "kind": "player_red", "x": 60, "y": 35, "num": "X" }
+        ],
+        "objects": [{ "id": "rondo:ball", "kind": "ball", "x": 75, "y": 25 }],
+        "arrows": [
+          { "id": "rondo:arrow2", "kind": "pass", "x1": 75, "y1": 28, "x2": 75, "y2": 72, "cx": 78, "cy": 50 }
+        ],
+        "notes": [{ "id": "rondo:note2", "x": 50, "y": 92, "text": "el rojo persigue, los azules giran" }]
+      }
+    ]
+  }
+}

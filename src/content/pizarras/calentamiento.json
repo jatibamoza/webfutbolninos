@@ -1,0 +1,40 @@
+{
+  "id": "calentamiento",
+  "nombre": "Calentamiento sin balón",
+  "edad": "4-12",
+  "descripcion": "Cuatro estaciones. 30 segundos cada una. Sin parar.",
+  "fieldType": "half",
+  "locked": false,
+  "board": {
+    "fieldType": "half",
+    "skin": "chalk",
+    "frames": [
+      {
+        "players": [
+          { "id": "cal:p1", "kind": "player_blue", "x": 25, "y": 25, "num": "1" },
+          { "id": "cal:p2", "kind": "player_blue", "x": 75, "y": 25, "num": "2" },
+          { "id": "cal:p3", "kind": "player_blue", "x": 75, "y": 75, "num": "3" },
+          { "id": "cal:p4", "kind": "player_blue", "x": 25, "y": 75, "num": "4" }
+        ],
+        "objects": [
+          { "id": "cal:c1", "kind": "cone", "x": 25, "y": 25 },
+          { "id": "cal:c2", "kind": "cone", "x": 75, "y": 25 },
+          { "id": "cal:c3", "kind": "cone", "x": 75, "y": 75 },
+          { "id": "cal:c4", "kind": "cone", "x": 25, "y": 75 }
+        ],
+        "arrows": [
+          { "id": "cal:m1", "kind": "move", "x1": 25, "y1": 25, "x2": 75, "y2": 25, "cx": 50, "cy": 18 },
+          { "id": "cal:m2", "kind": "move", "x1": 75, "y1": 25, "x2": 75, "y2": 75, "cx": 82, "cy": 50 },
+          { "id": "cal:m3", "kind": "move", "x1": 75, "y1": 75, "x2": 25, "y2": 75, "cx": 50, "cy": 82 },
+          { "id": "cal:m4", "kind": "move", "x1": 25, "y1": 75, "x2": 25, "y2": 25, "cx": 18, "cy": 50 }
+        ],
+        "notes": [
+          { "id": "cal:n1", "x": 25, "y": 18, "text": "skipping" },
+          { "id": "cal:n2", "x": 82, "y": 50, "text": "lateral" },
+          { "id": "cal:n3", "x": 50, "y": 88, "text": "sprint" },
+          { "id": "cal:n4", "x": 18, "y": 50, "text": "pasos cortos" }
+        ]
+      }
+    ]
+  }
+}

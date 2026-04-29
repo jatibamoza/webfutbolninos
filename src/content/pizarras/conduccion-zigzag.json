@@ -1,0 +1,29 @@
+{
+  "id": "conduccion-zigzag",
+  "nombre": "Conducción zigzag",
+  "edad": "4-8",
+  "descripcion": "Cinco conos, suela izquierda y derecha. Al final, tiro.",
+  "fieldType": "half",
+  "locked": false,
+  "board": {
+    "fieldType": "half",
+    "skin": "chalk",
+    "frames": [
+      {
+        "players": [{ "id": "zig:p1", "kind": "player_blue", "x": 15, "y": 80, "num": "1" }],
+        "objects": [
+          { "id": "zig:ball", "kind": "ball", "x": 15, "y": 80 },
+          { "id": "zig:c1", "kind": "cone", "x": 30, "y": 65 },
+          { "id": "zig:c2", "kind": "cone", "x": 45, "y": 55 },
+          { "id": "zig:c3", "kind": "cone", "x": 60, "y": 45 },
+          { "id": "zig:c4", "kind": "cone", "x": 75, "y": 35 },
+          { "id": "zig:goal", "kind": "goal", "x": 50, "y": 8 }
+        ],
+        "arrows": [
+          { "id": "zig:arrow", "kind": "move", "x1": 15, "y1": 80, "x2": 50, "y2": 20, "cx": 60, "cy": 50 }
+        ],
+        "notes": [{ "id": "zig:note", "x": 80, "y": 75, "text": "suela ↔ suela" }]
+      }
+    ]
+  }
+}
