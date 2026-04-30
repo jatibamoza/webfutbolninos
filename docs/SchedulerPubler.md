@@ -180,7 +180,7 @@ Ajustar tras 4 semanas con datos reales del Insights de cada plataforma.
 - **Validación CI en PR**: añadir `pnpm social:validate` al workflow `ci.yml` para que cada PR que toque `calendar.json` valide schema antes de mergear.
 - **Generador de imágenes sociales con Satori**: script `scripts/social/generate-image.mjs` que toma un slug de artículo y genera la imagen 1080×1080 con cover + título + branding.
 - **Worker Cron de tendencias**: replicar `bts-trending` de LYJ para detectar trending hashtags de futbol infantil y notificar al editor.
-- **Vista web del calendar**: página interna `/admin/social/` que renderiza el JSON como timeline visual (no necesario para v1).
+- **Vista web del calendar**: ✅ disponible en el admin React → `cd admin && pnpm dev` → `http://localhost:4322/social/`. Timeline agrupado por día + preview Instagram fiel.
 
 ---
 
