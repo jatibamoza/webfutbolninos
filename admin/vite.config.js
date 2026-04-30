@@ -13,6 +13,9 @@ const execFileAsync = promisify(execFile);
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ARTICULOS_DIR = path.join(__dirname, '..', 'src', 'content', 'articulos');
+const REPO_ROOT = path.join(__dirname, '..');
+const SOCIAL_CALENDAR_PATH = path.join(REPO_ROOT, 'content', 'social', 'calendar.json');
+const PUBLIC_SOCIAL_DIR = path.join(REPO_ROOT, 'public', 'social');
 
 function readArticulosRecursive(dir, baseDir) {
   const entries = fs.readdirSync(dir, { withFileTypes: true });
@@ -581,8 +584,121 @@ function articulosApiMiddleware() {
   };
 }
 
+function socialApiMiddleware() {
+  return {
+    name: 'social-api',
+    configureServer(server) {
+      server.middlewares.use('/api/social', (req, res, next) => {
+        res.setHeader('Content-Type', 'application/json');
+        res.setHeader('Access-Control-Allow-Origin', '*');
+
+        const url = new URL(req.url, 'http://localhost');
+        const pathParts = url.pathname.split('/').filter(Boolean);
+
+        // GET /api/social/calendar
+        if (req.method === 'GET' && pathParts[0] === 'calendar') {
+          try {
+            if (!fs.existsSync(SOCIAL_CALENDAR_PATH)) {
+              res.statusCode = 404;
+              res.end(JSON.stringify({
+                ok: false,
+                error: `No existe content/social/calendar.json`,
+              }));
+              return;
+            }
+
+            const raw = fs.readFileSync(SOCIAL_CALENDAR_PATH, 'utf8');
+            const calendar = JSON.parse(raw);
+            const posts = Array.isArray(calendar.posts) ? calendar.posts : [];
+
+            // Counts por status
+            const counts = { draft: 0, approved: 0, published: 0, failed: 0, archived: 0 };
+            for (const p of posts) {
+              if (counts[p.status] != null) counts[p.status]++;
+            }
+
+            // Enriquecer cada post con assetReady
+            const nowMs = Date.now();
+            const enriched = posts.map((p) => {
+              const firstAsset = Array.isArray(p.media) ? p.media[0] : null;
+              let assetReady = false;
+              if (firstAsset && firstAsset.path) {
+                const abs = path.join(REPO_ROOT, firstAsset.path);
+                try {
+                  assetReady = fs.statSync(abs).isFile();
+                } catch { /* asset no existe */ }
+              }
+              const isOverdue = p.status === 'approved' && Date.parse(p.scheduled_at) < nowMs;
+              return { ...p, assetReady, isOverdue };
+            });
+
+            const upcomingApproved = enriched.filter(
+              (p) => p.status === 'approved' && !p.isOverdue,
+            ).length;
+            const overdueApproved = enriched.filter((p) => p.isOverdue).length;
+
+            res.end(JSON.stringify({
+              ok: true,
+              version: calendar.version,
+              generated_at: calendar.generated_at,
+              posts: enriched,
+              counts,
+              upcomingApproved,
+              overdueApproved,
+              serverNow: new Date().toISOString(),
+            }));
+          } catch (err) {
+            res.statusCode = 500;
+            res.end(JSON.stringify({ ok: false, error: err.message }));
+          }
+          return;
+        }
+
+        next();
+      });
+
+      // Servir assets sociales (public/social/*) bajo /assets/social/* para que
+      // el preview Instagram pueda mostrar las imágenes generadas.
+      server.middlewares.use('/assets/social', (req, res, next) => {
+        if (req.method !== 'GET') return next();
+
+        const url = new URL(req.url, 'http://localhost');
+        const rel = decodeURIComponent(url.pathname).replace(/^\/+/, '');
+        const abs = path.join(PUBLIC_SOCIAL_DIR, rel);
+
+        // Path traversal guard: resolved abs debe seguir dentro de PUBLIC_SOCIAL_DIR
+        const resolved = path.resolve(abs);
+        if (!resolved.startsWith(path.resolve(PUBLIC_SOCIAL_DIR) + path.sep) && resolved !== path.resolve(PUBLIC_SOCIAL_DIR)) {
+          res.statusCode = 403;
+          res.end('Forbidden');
+          return;
+        }
+
+        try {
+          const stat = fs.statSync(resolved);
+          if (!stat.isFile()) return next();
+          const ext = path.extname(resolved).toLowerCase();
+          const mime = {
+            '.jpg': 'image/jpeg',
+            '.jpeg': 'image/jpeg',
+            '.png': 'image/png',
+            '.webp': 'image/webp',
+            '.gif': 'image/gif',
+            '.mp4': 'video/mp4',
+          }[ext] || 'application/octet-stream';
+          res.setHeader('Content-Type', mime);
+          res.setHeader('Cache-Control', 'no-cache');
+          fs.createReadStream(resolved).pipe(res);
+        } catch {
+          next();
+        }
+      });
+    },
+  };
+}
+
 export default defineConfig({
-  plugins: [react(), tailwindcss(), articulosApiMiddleware()],
+  plugins: [react(), tailwindcss(), articulosApiMiddleware(), socialApiMiddleware()],
   server: {
     port: 4322,
   },
