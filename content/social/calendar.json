@@ -7,8 +7,8 @@
       "id": "2026-05-04-ig-exercicis-6-anys",
       "platforms": ["instagram"],
       "format": "carousel",
-      "scheduled_at": "2026-05-04T09:00:00+02:00",
-      "status": "draft",
+      "scheduled_at": "2026-05-01T19:00:00+02:00",
+      "status": "approved",
       "locale": "ca",
       "article_slug": "exercicis-futbol-6-anys",
       "target_url": "https://minigolclub.com/ca/ejercicios/exercicis-futbol-6-anys/?utm_source=instagram&utm_medium=carousel&utm_campaign=exercicis-futbol-6-anys",
@@ -26,7 +26,7 @@
       "media": [
         {
           "type": "image",
-          "path": "public/social/exercicis-futbol-6-anys/slide-1.jpg",
+          "path": "public/social/exercicis-futbol-6-anys/feed.jpg",
           "alt": "Portada — 3 exercicis de futbol per a nens de 6 anys"
         }
       ],
