@@ -111,6 +111,6 @@ export default [
     },
   },
   {
-    ignores: ['dist/**', 'node_modules/**', '.astro/**', 'public/**', 'admin/**', 'admin-mockup/**'],
+    ignores: ['dist/**', 'node_modules/**', '.astro/**', 'public/**', 'admin/**', 'admin-mockup/**', 'workers/**'],
   },
 ];

@@ -1,0 +1,17 @@
+{
+  "name": "minigolclub-trending-worker",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "deploy": "wrangler deploy",
+    "dev": "wrangler dev",
+    "tail": "wrangler tail",
+    "secret:discord": "wrangler secret put DISCORD_WEBHOOK_URL"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20250419.0",
+    "fast-xml-parser": "^5.3.0",
+    "typescript": "^6.0.3",
+    "wrangler": "^4.42.0"
+  }
+}
