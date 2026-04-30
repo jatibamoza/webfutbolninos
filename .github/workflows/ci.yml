@@ -5,6 +5,18 @@ on:
     branches: [main]
 
 jobs:
+  social-calendar:
+    name: Social Calendar Validation
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 22
+
+      - run: node scripts/social/validate-calendar.mjs
+
   typecheck:
     name: Typecheck
     runs-on: ubuntu-latest

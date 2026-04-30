@@ -65,6 +65,11 @@ const nodeGlobals = {
   clearTimeout: 'readonly',
   URL: 'readonly',
   URLSearchParams: 'readonly',
+  // Node 22+ globals
+  fetch: 'readonly',
+  Response: 'readonly',
+  Request: 'readonly',
+  Headers: 'readonly',
 };
 
 export default [

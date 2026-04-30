@@ -30,6 +30,10 @@ Sitio de contenido SEO sobre fútbol infantil para padres con hijos de 4 a 12 a�
 - [docs/ArquitecturaPizarra.md](docs/ArquitecturaPizarra.md) — isla Preact, backend Cloudflare-only, freemium "motor gratis + entregables PRO", Lemon Squeezy, schema HowTo, A11y, topología `src/components/pizarra/`, bugs del mockup a corregir, ADR-006 borrador
 - [docs/PlanTrabajoPizarra.md](docs/PlanTrabajoPizarra.md) — Fase 2 (MVP gratis, ~24h), Fase 2.5 (URLs evergreen por preset), Fase 3a/b/c (cuentas, pagos, PDF/oEmbed) con criterios de avance entre fases
 
+**Redes sociales (scheduler automatizado):**
+- [docs/SchedulerPubler.md](docs/SchedulerPubler.md) — sistema GitHub Actions + Publer API + JSON versionado. Source of truth: [content/social/calendar.json](content/social/calendar.json). Cron cada 30min lee posts approved y los programa en Publer.
+- [docs/seo/EstrategiaSocialVideo.md](docs/seo/EstrategiaSocialVideo.md) — estrategia de contenido (Reels, hashtags, cadencia, integración Pizarra)
+
 **Estado vivo:**
 - [docs/PlanTrabajo.md](docs/PlanTrabajo.md) — backlog en sprints
 - [docs/FlujoTrabajo.md](docs/FlujoTrabajo.md) — qué se está haciendo ahora

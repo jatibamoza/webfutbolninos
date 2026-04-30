@@ -1,0 +1,75 @@
+name: Social Scheduler
+
+# Lee content/social/calendar.json, encuentra posts approved cuyo
+# scheduled_at cae dentro de la ventana actual, los envía a Publer
+# para programar/publicar y commitea el calendario actualizado.
+#
+# Cron cada 30 minutos. La ventana del scheduler debe ser >= intervalo
+# del cron para no perder posts (default 30min).
+
+on:
+  schedule:
+    # Cada 30min UTC. Ajustar si Publer satura o queremos menos requests.
+    - cron: '*/30 * * * *'
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 'Solo loggear, no llamar a Publer ni commitear'
+        type: boolean
+        default: false
+
+permissions:
+  contents: write  # necesario para commitear el calendar.json actualizado
+
+concurrency:
+  group: social-scheduler
+  cancel-in-progress: false
+
+jobs:
+  schedule:
+    name: Run scheduler
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          # token con permisos de write para que el push posterior funcione
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 22
+
+      - name: Validar calendar.json
+        run: node scripts/social/validate-calendar.mjs
+
+      - name: Ejecutar scheduler
+        env:
+          PUBLER_API_KEY: ${{ secrets.PUBLER_API_KEY }}
+          PUBLER_WORKSPACE_ID: ${{ secrets.PUBLER_WORKSPACE_ID }}
+          PUBLER_ACCOUNT_INSTAGRAM: ${{ secrets.PUBLER_ACCOUNT_INSTAGRAM }}
+          PUBLER_ACCOUNT_TIKTOK: ${{ secrets.PUBLER_ACCOUNT_TIKTOK }}
+          PUBLER_ACCOUNT_PINTEREST: ${{ secrets.PUBLER_ACCOUNT_PINTEREST }}
+          PUBLER_ACCOUNT_FACEBOOK: ${{ secrets.PUBLER_ACCOUNT_FACEBOOK }}
+          PUBLER_ACCOUNT_X: ${{ secrets.PUBLER_ACCOUNT_X }}
+          PUBLER_ACCOUNT_LINKEDIN: ${{ secrets.PUBLER_ACCOUNT_LINKEDIN }}
+          PUBLER_ACCOUNT_YOUTUBE: ${{ secrets.PUBLER_ACCOUNT_YOUTUBE }}
+          ASSETS_BASE_URL: ${{ vars.ASSETS_BASE_URL }}
+        run: |
+          if [ "${{ inputs.dry_run }}" = "true" ]; then
+            node scripts/social/scheduler.mjs --dry-run
+          else
+            node scripts/social/scheduler.mjs
+          fi
+
+      - name: Commit cambios en calendar.json
+        if: ${{ inputs.dry_run != true }}
+        run: |
+          if git diff --quiet content/social/calendar.json; then
+            echo "Sin cambios — nada que commitear."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add content/social/calendar.json
+          git commit -m "chore(social): scheduler $(date -u +%Y-%m-%dT%H:%MZ) — actualizar status"
+          git push
