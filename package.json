@@ -18,7 +18,8 @@
     "social:validate": "node scripts/social/validate-calendar.mjs",
     "social:dry": "node scripts/social/scheduler.mjs --dry-run",
     "social:accounts": "node scripts/social/list-accounts.mjs",
-    "social:image": "node scripts/social/generate-image.mjs"
+    "social:image": "node scripts/social/generate-image.mjs",
+    "social:images:batch": "node scripts/social/generate-images-batch.mjs"
   },
   "dependencies": {
     "@astrojs/check": "^0.9.4",

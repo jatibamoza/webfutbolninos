@@ -57,6 +57,33 @@ curl -sL -o src/assets/fonts/Nunito-Regular.ttf "https://r2.fontsource.org/fonts
 
 Nota: NO usar las versiones variable de Fredoka — opentype.js (dependencia de Satori) no las parsea.
 
+## Generador batch
+
+`generate-images-batch.mjs` — wrapper en bucle de `generate-image.mjs` con 3 modos:
+
+```bash
+# Modo CALENDAR (default): lee calendar.json y genera lo que falta
+pnpm social:images:batch
+
+# Modo SLUG: 3 formatos (feed + pinterest + reel-cover) para un slug
+pnpm social:images:batch -- --slug=exercicis-futbol-6-anys --locale=ca
+
+# Modo ALL: todos los artículos publicados de la colección, un formato
+pnpm social:images:batch -- --all --locale=ca --format=feed
+
+# Flags adicionales
+pnpm social:images:batch -- --force        # regenera incluso si existe
+pnpm social:images:batch -- --dry-run      # solo loggea, no escribe
+```
+
+**Modo CALENDAR** mapea automáticamente `format` del post → formato de imagen:
+- `single_image` / `carousel` / `text` → `feed` (1080×1080)
+- `reel` / `video` / `story` → `reel-cover` (1080×1920)
+
+Si `media[0].path` del post no coincide con el path canónico (`public/social/<slug>/<format>.jpg`), el batch lo salta y avisa: el editor eligió un asset manual y lo gestiona él.
+
+**Modo ALL** es perfecto para sembrar Pinterest masivamente: una imagen 1000×1500 por cada artículo de la colección, en una sola pasada.
+
 ## Otros scripts
 
 | Script | Función |
@@ -65,12 +92,27 @@ Nota: NO usar las versiones variable de Fredoka — opentype.js (dependencia de 
 | `scheduler.mjs` | Lee calendar, publica via Publer, commitea (PR #50) |
 | `publer-client.mjs` | Cliente Publer API mínimo (PR #50) |
 | `list-accounts.mjs` | Helper one-shot para descubrir Account IDs (PR #50) |
-| `generate-image.mjs` | Generador de imágenes sociales (este PR) |
+| `generate-image.mjs` | Generador imagen individual |
+| `generate-images-batch.mjs` | Batch (3 modos: calendar, slug, all) |
 
 ## Workflow editorial completo
 
-1. Editor decide publicar el artículo `X` en Instagram
-2. `pnpm social:image -- --slug=X --format=feed --locale=es` → imagen lista
-3. Edita `content/social/calendar.json` añadiendo el post (apunta a `public/social/X/feed.jpg`)
-4. PR review + merge a `main` con `status: approved`
-5. En el siguiente cron (max 30min), `scheduler.mjs` envía a Publer
+**Caso A — Publicar 1 artículo en 3 plataformas (Instagram + Pinterest + Reel):**
+```bash
+pnpm social:images:batch -- --slug=X --locale=es     # genera 3 formatos
+# Editar calendar.json: 3 posts apuntando a las 3 imágenes con sus paths canónicos
+# PR + merge → cron envía los 3 a Publer
+```
+
+**Caso B — Sembrar Pinterest con todos los artículos catalanes:**
+```bash
+pnpm social:images:batch -- --all --locale=ca --format=pinterest
+# Genera 6 imágenes vertical 1000x1500 (una por artículo CA)
+# Crear 6 posts en calendar.json escalonados en Pinterest
+```
+
+**Caso C — Calendario lleno, generar lo que falte:**
+```bash
+pnpm social:images:batch     # default modo CALENDAR
+# Genera todo lo declarado en calendar.json que no exista todavía
+```
