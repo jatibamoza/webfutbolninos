@@ -1,6 +1,12 @@
 # MiniGol Club Admin — Content Manager
 
-Panel de administración para editar artículos MDX del sitio MiniGol Club.
+Panel de administración para editar artículos MDX y visualizar el calendar social del sitio MiniGol Club.
+
+## Módulos
+
+- **Artículos** (`/`) — lista, edición, creación con wizard, publicar (auto-PR draft)
+- **Crear nuevo** (`/nuevo`) — wizard 4 pasos
+- **Social Calendar** (`/social`) — vista del calendar editorial Publer (`content/social/calendar.json`) con preview Instagram
 
 ## Quick start
 
@@ -24,6 +30,10 @@ Los endpoints corren como middleware de Vite en desarrollo. En producción (buil
 - `GET /api/articulos` → lista de todos los `.mdx` parseados
 - `GET /api/articulos/:slug` → `{ frontmatter, body, categoria }`
 - `PUT /api/articulos/:slug` → escribe el archivo al filesystem (gray-matter stringify)
+- `POST /api/articulos/crear` · `/cover` · `/pr` · `:slug/publicar` — wizard + auto-PR draft
+- `DELETE /api/articulos/:slug` → borra .mdx + cover
+- `GET /api/social/calendar` → lee `content/social/calendar.json`, devuelve posts enriquecidos con `assetReady`/`isOverdue` + counts pre-calculados
+- `GET /assets/social/<rest>` → sirve archivos de `public/social/<rest>` para que el preview Instagram pueda mostrar las imágenes generadas
 
 ### gray-matter para serialización
 
@@ -42,14 +52,20 @@ src/
 │   ├── toast.js               — bridge: toast() global usable sin context
 │   └── articulosAPI.js        — fetch wrapper a /api/articulos*
 │   └── schemaValidator.js     — schema Zod replicado (sin image() de Astro)
-├── hooks/useArticulos.js      — load list / load single / save
+├── hooks/
+│   ├── useArticulos.js        — load list / load single / save
+│   └── useSocialCalendar.js   — load calendar.json + refetch
 ├── components/
-│   ├── Layout.jsx             — topbar + slot main
+│   ├── Layout.jsx             — sidebar nav + drawer móvil
 │   ├── Logo.jsx               — escudo SVG inline
 │   ├── FrontmatterForm.jsx    — form secciones 01-05
 │   ├── MDXEditor.jsx          — textarea + tabs Editar/Preview/Raw
-│   └── ValidationFooter.jsx  — footer sticky + validaciones
+│   ├── ValidationFooter.jsx   — footer sticky + validaciones
+│   └── social/
+│       └── InstagramPreview.jsx — mockup IG fiel para previsualizar posts
 └── pages/
     ├── DashboardPage.jsx      — tabla artículos + filtros + search
-    └── EditPage.jsx           — layout 2 columnas
+    ├── EditPage.jsx           — layout 2 columnas
+    ├── NuevoArticuloPage.jsx  — wizard 4 pasos
+    └── SocialCalendarPage.jsx — timeline calendar social + IG preview
 ```
