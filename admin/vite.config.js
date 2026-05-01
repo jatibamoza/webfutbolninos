@@ -591,9 +591,99 @@ function socialApiMiddleware() {
       server.middlewares.use('/api/social', (req, res, next) => {
         res.setHeader('Content-Type', 'application/json');
         res.setHeader('Access-Control-Allow-Origin', '*');
+        res.setHeader('Access-Control-Allow-Methods', 'GET, PATCH, OPTIONS');
+        res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+
+        if (req.method === 'OPTIONS') {
+          res.statusCode = 204;
+          res.end();
+          return;
+        }
 
         const url = new URL(req.url, 'http://localhost');
         const pathParts = url.pathname.split('/').filter(Boolean);
+        const VALID_STATUSES = ['draft', 'approved', 'published', 'failed', 'archived'];
+
+        // PATCH /api/social/calendar/:id  →  cambia status del post
+        if (req.method === 'PATCH' && pathParts[0] === 'calendar' && pathParts[1]) {
+          let body = '';
+          req.on('data', (chunk) => { body += chunk; });
+          req.on('end', () => {
+            try {
+              const postId = decodeURIComponent(pathParts[1]);
+              const { status: nextStatus } = JSON.parse(body || '{}');
+
+              if (!VALID_STATUSES.includes(nextStatus)) {
+                res.statusCode = 400;
+                res.end(JSON.stringify({ ok: false, error: `status inválido. Válidos: ${VALID_STATUSES.join(', ')}` }));
+                return;
+              }
+
+              if (!fs.existsSync(SOCIAL_CALENDAR_PATH)) {
+                res.statusCode = 404;
+                res.end(JSON.stringify({ ok: false, error: 'No existe content/social/calendar.json' }));
+                return;
+              }
+
+              const raw = fs.readFileSync(SOCIAL_CALENDAR_PATH, 'utf8');
+              const calendar = JSON.parse(raw);
+              const posts = Array.isArray(calendar.posts) ? calendar.posts : [];
+              const idx = posts.findIndex((p) => p.id === postId);
+
+              if (idx === -1) {
+                res.statusCode = 404;
+                res.end(JSON.stringify({ ok: false, error: `Post no encontrado: ${postId}` }));
+                return;
+              }
+
+              const previousStatus = posts[idx].status;
+
+              // Approve guards: no aprobar si falta asset o el target_url está vacío.
+              if (nextStatus === 'approved') {
+                const post = posts[idx];
+                const firstAsset = Array.isArray(post.media) ? post.media[0] : null;
+                if (!firstAsset?.path) {
+                  res.statusCode = 422;
+                  res.end(JSON.stringify({ ok: false, error: 'No se puede aprobar: el post no tiene media' }));
+                  return;
+                }
+                const absAsset = path.join(REPO_ROOT, firstAsset.path);
+                if (!fs.existsSync(absAsset)) {
+                  res.statusCode = 422;
+                  res.end(JSON.stringify({ ok: false, error: `No se puede aprobar: falta el asset ${firstAsset.path}` }));
+                  return;
+                }
+              }
+
+              // Reescribir solo el campo status del post específico, preservando el formato original.
+              const escapedId = postId.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+              const postBlockRe = new RegExp(`("id":\\s*"${escapedId}"[\\s\\S]*?"status":\\s*")(\\w+)(")`);
+              const newRaw = raw.replace(postBlockRe, `$1${nextStatus}$3`);
+              if (newRaw === raw) {
+                res.statusCode = 500;
+                res.end(JSON.stringify({ ok: false, error: 'No se pudo localizar el bloque status del post en el JSON' }));
+                return;
+              }
+              fs.writeFileSync(SOCIAL_CALENDAR_PATH, newRaw, 'utf8');
+
+              const hint = nextStatus === 'approved'
+                ? 'Aprobado localmente. Commit + push de content/social/calendar.json para que el cron lo recoja.'
+                : `Status cambiado a ${nextStatus} localmente. Commit + push para que el cron vea el cambio.`;
+
+              res.end(JSON.stringify({
+                ok: true,
+                id: postId,
+                previousStatus,
+                status: nextStatus,
+                hint,
+              }));
+            } catch (err) {
+              res.statusCode = 500;
+              res.end(JSON.stringify({ ok: false, error: err.message }));
+            }
+          });
+          return;
+        }
 
         // GET /api/social/calendar
         if (req.method === 'GET' && pathParts[0] === 'calendar') {
