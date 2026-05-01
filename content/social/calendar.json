@@ -35,6 +35,37 @@
       "publer_post_id": null
     },
     {
+      "id": "2026-05-04-ig-ejercicios-6-anos",
+      "platforms": ["instagram"],
+      "format": "carousel",
+      "scheduled_at": "2026-05-01T21:00:00+02:00",
+      "status": "draft",
+      "locale": "es",
+      "article_slug": "ejercicios-futbol-ninos-6-anos",
+      "target_url": "https://minigolclub.com/ejercicios/ejercicios-futbol-ninos-6-anos/?utm_source=instagram&utm_medium=carousel&utm_campaign=ejercicios-6-anos",
+      "caption": "3 ejercicios para que tu hijo de 6 años se enganche al fútbol — los puedes hacer en el patio o en el parque, sin material extra.\n\nGuía completa en el link de la bio 👆",
+      "hashtags": [
+        "futbolinfantil",
+        "padres",
+        "escueladefutbol",
+        "futbolniños",
+        "deporteinfantil",
+        "entrenamientofutbol",
+        "fundamentosdelfutbol",
+        "futbolespaña"
+      ],
+      "media": [
+        {
+          "type": "image",
+          "path": "public/social/exercicis-futbol-6-anys/feed.jpg",
+          "alt": "Portada — 3 ejercicios de fútbol para niños de 6 años"
+        }
+      ],
+      "notes": "Mirror ES del post CA del mismo día. Espaciado +2h para no saturar feed. Misma imagen (visual sin texto idiomático). Aprobar manualmente tras revisar.",
+      "published_at": null,
+      "publer_post_id": null
+    },
+    {
       "id": "2026-05-06-ig-talla-pilota",
       "platforms": ["instagram"],
       "format": "single_image",
@@ -65,6 +96,36 @@
       "publer_post_id": null
     },
     {
+      "id": "2026-05-06-ig-talla-balon",
+      "platforms": ["instagram"],
+      "format": "single_image",
+      "scheduled_at": "2026-05-06T20:30:00+02:00",
+      "status": "draft",
+      "locale": "es",
+      "article_slug": "talla-balon-futbol-segun-edad",
+      "target_url": "https://minigolclub.com/equipamiento/talla-balon-futbol-segun-edad/?utm_source=instagram&utm_medium=feed&utm_campaign=talla-balon",
+      "caption": "¿Qué talla de balón necesita tu hijo según la edad? Guía rápida para no equivocarte.\n\nGuía completa en el link de la bio 👆",
+      "hashtags": [
+        "futbolinfantil",
+        "balondefutbol",
+        "padres",
+        "futbolespaña",
+        "equipamientofutbol",
+        "tallabalon",
+        "regaloninos"
+      ],
+      "media": [
+        {
+          "type": "image",
+          "path": "public/social/talla-pilota-futbol-segons-edat/feed.jpg",
+          "alt": "Tabla edad → talla de balón de fútbol"
+        }
+      ],
+      "notes": "Mirror ES del post CA del mismo día. Espaciado +2h. Misma imagen (tabla numérica entendible en ambos idiomas).",
+      "published_at": null,
+      "publer_post_id": null
+    },
+    {
       "id": "2026-05-08-ig-10-jocs",
       "platforms": ["instagram"],
       "format": "reel",
@@ -91,6 +152,36 @@
         }
       ],
       "notes": "Reel piloto. Producir con CapCut. Subtítulos quemados. Sin caras de menores.",
+      "published_at": null,
+      "publer_post_id": null
+    },
+    {
+      "id": "2026-05-08-ig-10-juegos",
+      "platforms": ["instagram"],
+      "format": "reel",
+      "scheduled_at": "2026-05-08T21:00:00+02:00",
+      "status": "draft",
+      "locale": "es",
+      "article_slug": "10-juegos-futbol-divertidos-faciles",
+      "target_url": "https://minigolclub.com/juegos/10-juegos-futbol-divertidos-faciles/?utm_source=instagram&utm_medium=reel&utm_campaign=10-juegos",
+      "caption": "10 juegos de fútbol para hacer en el parque — sin entrenadores, sin presión, solo divertirse.\n\nLista completa en el link de la bio 👆",
+      "hashtags": [
+        "futbolinfantil",
+        "juegosdefutbol",
+        "padres",
+        "futbolespaña",
+        "futbolenelparque",
+        "niñosyfutbol",
+        "deporteenfamilia"
+      ],
+      "media": [
+        {
+          "type": "video",
+          "path": "public/social/10-jocs-futbol-divertits-facils/reel.mp4",
+          "alt": "Reel de 30s mostrando 3 juegos de fútbol"
+        }
+      ],
+      "notes": "Mirror ES del reel CA. Si el reel tiene subtítulos quemados en CA, considerar grabar 2 versiones o usar subtítulos en CA+ES. Espaciado +2h del CA.",
       "published_at": null,
       "publer_post_id": null
     }
