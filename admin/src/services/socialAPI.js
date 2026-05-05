@@ -30,3 +30,25 @@ export async function patchPost(id, patch) {
 
 export const setPostStatus = (id, status) => patchPost(id, { status });
 export const setPostScheduledAt = (id, scheduled_at) => patchPost(id, { scheduled_at });
+
+export async function fetchCalendarDiff() {
+  const res = await fetch(`${BASE}/calendar/diff`);
+  const data = await res.json().catch(() => ({ ok: false, error: `Error ${res.status}` }));
+  if (!res.ok || data.ok === false) {
+    throw new Error(data.error || `Error ${res.status} al consultar diff`);
+  }
+  return data;
+}
+
+export async function commitCalendar(message) {
+  const res = await fetch(`${BASE}/calendar/commit`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(message ? { message } : {}),
+  });
+  const data = await res.json().catch(() => ({ ok: false, error: `Error ${res.status}` }));
+  if (!res.ok || data.ok === false) {
+    throw new Error(data.error || `Error ${res.status} al commitear`);
+  }
+  return data;
+}

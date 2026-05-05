@@ -746,6 +746,152 @@ function socialApiMiddleware() {
           return;
         }
 
+        // GET /api/social/calendar/diff  →  detecta si hay cambios sin commitear
+        if (req.method === 'GET' && pathParts[0] === 'calendar' && pathParts[1] === 'diff') {
+          (async () => { try {
+            // Refrescar origin/main por si el remoto avanzó
+            try { await execFileAsync('git', ['fetch', '--quiet', 'origin', 'main'], { cwd: REPO_ROOT, windowsHide: true }); } catch { /* offline OK */ }
+
+            // Leer la versión "main" del calendar.json
+            let mainPosts = [];
+            try {
+              const { stdout: mainRaw } = await execFileAsync(
+                'git',
+                ['show', 'origin/main:content/social/calendar.json'],
+                { cwd: REPO_ROOT, windowsHide: true, maxBuffer: 1024 * 1024 * 4 },
+              );
+              const mainJson = JSON.parse(mainRaw);
+              mainPosts = Array.isArray(mainJson.posts) ? mainJson.posts : [];
+            } catch { /* archivo no existe en main aún */ }
+
+            const localRaw = fs.readFileSync(SOCIAL_CALENDAR_PATH, 'utf8');
+            const localJson = JSON.parse(localRaw);
+            const localPosts = Array.isArray(localJson.posts) ? localJson.posts : [];
+
+            const mainById = new Map(mainPosts.map((p) => [p.id, p]));
+            const localById = new Map(localPosts.map((p) => [p.id, p]));
+
+            const changes = [];
+            for (const [id, lp] of localById) {
+              const mp = mainById.get(id);
+              if (!mp) {
+                changes.push({ id, field: 'new', value: lp.status });
+                continue;
+              }
+              if (mp.status !== lp.status) changes.push({ id, field: 'status', value: lp.status, was: mp.status });
+              if (mp.scheduled_at !== lp.scheduled_at) changes.push({ id, field: 'scheduled_at', value: lp.scheduled_at, was: mp.scheduled_at });
+            }
+            for (const [id] of mainById) {
+              if (!localById.has(id)) changes.push({ id, field: 'deleted' });
+            }
+
+            res.end(JSON.stringify({ ok: true, hasChanges: changes.length > 0, changes }));
+          } catch (err) {
+            res.statusCode = 500;
+            res.end(JSON.stringify({ ok: false, error: err.message }));
+          } })();
+          return;
+        }
+
+        // POST /api/social/calendar/commit  →  worktree desde origin/main, copia el calendar local, commit, push, PR
+        if (req.method === 'POST' && pathParts[0] === 'calendar' && pathParts[1] === 'commit') {
+          let rawBody = '';
+          req.on('data', (chunk) => { rawBody += chunk; });
+          req.on('end', () => {
+            (async () => {
+              const worktreePath = path.join(REPO_ROOT, '..', 'mg-pr-tmp');
+              let worktreeCreated = false;
+              let branchCreated = false;
+              let branchName = '';
+
+              try {
+                const { message: customMessage } = JSON.parse(rawBody || '{}');
+
+                // Verificar diff
+                const { stdout: diff } = await execFileAsync(
+                  'git',
+                  ['diff', '--unified=0', 'origin/main', '--', 'content/social/calendar.json'],
+                  { cwd: REPO_ROOT, windowsHide: true },
+                );
+                if (!diff.trim()) {
+                  res.end(JSON.stringify({ ok: true, hasChanges: false, message: 'Sin cambios para commitear.' }));
+                  return;
+                }
+
+                // Verificar gh autenticado
+                try {
+                  await execFileAsync('gh', ['auth', 'status'], { cwd: REPO_ROOT, windowsHide: true });
+                } catch {
+                  res.statusCode = 503;
+                  res.end(JSON.stringify({ ok: false, error: 'gh CLI no autenticado: ejecuta `gh auth login`' }));
+                  return;
+                }
+
+                // Generar branch name único con timestamp UTC
+                const ts = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 16);
+                branchName = `social/admin-update-${ts}`;
+
+                // Cleanup worktree previo si quedó
+                if (fs.existsSync(worktreePath)) {
+                  await execFileAsync('git', ['worktree', 'remove', worktreePath, '--force'], { cwd: REPO_ROOT, windowsHide: true });
+                }
+
+                // Worktree desde origin/main actualizado
+                await execFileAsync('git', ['fetch', 'origin', 'main'], { cwd: REPO_ROOT, windowsHide: true });
+                await execFileAsync('git', ['worktree', 'add', '--no-checkout', worktreePath, 'origin/main'], { cwd: REPO_ROOT, windowsHide: true });
+                worktreeCreated = true;
+
+                await execFileAsync('git', ['checkout', '-b', branchName], { cwd: worktreePath });
+                branchCreated = true;
+
+                // Copiar el calendar.json LOCAL (con los cambios) al worktree
+                const destCalendar = path.join(worktreePath, 'content', 'social', 'calendar.json');
+                await fsp.copyFile(SOCIAL_CALENDAR_PATH, destCalendar);
+
+                await execFileAsync('git', ['add', 'content/social/calendar.json'], { cwd: worktreePath });
+
+                const commitMsg = customMessage || `social: actualizar calendar.json desde admin (${new Date().toISOString().slice(0, 16).replace('T', ' ')} UTC)`;
+                await execFileAsync('git', ['commit', '-m', commitMsg], { cwd: worktreePath });
+                await execFileAsync('git', ['push', '-u', 'origin', branchName], { cwd: worktreePath });
+
+                const prBody = [
+                  '## Cambios en el calendar social',
+                  '',
+                  'Generado automáticamente desde el admin (Social Calendar).',
+                  '',
+                  '```diff',
+                  diff.split('\n').slice(0, 60).join('\n'),
+                  '```',
+                  '',
+                  'Tras merge, el cron `social-scheduler` recogerá los cambios en su próxima ejecución (max 30min).',
+                ].join('\n');
+
+                const { stdout: prOut } = await execFileAsync(
+                  'gh',
+                  ['pr', 'create', '--base', 'main', '--head', branchName, '--title', commitMsg, '--body', prBody],
+                  { cwd: worktreePath },
+                );
+
+                const prUrl = prOut.trim();
+                const prNumber = prUrl.match(/\/pull\/(\d+)$/)?.[1];
+
+                await execFileAsync('git', ['worktree', 'remove', worktreePath, '--force'], { cwd: REPO_ROOT, windowsHide: true });
+                res.end(JSON.stringify({ ok: true, hasChanges: true, branch: branchName, prUrl, prNumber: prNumber ? parseInt(prNumber, 10) : null }));
+              } catch (err) {
+                if (worktreeCreated && fs.existsSync(worktreePath)) {
+                  try { await execFileAsync('git', ['worktree', 'remove', worktreePath, '--force'], { cwd: REPO_ROOT, windowsHide: true }); } catch { /* ignore */ }
+                }
+                if (branchCreated && branchName) {
+                  try { await execFileAsync('git', ['branch', '-D', branchName], { cwd: REPO_ROOT, windowsHide: true }); } catch { /* ignore */ }
+                }
+                res.statusCode = 500;
+                res.end(JSON.stringify({ ok: false, error: err.message }));
+              }
+            })();
+          });
+          return;
+        }
+
         // GET /api/social/calendar
         if (req.method === 'GET' && pathParts[0] === 'calendar') {
           try {
