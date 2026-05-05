@@ -7,8 +7,8 @@
       "id": "2026-05-04-ig-exercicis-6-anys",
       "platforms": ["instagram"],
       "format": "carousel",
-      "scheduled_at": "2026-05-01T19:00:00+02:00",
-      "status": "approved",
+      "scheduled_at": "2026-05-07T19:00:00+02:00",
+      "status": "draft",
       "locale": "ca",
       "article_slug": "exercicis-futbol-6-anys",
       "target_url": "https://minigolclub.com/ca/ejercicios/exercicis-futbol-6-anys/?utm_source=instagram&utm_medium=carousel&utm_campaign=exercicis-futbol-6-anys",
@@ -30,7 +30,7 @@
           "alt": "Portada — 3 exercicis de futbol per a nens de 6 anys"
         }
       ],
-      "notes": "Hook: 'Si el teu fill de 6 anys es queda parat amb la pilota...'  Carrusel 5 slides: portada + 3 exercicis + CTA",
+      "notes": "RE-PROGRAMADO: el slot original 2026-05-01 19:00 falló (cron GitHub Actions saltó runs + branch protection bloqueó el commit del bot). Aprobar tras configurar BOT_PAT como secret. Carrusel 5 slides: portada + 3 exercicis + CTA",
       "published_at": null,
       "publer_post_id": null
     },
@@ -38,7 +38,7 @@
       "id": "2026-05-04-ig-ejercicios-6-anos",
       "platforms": ["instagram"],
       "format": "carousel",
-      "scheduled_at": "2026-05-01T21:00:00+02:00",
+      "scheduled_at": "2026-05-07T21:00:00+02:00",
       "status": "draft",
       "locale": "es",
       "article_slug": "ejercicios-futbol-ninos-6-anos",
