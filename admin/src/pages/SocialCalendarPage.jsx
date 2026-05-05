@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import { useSocialCalendar } from '../hooks/useSocialCalendar.js';
+import { setPostStatus } from '../services/socialAPI.js';
+import { toast } from '../services/toast.js';
 import InstagramPreview from '../components/social/InstagramPreview.jsx';
 
 const STATUS_STYLE = {
@@ -53,9 +55,25 @@ function previewCaption(caption, max = 140) {
   return caption.slice(0, max).trim() + '…';
 }
 
-function PostCard({ post }) {
+function PostCard({ post, onChanged }) {
   const [showPreview, setShowPreview] = useState(false);
+  const [busy, setBusy] = useState(false);
   const status = STATUS_STYLE[post.status] || STATUS_STYLE.draft;
+
+  async function changeStatus(nextStatus, confirmMsg) {
+    if (confirmMsg && !window.confirm(confirmMsg)) return;
+    setBusy(true);
+    try {
+      const result = await setPostStatus(post.id, nextStatus);
+      const verb = nextStatus === 'approved' ? 'aprobado' : nextStatus === 'draft' ? 'devuelto a borrador' : nextStatus;
+      toast(`Post ${verb}. ${result.hint || 'Recuerda commit + push.'}`, nextStatus === 'approved' ? 'success' : 'warning');
+      onChanged?.();
+    } catch (err) {
+      toast(err.message, 'error');
+    } finally {
+      setBusy(false);
+    }
+  }
 
   return (
     <article
@@ -208,6 +226,38 @@ function PostCard({ post }) {
         <p className="mono" style={{ marginTop: 12, fontSize: 11, color: 'var(--color-foreground-subtle)' }}>
           Publer job: {post.publer_post_id}
         </p>
+      )}
+
+      {(post.status === 'draft' || post.status === 'approved') && (
+        <div style={{ marginTop: 16, display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+          {post.status === 'draft' && (
+            <button
+              type="button"
+              onClick={() =>
+                changeStatus(
+                  'approved',
+                  `¿Aprobar este post para publicación automática el ${new Date(post.scheduled_at).toLocaleString('es-ES')}?\n\nRecuerda: tras aprobar tienes que commit + push de calendar.json para que el cron lo recoja.`,
+                )
+              }
+              disabled={busy}
+              className="btn btn-primary"
+              style={{ minHeight: 36, padding: '8px 14px', fontSize: 13 }}
+            >
+              {busy ? 'Aprobando…' : '✓ Aprobar publicación'}
+            </button>
+          )}
+          {post.status === 'approved' && !post.publer_post_id && (
+            <button
+              type="button"
+              onClick={() => changeStatus('draft', '¿Devolver este post aprobado a borrador? El cron dejará de procesarlo.')}
+              disabled={busy}
+              className="btn btn-ghost"
+              style={{ minHeight: 36, padding: '8px 14px', fontSize: 13 }}
+            >
+              {busy ? 'Cambiando…' : '↺ Volver a borrador'}
+            </button>
+          )}
+        </div>
       )}
 
       {post.platforms?.includes('instagram') && post.media?.[0] && (
@@ -364,7 +414,7 @@ export default function SocialCalendarPage() {
               </h2>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
                 {dayPosts.map((post) => (
-                  <PostCard key={post.id} post={post} />
+                  <PostCard key={post.id} post={post} onChanged={refetch} />
                 ))}
               </div>
             </div>
