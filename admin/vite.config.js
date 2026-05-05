@@ -9,7 +9,10 @@ import { execFile } from 'node:child_process';
 import { promisify } from 'node:util';
 import matter from 'gray-matter';
 
-const execFileAsync = promisify(execFile);
+const _execFileAsync = promisify(execFile);
+// windowsHide:true por defecto: workaround del bug Windows STATUS_DLL_INIT_FAILED
+// (0xC0000142) que se dispara al spawning child processes con cwd que contiene "ñ".
+const execFileAsync = (cmd, args, opts) => _execFileAsync(cmd, args, { windowsHide: true, ...opts });
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ARTICULOS_DIR = path.join(__dirname, '..', 'src', 'content', 'articulos');
@@ -827,14 +830,26 @@ function socialApiMiddleware() {
                   return;
                 }
 
-                // Generar branch name único con timestamp UTC
-                const ts = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 16);
-                branchName = `social/admin-update-${ts}`;
+                // Generar branch name único: timestamp completo (con segundos) + sufijo random.
+                const ts = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19);
+                const rand = Math.random().toString(36).slice(2, 8);
+                branchName = `social/admin-update-${ts}-${rand}`;
 
                 // Cleanup worktree previo si quedó
                 if (fs.existsSync(worktreePath)) {
-                  await execFileAsync('git', ['worktree', 'remove', worktreePath, '--force'], { cwd: REPO_ROOT, windowsHide: true });
+                  try {
+                    await execFileAsync('git', ['worktree', 'remove', worktreePath, '--force'], { cwd: REPO_ROOT, windowsHide: true });
+                  } catch {
+                    // Si remove falla pero el dir existe, borrarlo a mano + prune
+                    try { await fsp.rm(worktreePath, { recursive: true, force: true }); } catch { /* ignore */ }
+                    try { await execFileAsync('git', ['worktree', 'prune'], { cwd: REPO_ROOT, windowsHide: true }); } catch { /* ignore */ }
+                  }
                 }
+
+                // Cleanup branch local si quedó de un intento previo
+                try {
+                  await execFileAsync('git', ['branch', '-D', branchName], { cwd: REPO_ROOT, windowsHide: true });
+                } catch { /* no existía — OK */ }
 
                 // Worktree desde origin/main actualizado
                 await execFileAsync('git', ['fetch', 'origin', 'main'], { cwd: REPO_ROOT, windowsHide: true });
