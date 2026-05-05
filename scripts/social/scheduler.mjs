@@ -22,7 +22,7 @@
  *
  * Flags:
  *   --dry-run    — no llama Publer ni modifica calendar.json. Solo loggea.
- *   --window=N   — minutos hacia atrás considerados "ahora ya". Default 30.
+ *   --window=N   — minutos hacia atrás considerados "ahora ya". Default 120.
  */
 
 import { readFileSync, writeFileSync } from 'node:fs';
@@ -34,7 +34,10 @@ const CAL_PATH = resolve(process.cwd(), 'content/social/calendar.json');
 const args = new Set(process.argv.slice(2));
 const DRY_RUN = args.has('--dry-run');
 const windowArg = [...args].find((a) => a.startsWith('--window='));
-const WINDOW_MIN = windowArg ? Number(windowArg.split('=')[1]) : 30;
+// Window debe ser >> intervalo del cron para tolerar saltos de runs.
+// GitHub Actions cron puede saltarse 1-2 runs en horas pico.
+// Cron cada 30min + window 120min = tolera 4 runs perdidos.
+const WINDOW_MIN = windowArg ? Number(windowArg.split('=')[1]) : 120;
 
 function log(msg) { console.log(`[scheduler] ${msg}`); }
 function err(msg) { console.error(`[scheduler] ❌ ${msg}`); }

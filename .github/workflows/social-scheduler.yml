@@ -4,8 +4,14 @@ name: Social Scheduler
 # scheduled_at cae dentro de la ventana actual, los envía a Publer
 # para programar/publicar y commitea el calendario actualizado.
 #
-# Cron cada 30 minutos. La ventana del scheduler debe ser >= intervalo
-# del cron para no perder posts (default 30min).
+# Cron cada 30 minutos. Window por defecto 120min para tolerar saltos
+# de runs (GitHub Actions cron puede saltarse 1-2 runs en horas pico).
+#
+# REQUISITO: secret BOT_PAT con un fine-grained PAT del owner del repo
+# scope Contents:write sobre este repo. Necesario porque el bot
+# github-actions[bot] no puede pushear directo a main (branch protection).
+# Si BOT_PAT no está configurado, el workflow usa GITHUB_TOKEN como
+# fallback, lo que probablemente fallará el push pero al menos publicará.
 
 on:
   schedule:
@@ -32,8 +38,11 @@ jobs:
     steps:
       - uses: actions/checkout@v6
         with:
-          # token con permisos de write para que el push posterior funcione
-          token: ${{ secrets.GITHUB_TOKEN }}
+          # PAT del owner para poder pushear directo a main bypaseando
+          # branch protection. Si no hay BOT_PAT, fallback a GITHUB_TOKEN
+          # (el publish funcionará pero el commit fallará al final).
+          token: ${{ secrets.BOT_PAT || secrets.GITHUB_TOKEN }}
+          persist-credentials: true
 
       - uses: actions/setup-node@v6
         with:
@@ -72,4 +81,12 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add content/social/calendar.json
           git commit -m "chore(social): scheduler $(date -u +%Y-%m-%dT%H:%MZ) — actualizar status"
-          git push
+          # Pull --rebase por si llegó un commit en paralelo (extremadamente raro
+          # con concurrency group, pero defensivo).
+          git pull --rebase origin main || true
+          if ! git push; then
+            echo "::error::Push a main falló — branch protection rechaza al bot."
+            echo "::error::Configura un PAT del owner como secret BOT_PAT (Contents:write sobre este repo)."
+            echo "::error::Ver: docs/SchedulerPubler.md sección 'BOT_PAT setup'."
+            exit 1
+          fi
