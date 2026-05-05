@@ -460,7 +460,7 @@ function CommitButton({ onCommitted }) {
       onClick={doCommit}
       disabled={busy}
       className="btn btn-primary"
-      style={{ marginLeft: 12, minHeight: 36, padding: '8px 14px', fontSize: 13 }}
+      style={{ minHeight: 36, padding: '6px 14px', fontSize: 13 }}
       title={summary}
     >
       {busy ? 'Creando PR…' : `📤 Commitear (${diff.changes.length || 'cambios'}) y abrir PR`}
@@ -511,26 +511,28 @@ export default function SocialCalendarPage() {
         </h1>
         <p style={{ marginTop: 12, fontSize: 13, color: 'var(--color-foreground-muted)' }}>
           Lectura de <code style={{ fontFamily: 'var(--font-mono)', padding: '2px 6px', background: 'var(--color-surface-alt)', borderRadius: 4 }}>content/social/calendar.json</code>.{' '}
-          Para editar, modifica el JSON en Git y abre PR.
+          Para editar, abre cada post abajo o usa el botón de commitear cambios.
+        </p>
+        <div style={{ marginTop: 12, display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 12 }}>
           <button
             type="button"
             onClick={refetch}
             className="mono"
             style={{
-              marginLeft: 12,
               fontSize: 11,
-              padding: '4px 10px',
+              padding: '6px 12px',
               borderRadius: 6,
               background: 'var(--color-surface-alt)',
               border: 'none',
               cursor: 'pointer',
               color: 'var(--color-foreground)',
+              minHeight: 36,
             }}
           >
             ↻ Recargar
           </button>
           <CommitButton onCommitted={refetch} />
-        </p>
+        </div>
       </header>
 
       <section style={{ marginBottom: 32, display: 'grid', gap: 12, gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))' }}>
