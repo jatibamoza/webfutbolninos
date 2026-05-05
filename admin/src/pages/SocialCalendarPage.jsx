@@ -1,6 +1,11 @@
-import { useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useSocialCalendar } from '../hooks/useSocialCalendar.js';
-import { setPostStatus, setPostScheduledAt } from '../services/socialAPI.js';
+import {
+  setPostStatus,
+  setPostScheduledAt,
+  fetchCalendarDiff,
+  commitCalendar,
+} from '../services/socialAPI.js';
 import { toast } from '../services/toast.js';
 import InstagramPreview from '../components/social/InstagramPreview.jsx';
 
@@ -408,6 +413,61 @@ function PostCard({ post, onChanged }) {
   );
 }
 
+function CommitButton({ onCommitted }) {
+  const [diff, setDiff] = useState({ hasChanges: false, changes: [] });
+  const [busy, setBusy] = useState(false);
+
+  const refresh = useCallback(async () => {
+    try {
+      const d = await fetchCalendarDiff();
+      setDiff(d);
+    } catch {
+      setDiff({ hasChanges: false, changes: [] });
+    }
+  }, []);
+
+  useEffect(() => {
+    refresh();
+    const i = setInterval(refresh, 5000);
+    return () => clearInterval(i);
+  }, [refresh]);
+
+  if (!diff.hasChanges) return null;
+
+  const summary = diff.changes.length > 0
+    ? diff.changes.map((c) => `• ${c.id}: ${c.field} → ${c.value}`).join('\n')
+    : '(cambios en calendar.json detectados)';
+
+  async function doCommit() {
+    if (!window.confirm(`¿Crear PR con estos cambios?\n\n${summary}\n\nEl PR se abrirá en GitHub. Tras el merge, el cron lo recoge en max 30min.`)) return;
+    setBusy(true);
+    try {
+      const result = await commitCalendar();
+      toast(`PR #${result.prNumber} creado`, 'success');
+      window.open(result.prUrl, '_blank', 'noopener');
+      await refresh();
+      onCommitted?.();
+    } catch (err) {
+      toast(err.message, 'error');
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  return (
+    <button
+      type="button"
+      onClick={doCommit}
+      disabled={busy}
+      className="btn btn-primary"
+      style={{ marginLeft: 12, minHeight: 36, padding: '8px 14px', fontSize: 13 }}
+      title={summary}
+    >
+      {busy ? 'Creando PR…' : `📤 Commitear (${diff.changes.length || 'cambios'}) y abrir PR`}
+    </button>
+  );
+}
+
 export default function SocialCalendarPage() {
   const { data, loading, error, refetch } = useSocialCalendar();
 
@@ -469,6 +529,7 @@ export default function SocialCalendarPage() {
           >
             ↻ Recargar
           </button>
+          <CommitButton onCommitted={refetch} />
         </p>
       </header>
 
