@@ -190,7 +190,41 @@ Ajustar tras 4 semanas con datos reales del Insights de cada plataforma.
 La API devolvió 200 pero sin job ID — probablemente la cuenta de Publer no tiene permisos para esa plataforma o el account ID es incorrecto. Verifica con `pnpm social:accounts`.
 
 **"stale post ... — marcando failed"**
-El post quedó `approved` con `scheduled_at` >30min en el pasado al evaluar. Posible causa: workflow desactivado por GitHub (los crons en repos públicos sin actividad >60 días se pausan automáticamente). Solución: re-aprobar con nueva fecha futura, o ajustar `--window` si hay outage prolongado.
+El post quedó `approved` con `scheduled_at` más de N min en el pasado (donde N = `--window`, default 120). Causas comunes:
+- Cron de GitHub Actions saltó runs (típico en horas pico — se aceptan saltos de 1-2 runs sin perder posts gracias al window de 120min).
+- Workflow desactivado por GitHub (los crons en repos sin commits 60+ días se pausan automáticamente).
+
+Solución: re-aprobar con nueva fecha futura via admin, o ampliar `--window` si hay outage prolongado.
+
+**"protected branch hook declined" al pushear el calendar actualizado**
+La branch `main` requiere PRs y el bot `github-actions[bot]` no puede pushear directo. **Configurar `BOT_PAT`** (ver siguiente sección).
 
 **Workflow no ejecuta automáticamente**
 GitHub pausa crons en repos sin commits durante 60 días. Cualquier commit a main lo reactiva. Para repos privados con plan free tampoco corren workflows si superas la cuota mensual de minutos.
+
+---
+
+## BOT_PAT setup (requerido para que el scheduler commitee status)
+
+El workflow necesita pushear directo a `main` el `calendar.json` actualizado tras cada publicación. La branch protection lo bloquea para el bot por defecto. Solución: crear un PAT del owner del repo (admin) y guardarlo como secret.
+
+**Pasos (una vez):**
+
+1. Ir a https://github.com/settings/personal-access-tokens (fine-grained tokens)
+2. **Generate new token** con:
+   - **Token name**: `MiniGol Social Scheduler`
+   - **Resource owner**: tu usuario
+   - **Repository access**: Only select repositories → `jatibamoza/webfutbolninos`
+   - **Repository permissions**:
+     - **Contents**: Read and write
+     - **Metadata**: Read (auto)
+   - **Expiration**: 1 año (renovar después)
+3. Copiar el token (`github_pat_...`)
+4. En el repo, ir a Settings → Secrets and variables → Actions → New repository secret:
+   - **Name**: `BOT_PAT`
+   - **Secret**: pegar el PAT
+5. Listo. El próximo cron usará el PAT y podrá commitear bypaseando la branch protection (porque es un token personal con scope contents:write y `enforce_admins=false` permite a admins push directo).
+
+**¿Por qué PAT y no GITHUB_APP?** PAT es 1 paso de setup vs registrar una App. Para 1 workflow es overkill montar una App. Si el repo crece a 5+ workflows que necesitan bypass, considerar migración a GitHub App.
+
+**Si el PAT expira:** los workflows fallarán con "protected branch hook declined". Renovar PAT y actualizar secret. El email de GitHub avisa 7 días antes del expiry.
