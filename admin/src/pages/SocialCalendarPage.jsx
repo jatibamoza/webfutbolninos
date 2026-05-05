@@ -1,8 +1,37 @@
 import { useState } from 'react';
 import { useSocialCalendar } from '../hooks/useSocialCalendar.js';
-import { setPostStatus } from '../services/socialAPI.js';
+import { setPostStatus, setPostScheduledAt } from '../services/socialAPI.js';
 import { toast } from '../services/toast.js';
 import InstagramPreview from '../components/social/InstagramPreview.jsx';
+
+/**
+ * Convierte un ISO con offset (`2026-05-07T19:00:00+02:00`) al formato del input
+ * datetime-local (`2026-05-07T19:00`), preservando los componentes de fecha/hora
+ * tal como aparecen en el ISO (sin convertir a la TZ del navegador).
+ * Nota: ignoramos el offset porque el datetime-local no lo acepta. El offset
+ * lo añadimos al guardar.
+ */
+function isoToDatetimeLocal(iso) {
+  const m = iso.match(/^(\d{4}-\d{2}-\d{2})T(\d{2}:\d{2})(?::\d{2})?/);
+  return m ? `${m[1]}T${m[2]}` : '';
+}
+
+/**
+ * Detecta el offset original del ISO (`+02:00`, `-05:00`, `Z`).
+ * Si no encuentra, devuelve el offset Madrid del momento (CET/CEST según fecha).
+ */
+function detectOffset(iso) {
+  const m = iso.match(/([zZ]|[+-]\d{2}:\d{2})$/);
+  if (m) return m[1] === 'Z' || m[1] === 'z' ? 'Z' : m[1];
+  // Fallback: offset de Madrid en la fecha del ISO (CEST entre 27 mar y 30 oct, CET el resto)
+  const d = new Date(iso);
+  const month = d.getUTCMonth() + 1;
+  const day = d.getUTCDate();
+  const isCEST = (month > 3 && month < 10) ||
+    (month === 3 && day >= 27) ||
+    (month === 10 && day < 30);
+  return isCEST ? '+02:00' : '+01:00';
+}
 
 const STATUS_STYLE = {
   draft:     { bg: '#e5e7eb', fg: '#374151', label: 'Borrador' },
@@ -58,6 +87,8 @@ function previewCaption(caption, max = 140) {
 function PostCard({ post, onChanged }) {
   const [showPreview, setShowPreview] = useState(false);
   const [busy, setBusy] = useState(false);
+  const [editingDate, setEditingDate] = useState(false);
+  const [draftDateTime, setDraftDateTime] = useState(() => isoToDatetimeLocal(post.scheduled_at));
   const status = STATUS_STYLE[post.status] || STATUS_STYLE.draft;
 
   async function changeStatus(nextStatus, confirmMsg) {
@@ -73,6 +104,35 @@ function PostCard({ post, onChanged }) {
     } finally {
       setBusy(false);
     }
+  }
+
+  async function saveDateTime() {
+    if (!draftDateTime) {
+      toast('Fecha/hora vacía', 'error');
+      return;
+    }
+    const offset = detectOffset(post.scheduled_at);
+    const newIso = `${draftDateTime}:00${offset}`;
+    if (newIso === post.scheduled_at) {
+      setEditingDate(false);
+      return;
+    }
+    setBusy(true);
+    try {
+      const result = await setPostScheduledAt(post.id, newIso);
+      toast(`Fecha actualizada. ${result.hint || 'Recuerda commit + push.'}`, 'success');
+      setEditingDate(false);
+      onChanged?.();
+    } catch (err) {
+      toast(err.message, 'error');
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  function cancelDateEdit() {
+    setDraftDateTime(isoToDatetimeLocal(post.scheduled_at));
+    setEditingDate(false);
   }
 
   return (
@@ -164,14 +224,71 @@ function PostCard({ post, onChanged }) {
             </span>
           )}
         </div>
-        <time
-          className="mono"
-          style={{ fontSize: 11, fontWeight: 700, color: 'var(--color-foreground-muted)' }}
-          dateTime={post.scheduled_at}
-        >
-          {fmtTime(post.scheduled_at)}
-        </time>
+        {!editingDate && (post.status === 'draft' || post.status === 'approved') ? (
+          <button
+            type="button"
+            onClick={() => setEditingDate(true)}
+            title="Editar fecha y hora"
+            className="mono"
+            style={{
+              fontSize: 11,
+              fontWeight: 700,
+              color: 'var(--color-foreground-muted)',
+              background: 'none',
+              border: '1px dashed transparent',
+              borderRadius: 6,
+              padding: '4px 6px',
+              cursor: 'pointer',
+            }}
+            onMouseEnter={(e) => { e.currentTarget.style.borderColor = 'var(--color-border-strong)'; }}
+            onMouseLeave={(e) => { e.currentTarget.style.borderColor = 'transparent'; }}
+          >
+            {fmtTime(post.scheduled_at)} ✎
+          </button>
+        ) : !editingDate ? (
+          <time
+            className="mono"
+            style={{ fontSize: 11, fontWeight: 700, color: 'var(--color-foreground-muted)' }}
+            dateTime={post.scheduled_at}
+          >
+            {fmtTime(post.scheduled_at)}
+          </time>
+        ) : null}
       </header>
+
+      {editingDate && (
+        <div style={{ marginTop: 12, padding: 12, background: 'var(--color-surface-alt)', borderRadius: 8, display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 8 }}>
+          <label className="mono" style={{ fontSize: 11, color: 'var(--color-foreground-muted)' }}>
+            Fecha y hora ({detectOffset(post.scheduled_at)} Madrid):
+          </label>
+          <input
+            type="datetime-local"
+            value={draftDateTime}
+            onChange={(e) => setDraftDateTime(e.target.value)}
+            disabled={busy}
+            className="input"
+            style={{ minHeight: 36, padding: '6px 10px', fontSize: 13, width: 'auto', flex: '0 0 auto' }}
+          />
+          <button
+            type="button"
+            onClick={saveDateTime}
+            disabled={busy}
+            className="btn btn-primary"
+            style={{ minHeight: 36, padding: '6px 12px', fontSize: 13 }}
+          >
+            {busy ? 'Guardando…' : '💾 Guardar'}
+          </button>
+          <button
+            type="button"
+            onClick={cancelDateEdit}
+            disabled={busy}
+            className="btn btn-ghost"
+            style={{ minHeight: 36, padding: '6px 12px', fontSize: 13 }}
+          >
+            Cancelar
+          </button>
+        </div>
+      )}
 
       <p style={{ marginTop: 12, fontSize: 13, lineHeight: 1.5, color: 'var(--color-foreground)', whiteSpace: 'pre-line' }}>
         {previewCaption(post.caption)}

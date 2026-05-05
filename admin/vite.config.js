@@ -604,19 +604,47 @@ function socialApiMiddleware() {
         const pathParts = url.pathname.split('/').filter(Boolean);
         const VALID_STATUSES = ['draft', 'approved', 'published', 'failed', 'archived'];
 
-        // PATCH /api/social/calendar/:id  →  cambia status del post
+        // PATCH /api/social/calendar/:id  →  cambia status y/o scheduled_at del post.
+        // Body acepta cualquier subset de { status, scheduled_at }.
         if (req.method === 'PATCH' && pathParts[0] === 'calendar' && pathParts[1]) {
           let body = '';
           req.on('data', (chunk) => { body += chunk; });
           req.on('end', () => {
             try {
               const postId = decodeURIComponent(pathParts[1]);
-              const { status: nextStatus } = JSON.parse(body || '{}');
+              const { status: nextStatus, scheduled_at: nextScheduledAt } = JSON.parse(body || '{}');
 
-              if (!VALID_STATUSES.includes(nextStatus)) {
+              if (nextStatus === undefined && nextScheduledAt === undefined) {
+                res.statusCode = 400;
+                res.end(JSON.stringify({ ok: false, error: 'Body debe incluir al menos status o scheduled_at' }));
+                return;
+              }
+
+              if (nextStatus !== undefined && !VALID_STATUSES.includes(nextStatus)) {
                 res.statusCode = 400;
                 res.end(JSON.stringify({ ok: false, error: `status inválido. Válidos: ${VALID_STATUSES.join(', ')}` }));
                 return;
+              }
+
+              // scheduled_at debe ser ISO 8601 con timezone.
+              if (nextScheduledAt !== undefined) {
+                if (typeof nextScheduledAt !== 'string') {
+                  res.statusCode = 400;
+                  res.end(JSON.stringify({ ok: false, error: 'scheduled_at debe ser string ISO 8601 con timezone' }));
+                  return;
+                }
+                const parsed = Date.parse(nextScheduledAt);
+                if (Number.isNaN(parsed)) {
+                  res.statusCode = 400;
+                  res.end(JSON.stringify({ ok: false, error: `scheduled_at no es ISO 8601 válida: ${nextScheduledAt}` }));
+                  return;
+                }
+                // Exigir timezone explícito para evitar ambigüedades UTC vs local del servidor.
+                if (!/[zZ]|[+-]\d{2}:\d{2}$/.test(nextScheduledAt)) {
+                  res.statusCode = 400;
+                  res.end(JSON.stringify({ ok: false, error: 'scheduled_at debe incluir timezone (ej. +02:00 Madrid o Z para UTC)' }));
+                  return;
+                }
               }
 
               if (!fs.existsSync(SOCIAL_CALENDAR_PATH)) {
@@ -636,11 +664,15 @@ function socialApiMiddleware() {
                 return;
               }
 
-              const previousStatus = posts[idx].status;
+              const post = posts[idx];
+              const previousStatus = post.status;
+              const previousScheduledAt = post.scheduled_at;
 
-              // Approve guards: no aprobar si falta asset o el target_url está vacío.
-              if (nextStatus === 'approved') {
-                const post = posts[idx];
+              // Guards al aprobar: media y asset existentes, scheduled_at en futuro.
+              const finalStatus = nextStatus !== undefined ? nextStatus : previousStatus;
+              const finalScheduledAt = nextScheduledAt !== undefined ? nextScheduledAt : previousScheduledAt;
+
+              if (finalStatus === 'approved') {
                 const firstAsset = Array.isArray(post.media) ? post.media[0] : null;
                 if (!firstAsset?.path) {
                   res.statusCode = 422;
@@ -653,28 +685,57 @@ function socialApiMiddleware() {
                   res.end(JSON.stringify({ ok: false, error: `No se puede aprobar: falta el asset ${firstAsset.path}` }));
                   return;
                 }
+                if (Date.parse(finalScheduledAt) < Date.now()) {
+                  res.statusCode = 422;
+                  res.end(JSON.stringify({ ok: false, error: `No se puede aprobar: scheduled_at (${finalScheduledAt}) está en el pasado` }));
+                  return;
+                }
               }
 
-              // Reescribir solo el campo status del post específico, preservando el formato original.
+              // Reescribir solo los campos modificados, preservando el formato original.
               const escapedId = postId.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-              const postBlockRe = new RegExp(`("id":\\s*"${escapedId}"[\\s\\S]*?"status":\\s*")(\\w+)(")`);
-              const newRaw = raw.replace(postBlockRe, `$1${nextStatus}$3`);
-              if (newRaw === raw) {
-                res.statusCode = 500;
-                res.end(JSON.stringify({ ok: false, error: 'No se pudo localizar el bloque status del post en el JSON' }));
-                return;
-              }
-              fs.writeFileSync(SOCIAL_CALENDAR_PATH, newRaw, 'utf8');
+              let newRaw = raw;
 
-              const hint = nextStatus === 'approved'
-                ? 'Aprobado localmente. Commit + push de content/social/calendar.json para que el cron lo recoja.'
-                : `Status cambiado a ${nextStatus} localmente. Commit + push para que el cron vea el cambio.`;
+              if (nextStatus !== undefined && nextStatus !== previousStatus) {
+                const re = new RegExp(`("id":\\s*"${escapedId}"[\\s\\S]*?"status":\\s*")(\\w+)(")`);
+                const replaced = newRaw.replace(re, `$1${nextStatus}$3`);
+                if (replaced === newRaw) {
+                  res.statusCode = 500;
+                  res.end(JSON.stringify({ ok: false, error: 'No se pudo localizar el bloque status del post en el JSON' }));
+                  return;
+                }
+                newRaw = replaced;
+              }
+
+              if (nextScheduledAt !== undefined && nextScheduledAt !== previousScheduledAt) {
+                const re = new RegExp(`("id":\\s*"${escapedId}"[\\s\\S]*?"scheduled_at":\\s*")([^"]+)(")`);
+                const replaced = newRaw.replace(re, `$1${nextScheduledAt}$3`);
+                if (replaced === newRaw) {
+                  res.statusCode = 500;
+                  res.end(JSON.stringify({ ok: false, error: 'No se pudo localizar el bloque scheduled_at del post en el JSON' }));
+                  return;
+                }
+                newRaw = replaced;
+              }
+
+              if (newRaw !== raw) {
+                fs.writeFileSync(SOCIAL_CALENDAR_PATH, newRaw, 'utf8');
+              }
+
+              const changes = [];
+              if (nextStatus !== undefined && nextStatus !== previousStatus) changes.push(`status → ${nextStatus}`);
+              if (nextScheduledAt !== undefined && nextScheduledAt !== previousScheduledAt) changes.push(`scheduled_at → ${nextScheduledAt}`);
+              const hint = changes.length > 0
+                ? `${changes.join(', ')} localmente. Commit + push de content/social/calendar.json para que el cron lo vea.`
+                : 'Sin cambios.';
 
               res.end(JSON.stringify({
                 ok: true,
                 id: postId,
                 previousStatus,
-                status: nextStatus,
+                previousScheduledAt,
+                status: finalStatus,
+                scheduled_at: finalScheduledAt,
                 hint,
               }));
             } catch (err) {

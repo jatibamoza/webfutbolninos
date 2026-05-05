@@ -15,15 +15,18 @@ export function socialAssetUrl(repoRelativePath) {
   return '/assets/social/' + repoRelativePath.replace(/^public\/social\//, '');
 }
 
-export async function setPostStatus(id, status) {
+export async function patchPost(id, patch) {
   const res = await fetch(`${BASE}/calendar/${encodeURIComponent(id)}`, {
     method: 'PATCH',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ status }),
+    body: JSON.stringify(patch),
   });
   const data = await res.json().catch(() => ({ ok: false, error: `Error ${res.status}` }));
   if (!res.ok || data.ok === false) {
-    throw new Error(data.error || `Error ${res.status} al cambiar status`);
+    throw new Error(data.error || `Error ${res.status} al actualizar el post`);
   }
   return data;
 }
+
+export const setPostStatus = (id, status) => patchPost(id, { status });
+export const setPostScheduledAt = (id, scheduled_at) => patchPost(id, { scheduled_at });
