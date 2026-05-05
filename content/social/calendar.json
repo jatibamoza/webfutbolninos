@@ -57,11 +57,11 @@
       "media": [
         {
           "type": "image",
-          "path": "public/social/exercicis-futbol-6-anys/feed.jpg",
+          "path": "public/social/ejercicios-futbol-ninos-6-anos/feed.jpg",
           "alt": "Portada — 3 ejercicios de fútbol para niños de 6 años"
         }
       ],
-      "notes": "Mirror ES del post CA del mismo día. Espaciado +2h para no saturar feed. Misma imagen (visual sin texto idiomático). Aprobar manualmente tras revisar.",
+      "notes": "Mirror ES del post CA del mismo día. Espaciado +2h. Imagen ES generada con Satori desde el frontmatter ES.",
       "published_at": null,
       "publer_post_id": null
     },
@@ -117,11 +117,11 @@
       "media": [
         {
           "type": "image",
-          "path": "public/social/talla-pilota-futbol-segons-edat/feed.jpg",
+          "path": "public/social/talla-balon-futbol-segun-edad/feed.jpg",
           "alt": "Tabla edad → talla de balón de fútbol"
         }
       ],
-      "notes": "Mirror ES del post CA del mismo día. Espaciado +2h. Misma imagen (tabla numérica entendible en ambos idiomas).",
+      "notes": "Mirror ES del post CA del mismo día. Espaciado +2h. Imagen ES generada con Satori desde el frontmatter ES.",
       "published_at": null,
       "publer_post_id": null
     },
@@ -177,11 +177,11 @@
       "media": [
         {
           "type": "video",
-          "path": "public/social/10-jocs-futbol-divertits-facils/reel.mp4",
+          "path": "public/social/10-juegos-futbol-divertidos-faciles/reel.mp4",
           "alt": "Reel de 30s mostrando 3 juegos de fútbol"
         }
       ],
-      "notes": "Mirror ES del reel CA. Si el reel tiene subtítulos quemados en CA, considerar grabar 2 versiones o usar subtítulos en CA+ES. Espaciado +2h del CA.",
+      "notes": "Mirror ES del reel CA. Necesita su propio reel.mp4 grabado en español (subtítulos ES quemados). Imagen reel-cover.jpg ya generada en /public/social/10-juegos-futbol-divertidos-faciles/. Espaciado +2h del CA.",
       "published_at": null,
       "publer_post_id": null
     }
