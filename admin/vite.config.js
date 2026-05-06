@@ -851,15 +851,17 @@ function socialApiMiddleware() {
                   await execFileAsync('git', ['branch', '-D', branchName], { cwd: REPO_ROOT, windowsHide: true });
                 } catch { /* no existía — OK */ }
 
-                // Worktree desde origin/main actualizado
-                await execFileAsync('git', ['fetch', 'origin', 'main'], { cwd: REPO_ROOT, windowsHide: true });
-                await execFileAsync('git', ['worktree', 'add', '--no-checkout', worktreePath, 'origin/main'], { cwd: REPO_ROOT, windowsHide: true });
+                // Worktree desde origin/main con CHECKOUT COMPLETO (sin --no-checkout).
+                // Necesitamos checkout completo porque vamos a MODIFICAR un archivo
+                // existente (calendar.json). Si dejáramos el worktree vacío, el
+                // commit resultante eliminaría todos los demás archivos del repo
+                // (tree construido desde index vacío).
+                await execFileAsync('git', ['fetch', 'origin', 'main'], { cwd: REPO_ROOT });
+                await execFileAsync('git', ['worktree', 'add', '-b', branchName, worktreePath, 'origin/main'], { cwd: REPO_ROOT });
                 worktreeCreated = true;
-
-                await execFileAsync('git', ['checkout', '-b', branchName], { cwd: worktreePath });
                 branchCreated = true;
 
-                // Copiar el calendar.json LOCAL (con los cambios) al worktree
+                // Sobrescribir calendar.json con la versión local (con los cambios)
                 const destCalendar = path.join(worktreePath, 'content', 'social', 'calendar.json');
                 await fsp.copyFile(SOCIAL_CALENDAR_PATH, destCalendar);
 
