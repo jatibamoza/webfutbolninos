@@ -892,8 +892,32 @@ function socialApiMiddleware() {
                 const prUrl = prOut.trim();
                 const prNumber = prUrl.match(/\/pull\/(\d+)$/)?.[1];
 
+                // Encolar auto-merge: GitHub mergea cuando todos los CI checks pasen.
+                // Si CI falla, el PR queda abierto para revisión manual (red de seguridad).
+                let autoMergeQueued = false;
+                if (prNumber) {
+                  try {
+                    await execFileAsync(
+                      'gh',
+                      ['pr', 'merge', String(prNumber), '--auto', '--squash', '--delete-branch'],
+                      { cwd: worktreePath },
+                    );
+                    autoMergeQueued = true;
+                  } catch (err) {
+                    // No bloquear: el PR está creado igual, solo no quedó en auto-merge.
+                    console.error(`[social-commit] auto-merge queue falló: ${err.message}`);
+                  }
+                }
+
                 await execFileAsync('git', ['worktree', 'remove', worktreePath, '--force'], { cwd: REPO_ROOT, windowsHide: true });
-                res.end(JSON.stringify({ ok: true, hasChanges: true, branch: branchName, prUrl, prNumber: prNumber ? parseInt(prNumber, 10) : null }));
+                res.end(JSON.stringify({
+                  ok: true,
+                  hasChanges: true,
+                  branch: branchName,
+                  prUrl,
+                  prNumber: prNumber ? parseInt(prNumber, 10) : null,
+                  autoMergeQueued,
+                }));
               } catch (err) {
                 if (worktreeCreated && fs.existsSync(worktreePath)) {
                   try { await execFileAsync('git', ['worktree', 'remove', worktreePath, '--force'], { cwd: REPO_ROOT, windowsHide: true }); } catch { /* ignore */ }
