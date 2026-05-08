@@ -1,11 +1,13 @@
 {
   "$schema": "./calendar.schema.json",
   "version": 1,
-  "generated_at": null,
+  "generated_at": "2026-05-08T18:49:21.523Z",
   "posts": [
     {
       "id": "2026-05-04-ig-exercicis-6-anys",
-      "platforms": ["instagram"],
+      "platforms": [
+        "instagram"
+      ],
       "format": "carousel",
       "scheduled_at": "2026-05-08T19:00:00+02:00",
       "status": "draft",
@@ -36,10 +38,12 @@
     },
     {
       "id": "2026-05-04-ig-ejercicios-6-anos",
-      "platforms": ["instagram"],
+      "platforms": [
+        "instagram"
+      ],
       "format": "carousel",
       "scheduled_at": "2026-05-08T17:30:00+02:00",
-      "status": "approved",
+      "status": "failed",
       "locale": "es",
       "article_slug": "ejercicios-futbol-ninos-6-anos",
       "target_url": "https://minigolclub.com/ejercicios/ejercicios-futbol-ninos-6-anos/?utm_source=instagram&utm_medium=carousel&utm_campaign=ejercicios-6-anos",
@@ -63,14 +67,17 @@
       ],
       "notes": "Mirror ES del post CA del mismo día. Espaciado +2h. Imagen ES generada con Satori desde el frontmatter ES.",
       "published_at": null,
-      "publer_post_id": null
+      "publer_post_id": null,
+      "error": "Skipped: scheduled_at más de 120min en el pasado al evaluar"
     },
     {
       "id": "2026-05-06-ig-talla-pilota",
-      "platforms": ["instagram"],
+      "platforms": [
+        "instagram"
+      ],
       "format": "single_image",
       "scheduled_at": "2026-05-08T18:30:00+02:00",
-      "status": "approved",
+      "status": "failed",
       "locale": "ca",
       "article_slug": "talla-pilota-futbol-segons-edat",
       "target_url": "https://minigolclub.com/ca/equipamiento/talla-pilota-futbol-segons-edat/?utm_source=instagram&utm_medium=feed&utm_campaign=talla-pilota",
@@ -93,11 +100,14 @@
       ],
       "notes": "Imagen estática tipo tabla. Generar con Satori desde el frontmatter del artículo si es posible.",
       "published_at": null,
-      "publer_post_id": null
+      "publer_post_id": null,
+      "error": "Skipped: scheduled_at más de 120min en el pasado al evaluar"
     },
     {
       "id": "2026-05-06-ig-talla-balon",
-      "platforms": ["instagram"],
+      "platforms": [
+        "instagram"
+      ],
       "format": "single_image",
       "scheduled_at": "2026-05-08T20:30:00+02:00",
       "status": "draft",
@@ -127,7 +137,9 @@
     },
     {
       "id": "2026-05-08-ig-10-jocs",
-      "platforms": ["instagram"],
+      "platforms": [
+        "instagram"
+      ],
       "format": "reel",
       "scheduled_at": "2026-05-08T19:00:00+02:00",
       "status": "draft",
@@ -157,7 +169,9 @@
     },
     {
       "id": "2026-05-08-ig-10-juegos",
-      "platforms": ["instagram"],
+      "platforms": [
+        "instagram"
+      ],
       "format": "reel",
       "scheduled_at": "2026-05-08T21:00:00+02:00",
       "status": "draft",
