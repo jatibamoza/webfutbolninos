@@ -443,7 +443,10 @@ function CommitButton({ onCommitted }) {
     setBusy(true);
     try {
       const result = await commitCalendar();
-      toast(`PR #${result.prNumber} creado`, 'success');
+      const msg = result.autoMergeQueued
+        ? `PR #${result.prNumber} creado y encolado para auto-merge cuando CI pase (~3-4min)`
+        : `PR #${result.prNumber} creado — mergéalo manualmente`;
+      toast(msg, 'success');
       window.open(result.prUrl, '_blank', 'noopener');
       await refresh();
       onCommitted?.();
