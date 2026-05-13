@@ -1,17 +1,21 @@
 name: Social Scheduler
 
 # Lee content/social/calendar.json, encuentra posts approved cuyo
-# scheduled_at cae dentro de la ventana actual, los envía a Publer
-# para programar/publicar y commitea el calendario actualizado.
+# scheduled_at cae dentro de la ventana actual, los publica vía
+# Instagram Graph API (Meta) y commitea el calendario actualizado.
 #
 # Cron cada 30 minutos. Window por defecto 120min para tolerar saltos
 # de runs (GitHub Actions cron puede saltarse 1-2 runs en horas pico).
 #
-# REQUISITO: secret BOT_PAT con un fine-grained PAT del owner del repo
-# scope Contents:write sobre este repo. Necesario porque el bot
-# github-actions[bot] no puede pushear directo a main (branch protection).
-# Si BOT_PAT no está configurado, el workflow usa GITHUB_TOKEN como
-# fallback, lo que probablemente fallará el push pero al menos publicará.
+# REQUISITOS de secrets:
+#   - IG_ACCESS_TOKEN          long-lived User/System token con permisos
+#                              instagram_basic + instagram_content_publish
+#   - IG_BUSINESS_ACCOUNT_ID   IG Business Account ID (no la Page ID)
+#   - BOT_PAT                  fine-grained PAT del owner (Contents:write)
+#                              necesario porque github-actions[bot] no puede
+#                              pushear directo a main por branch protection.
+#                              Si falta, fallback a GITHUB_TOKEN (publicará
+#                              pero el commit del calendar fallará).
 
 on:
   schedule:
@@ -53,15 +57,8 @@ jobs:
 
       - name: Ejecutar scheduler
         env:
-          PUBLER_API_KEY: ${{ secrets.PUBLER_API_KEY }}
-          PUBLER_WORKSPACE_ID: ${{ secrets.PUBLER_WORKSPACE_ID }}
-          PUBLER_ACCOUNT_INSTAGRAM: ${{ secrets.PUBLER_ACCOUNT_INSTAGRAM }}
-          PUBLER_ACCOUNT_TIKTOK: ${{ secrets.PUBLER_ACCOUNT_TIKTOK }}
-          PUBLER_ACCOUNT_PINTEREST: ${{ secrets.PUBLER_ACCOUNT_PINTEREST }}
-          PUBLER_ACCOUNT_FACEBOOK: ${{ secrets.PUBLER_ACCOUNT_FACEBOOK }}
-          PUBLER_ACCOUNT_X: ${{ secrets.PUBLER_ACCOUNT_X }}
-          PUBLER_ACCOUNT_LINKEDIN: ${{ secrets.PUBLER_ACCOUNT_LINKEDIN }}
-          PUBLER_ACCOUNT_YOUTUBE: ${{ secrets.PUBLER_ACCOUNT_YOUTUBE }}
+          IG_ACCESS_TOKEN: ${{ secrets.IG_ACCESS_TOKEN }}
+          IG_BUSINESS_ACCOUNT_ID: ${{ secrets.IG_BUSINESS_ACCOUNT_ID }}
           ASSETS_BASE_URL: ${{ vars.ASSETS_BASE_URL }}
         run: |
           if [ "${{ inputs.dry_run }}" = "true" ]; then
@@ -90,6 +87,6 @@ jobs:
           if ! git push; then
             echo "::error::Push a main falló — branch protection rechaza al bot."
             echo "::error::Configura un PAT del owner como secret BOT_PAT (Contents:write sobre este repo)."
-            echo "::error::Ver: docs/SchedulerPubler.md sección 'BOT_PAT setup'."
+            echo "::error::Ver: docs/SchedulerInstagram.md sección 'Setup' / BOT_PAT."
             exit 1
           fi

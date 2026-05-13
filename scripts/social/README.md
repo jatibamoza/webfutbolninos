@@ -2,7 +2,7 @@
 
 Sistema de publicación programada a redes sociales — utilities y generadores.
 
-> **Documentación completa del sistema:** [docs/SchedulerPubler.md](../../docs/SchedulerPubler.md) (introducido en PR #50).
+> **Documentación completa del sistema:** [docs/SchedulerInstagram.md](../../docs/SchedulerInstagram.md).
 > Este README se centra en los scripts.
 
 ## Generador de imágenes sociales
@@ -25,7 +25,7 @@ pnpm social:image -- --slug=conduccion-balon-futbol-ninos --format=reel-cover --
 
 ### Output
 
-Las imágenes se guardan en `public/social/<slug>/<format>.jpg`. Como están bajo `public/`, son servidas directamente y accesibles por raw GitHub para que Publer las descargue al programar el post.
+Las imágenes se guardan en `public/social/<slug>/<format>.jpg`. Como están bajo `public/`, son servidas directamente y accesibles por raw GitHub para que Instagram Graph API las descargue al publicar el post.
 
 ### Diseño
 
@@ -88,10 +88,10 @@ Si `media[0].path` del post no coincide con el path canónico (`public/social/<s
 
 | Script | Función |
 |--------|---------|
-| `validate-calendar.mjs` | Valida `content/social/calendar.json` (PR #50) |
-| `scheduler.mjs` | Lee calendar, publica via Publer, commitea (PR #50) |
-| `publer-client.mjs` | Cliente Publer API mínimo (PR #50) |
-| `list-accounts.mjs` | Helper one-shot para descubrir Account IDs (PR #50) |
+| `validate-calendar.mjs` | Valida `content/social/calendar.json` |
+| `scheduler.mjs` | Lee calendar, publica via Instagram Graph API, commitea |
+| `instagram-graph-client.mjs` | Cliente Meta Graph API (foto, carrusel, reel) |
+| `ig-validate.mjs` | Verifica token + IG Business Account ID antes de mergear |
 | `generate-image.mjs` | Generador imagen individual |
 | `generate-images-batch.mjs` | Batch (3 modos: calendar, slug, all) |
 
@@ -101,7 +101,7 @@ Si `media[0].path` del post no coincide con el path canónico (`public/social/<s
 ```bash
 pnpm social:images:batch -- --slug=X --locale=es     # genera 3 formatos
 # Editar calendar.json: 3 posts apuntando a las 3 imágenes con sus paths canónicos
-# PR + merge → cron envía los 3 a Publer
+# PR + merge → cron publica los 3 directamente en Instagram
 ```
 
 **Caso B — Sembrar Pinterest con todos los artículos catalanes:**

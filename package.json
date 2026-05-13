@@ -17,7 +17,7 @@
     "format:check": "prettier --check \"**/*.{ts,tsx,astro,md,mdx,css,json}\"",
     "social:validate": "node scripts/social/validate-calendar.mjs",
     "social:dry": "node scripts/social/scheduler.mjs --dry-run",
-    "social:accounts": "node scripts/social/list-accounts.mjs",
+    "social:validate-ig": "node scripts/social/ig-validate.mjs",
     "social:image": "node scripts/social/generate-image.mjs",
     "social:images:batch": "node scripts/social/generate-images-batch.mjs"
   },

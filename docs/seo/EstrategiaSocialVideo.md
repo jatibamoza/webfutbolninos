@@ -2,6 +2,8 @@
 
 > Documento vivo. Revisar mensualmente con datos reales de alcance e impresiones.
 > Decisiones tomadas con el usuario en sesión del 2026-04-28.
+>
+> **Update 2026-05-13:** la sección §7 ("Stack técnico") proponía Publer como capa de publicación. Tras pruebas reales con Publer (500s persistentes y coste no justificado), se canceló esa cuenta y se migró a **Instagram Graph API directa** (Meta). Detalles en [SchedulerInstagram.md](../SchedulerInstagram.md). El resto del documento (estrategia editorial, formatos, hashtags) sigue vigente.
 
 ---
 

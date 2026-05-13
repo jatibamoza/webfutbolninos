@@ -3,31 +3,31 @@
  * scheduler.mjs
  *
  * Lee content/social/calendar.json, encuentra posts approved cuyo
- * scheduled_at ya llegó (con tolerancia ±15min), los envía a Publer
- * para programar/publicar, y actualiza el estado en el JSON.
+ * scheduled_at ya llegó, los publica vía Instagram Graph API (Meta)
+ * y actualiza el estado en el JSON.
  *
  * Pensado para ejecutarse desde GitHub Actions cada 30 minutos.
  *
  * ENV requerido:
- *   PUBLER_API_KEY        — Bearer-API token (Settings → Access & Login → Manage API Keys en Publer)
- *   PUBLER_WORKSPACE_ID   — Workspace UUID
- *   PUBLER_ACCOUNT_INSTAGRAM — Account ID de la cuenta @minigolclub
- *   PUBLER_ACCOUNT_TIKTOK    — opcional, para TikTok
- *   PUBLER_ACCOUNT_PINTEREST — opcional
- *   ASSETS_BASE_URL       — URL pública desde donde Publer descarga los assets
- *                           (ej. raw.githubusercontent.com/.../main o CDN propio).
- *                           Por defecto: raw GitHub del repo actual.
- *   GITHUB_REPOSITORY     — auto-inyectado en GH Actions ('owner/repo')
- *   GITHUB_REF_NAME       — auto-inyectado, default 'main'
+ *   IG_ACCESS_TOKEN          — Long-lived User Access Token (60 días) o System User Token
+ *   IG_BUSINESS_ACCOUNT_ID   — IG Business Account ID (no es la Page ID ni el username)
+ *   ASSETS_BASE_URL          — URL pública desde donde IG descarga los assets
+ *                              (default: raw.githubusercontent.com/{repo}/main).
+ *                              Las URLs deben ser HTTPS y públicas.
+ *   GITHUB_REPOSITORY        — auto-inyectado en GH Actions ('owner/repo')
+ *   GITHUB_REF_NAME          — auto-inyectado, default 'main'
+ *
+ * Nota: IG Graph API solo publica en Instagram. Para TikTok/Pinterest/X
+ * habría que añadir clientes separados — fuera del MVP actual.
  *
  * Flags:
- *   --dry-run    — no llama Publer ni modifica calendar.json. Solo loggea.
+ *   --dry-run    — no llama Graph API ni modifica calendar.json. Solo loggea.
  *   --window=N   — minutos hacia atrás considerados "ahora ya". Default 120.
  */
 
 import { readFileSync, writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
-import { createPublerClient, PublerError } from './publer-client.mjs';
+import { createInstagramGraphClient, InstagramGraphError } from './instagram-graph-client.mjs';
 
 const CAL_PATH = resolve(process.cwd(), 'content/social/calendar.json');
 
@@ -59,7 +59,7 @@ function platformsKey(post) {
 
 /**
  * Construye URL pública de un asset relativo del repo.
- * Publer necesita URLs HTTPS accesibles desde fuera para descargar
+ * IG Graph API necesita URLs HTTPS accesibles desde fuera para descargar
  * imágenes/vídeos. La estrategia más simple sin CDN propio: raw.githubusercontent.
  */
 function buildAssetUrl(relativePath, { repo, branch, baseOverride }) {
@@ -78,6 +78,25 @@ function buildText(post) {
   if (post.target_url) parts.push(`\n${post.target_url}`);
   if (tags) parts.push(`\n${tags}`);
   return parts.filter(Boolean).join('\n');
+}
+
+/**
+ * Publica un post según su `format`. Para `carousel` con una sola pieza
+ * cae a single_image (IG no acepta carrusel de 1 item).
+ */
+async function publishToInstagram(client, post, media, caption) {
+  const format = post.format;
+  const first = media[0];
+  if (!first) throw new Error('post sin media');
+
+  if (format === 'reel' || (format === 'video' && first.type === 'video')) {
+    return client.publishReel({ videoUrl: first.url, caption });
+  }
+  if (format === 'carousel' && media.length >= 2) {
+    return client.publishCarousel({ items: media, caption });
+  }
+  // single_image, o carrusel con 1 item (fallback)
+  return client.publishImage({ imageUrl: first.url, caption });
 }
 
 async function main() {
@@ -121,18 +140,9 @@ async function main() {
     return;
   }
 
-  // Init Publer
-  const apiKey = process.env.PUBLER_API_KEY;
-  const workspaceId = process.env.PUBLER_WORKSPACE_ID;
-  const accountIds = {
-    instagram: process.env.PUBLER_ACCOUNT_INSTAGRAM,
-    tiktok: process.env.PUBLER_ACCOUNT_TIKTOK,
-    pinterest: process.env.PUBLER_ACCOUNT_PINTEREST,
-    facebook: process.env.PUBLER_ACCOUNT_FACEBOOK,
-    x: process.env.PUBLER_ACCOUNT_X,
-    linkedin: process.env.PUBLER_ACCOUNT_LINKEDIN,
-    youtube: process.env.PUBLER_ACCOUNT_YOUTUBE,
-  };
+  // Init Instagram Graph client
+  const igAccessToken = process.env.IG_ACCESS_TOKEN;
+  const igBusinessAccountId = process.env.IG_BUSINESS_ACCOUNT_ID;
 
   const repo = process.env.GITHUB_REPOSITORY;
   const branch = process.env.GITHUB_REF_NAME ?? 'main';
@@ -140,11 +150,14 @@ async function main() {
 
   let client = null;
   if (!DRY_RUN) {
-    if (!apiKey || !workspaceId) {
-      err('PUBLER_API_KEY o PUBLER_WORKSPACE_ID no configurados');
+    if (!igAccessToken || !igBusinessAccountId) {
+      err('IG_ACCESS_TOKEN o IG_BUSINESS_ACCOUNT_ID no configurados');
       process.exit(1);
     }
-    client = createPublerClient({ apiKey, workspaceId, accountIds });
+    client = createInstagramGraphClient({
+      accessToken: igAccessToken,
+      igBusinessAccountId,
+    });
   }
 
   let okCount = 0;
@@ -152,6 +165,9 @@ async function main() {
 
   for (const post of due) {
     try {
+      if (!post.platforms.includes('instagram')) {
+        throw new Error(`platforms=${post.platforms.join(',')} — solo instagram soportado por ahora`);
+      }
       const text = buildText(post);
       const media = post.media.map((m) => ({
         type: m.type,
@@ -159,30 +175,23 @@ async function main() {
         alt: m.alt,
       }));
 
-      log(`→ ${post.id} (${platformsKey(post)}) ${DRY_RUN ? '[DRY]' : ''}`);
+      log(`→ ${post.id} (${platformsKey(post)} · ${post.format}) ${DRY_RUN ? '[DRY]' : ''}`);
       log(`  text: ${text.slice(0, 80)}${text.length > 80 ? '...' : ''}`);
       log(`  media: ${media.map((m) => `${m.type}:${m.url}`).join(', ')}`);
 
       if (!DRY_RUN) {
-        const { jobId } = await client.schedulePost({
-          platforms: post.platforms,
-          text,
-          scheduledAt: post.scheduled_at,
-          media,
-        });
+        const mediaId = await publishToInstagram(client, post, media, text);
         post.status = 'published';
         post.published_at = new Date().toISOString();
-        post.publer_post_id = jobId;
+        post.instagram_media_id = mediaId;
         post.error = null;
-        log(`  ✅ jobId=${jobId}`);
+        log(`  ✅ ig_media_id=${mediaId}`);
       }
       okCount++;
     } catch (e) {
       failCount++;
       post.status = 'failed';
-      post.error = e instanceof PublerError
-        ? `${e.message} body=${JSON.stringify(e.body).slice(0, 200)}`
-        : e.message;
+      post.error = e instanceof InstagramGraphError ? e.toLogString() : e.message;
       err(`  fallo en ${post.id}: ${post.error}`);
     }
   }

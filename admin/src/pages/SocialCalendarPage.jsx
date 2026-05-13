@@ -344,9 +344,11 @@ function PostCard({ post, onChanged }) {
         </p>
       )}
 
-      {post.publer_post_id && (
+      {(post.instagram_media_id || post.publer_post_id) && (
         <p className="mono" style={{ marginTop: 12, fontSize: 11, color: 'var(--color-foreground-subtle)' }}>
-          Publer job: {post.publer_post_id}
+          {post.instagram_media_id
+            ? `IG media: ${post.instagram_media_id}`
+            : `Publer job (legacy): ${post.publer_post_id}`}
         </p>
       )}
 
@@ -368,7 +370,7 @@ function PostCard({ post, onChanged }) {
               {busy ? 'Aprobando…' : '✓ Aprobar publicación'}
             </button>
           )}
-          {post.status === 'approved' && !post.publer_post_id && (
+          {post.status === 'approved' && !post.instagram_media_id && !post.publer_post_id && (
             <button
               type="button"
               onClick={() => changeStatus('draft', '¿Devolver este post aprobado a borrador? El cron dejará de procesarlo.')}
@@ -574,7 +576,7 @@ export default function SocialCalendarPage() {
                   {upcomingApproved} post(s) approved en la cola
                 </p>
                 <p style={{ marginTop: 4, fontSize: 11, color: '#166534' }}>
-                  El scheduler los enviará a Publer cuando llegue su <code>scheduled_at</code>.
+                  El scheduler los publicará en Instagram cuando llegue su <code>scheduled_at</code>.
                 </p>
               </div>
             </div>

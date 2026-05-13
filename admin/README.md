@@ -6,7 +6,7 @@ Panel de administración para editar artículos MDX y visualizar el calendar soc
 
 - **Artículos** (`/`) — lista, edición, creación con wizard, publicar (auto-PR draft)
 - **Crear nuevo** (`/nuevo`) — wizard 4 pasos
-- **Social Calendar** (`/social`) — vista del calendar editorial Publer (`content/social/calendar.json`) con preview Instagram
+- **Social Calendar** (`/social`) — vista del calendar editorial (`content/social/calendar.json`) con preview Instagram
 
 ## Quick start
 
