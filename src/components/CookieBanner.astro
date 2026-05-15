@@ -1,13 +1,11 @@
 ---
-import { GA_ID, ADSENSE_CLIENT } from '@/consts';
+import { GA_ID } from '@/consts';
 ---
 
-<script define:vars={{ GA_ID, ADSENSE_CLIENT }}>
-  // Dynamic loaders idempotentes — solo se ejecutan si el usuario acepta la
-  // categoría correspondiente. La primera carga inyecta el <script>, las
-  // siguientes son no-op (flag en window). Compatible con el patrón de
-  // adsbygoogle.push({}) en AdSlot: el array acumula pushes hasta que el
-  // script de adsense carga y los procesa.
+<script define:vars={{ GA_ID }}>
+  // gtag/js sigue siendo lazy: lo cargamos solo si el user acepta analytics.
+  // adsbygoogle.js está eager en BaseLayout.astro porque el crawler de AdSense
+  // no acepta cookies y necesita encontrarlo en el HTML inicial.
   function loadGtag() {
     if (window.__mgGtagLoaded) return;
     window.__mgGtagLoaded = true;
@@ -19,19 +17,8 @@ import { GA_ID, ADSENSE_CLIENT } from '@/consts';
     window.gtag('config', GA_ID, { anonymize_ip: true });
   }
 
-  function loadAdsense() {
-    if (!ADSENSE_CLIENT || window.__mgAdsenseLoaded) return;
-    window.__mgAdsenseLoaded = true;
-    const s = document.createElement('script');
-    s.async = true;
-    s.crossOrigin = 'anonymous';
-    s.src = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=' + ADSENSE_CLIENT;
-    document.head.appendChild(s);
-  }
-
-  // Exponer para llamarlas desde el módulo del banner (que es ESM async).
+  // Exponer para llamarla desde el módulo del banner (que es ESM async).
   window.__mgLoadGtag = loadGtag;
-  window.__mgLoadAdsense = loadAdsense;
 </script>
 
 <script>
@@ -42,9 +29,7 @@ import { GA_ID, ADSENSE_CLIENT } from '@/consts';
     interface Window {
       gtag: (...args: unknown[]) => void;
       __mgLoadGtag: () => void;
-      __mgLoadAdsense: () => void;
       __mgGtagLoaded?: boolean;
-      __mgAdsenseLoaded?: boolean;
     }
   }
 
@@ -52,8 +37,9 @@ import { GA_ID, ADSENSE_CLIENT } from '@/consts';
     const analytics = categories.includes('analytics');
     const ads = categories.includes('ads');
 
-    // Update Consent Mode v2 — base de Google para que cualquier script
-    // gtag/adsense que ya esté cargado respete el cambio en caliente.
+    // Update Consent Mode v2 — adsbygoogle.js (eager en <head>) respeta este
+    // estado: con ad_storage=denied no setea cookies de personalización ni
+    // tracked ads. Con granted activa la personalización.
     window.gtag('consent', 'update', {
       analytics_storage: analytics ? 'granted' : 'denied',
       ad_storage: ads ? 'granted' : 'denied',
@@ -61,10 +47,8 @@ import { GA_ID, ADSENSE_CLIENT } from '@/consts';
       ad_personalization: ads ? 'granted' : 'denied',
     });
 
-    // Cargar los scripts solo si el usuario aceptó la categoría.
-    // Si rechaza después, el script queda cargado pero gtag respeta el denied.
+    // gtag/js sigue siendo opt-in: solo se inyecta si el user acepta analytics.
     if (analytics) window.__mgLoadGtag();
-    if (ads) window.__mgLoadAdsense();
   }
 
   await CookieConsent.run({

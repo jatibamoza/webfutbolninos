@@ -91,9 +91,8 @@ const fullTitle = title === SITE.name ? title : `${title} · ${SITE.name}`;
 
     <slot name="head" />
 
-    <!-- Consent Mode v2: defaults denied. Los scripts gtag/js y adsbygoogle.js
-         NO cargan hasta que el usuario acepte cookies via CookieBanner (RGPD +
-         beneficio LCP). El inline aquí es lo único que se ejecuta eager. -->
+    <!-- Consent Mode v2: defaults denied. DEBE ejecutarse antes que cualquier
+         script de Google para que respeten el estado de consentimiento por defecto. -->
     <script is:inline>
       window.dataLayer = window.dataLayer || [];
       function gtag() { dataLayer.push(arguments); }
@@ -105,6 +104,19 @@ const fullTitle = title === SITE.name ? title : `${title} · ${SITE.name}`;
         wait_for_update: 500,
       });
     </script>
+
+    <!-- AdSense verification + bootstrap. DEBE estar eager en <head> para que
+         el crawler de AdSense (Mediapartners-Google, no acepta cookies) lo
+         encuentre y pueda activar el sitio. La privacidad la garantiza el
+         Consent Mode v2 de arriba: el script carga pero NO setea cookies de
+         personalización ni muestra ads tracked hasta que ad_storage=granted. -->
+    {ADSENSE_CLIENT && (
+      <script
+        async
+        src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${ADSENSE_CLIENT}`}
+        crossorigin="anonymous"
+      ></script>
+    )}
   </head>
   <body class="min-h-screen bg-background text-foreground">
     <a
