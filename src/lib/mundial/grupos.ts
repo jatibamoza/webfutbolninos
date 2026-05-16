@@ -1,32 +1,27 @@
 import type { Grupo } from './types';
 
 /**
- * ⚠ DATOS PROVISIONALES — sorteo oficial FIFA del 5 dic 2025.
+ * Grupos OFICIALES del Mundial 2026 — sorteo FIFA del 5 dic 2025 en
+ * Washington D.C., con los repechajes de UEFA e Intercontinental ya resueltos
+ * (marzo 2026). Verificado contra dos fuentes independientes
+ * (mundial-2026.com.mx y alairelibre.cl) el 16 may 2026.
  *
- * Esta es una distribución plausible basada en el sistema de bombos
- * (anfitriones + ranking FIFA), NO el sorteo final confirmado al 100%.
- * Antes del 11 jun 2026, verificar grupo por grupo contra
- * https://www.fifa.com/fifaplus/es/tournaments/mens/worldcup/canadamexicousa2026
- * y corregir aquí. El resto del código no depende del orden ni de la
- * pertenencia — solo de las claves ISO3 (que están todas en
- * `selecciones.ts`).
- *
- * Formato 2026: 12 grupos × 4 selecciones = 48 equipos. Pasan a la fase
+ * Formato 2026: 12 grupos × 4 selecciones = 48 equipos. Avanzan a la fase
  * final 32: los 2 primeros de cada grupo (24) + los 8 mejores terceros.
  */
 export const GRUPOS: readonly Grupo[] = [
-  { letra: 'A', equipos: ['MEX', 'POR', 'POL', 'NZL'] }, // anfitrión 1: México
-  { letra: 'B', equipos: ['CAN', 'BEL', 'KOR', 'CRC'] }, // anfitrión 2: Canadá
-  { letra: 'C', equipos: ['USA', 'NED', 'AUS', 'PAN'] }, // anfitrión 3: USA
-  { letra: 'D', equipos: ['ARG', 'CRO', 'MAR', 'JAM'] },
-  { letra: 'E', equipos: ['BRA', 'ENG', 'JPN', 'ECU'] },
-  { letra: 'F', equipos: ['ESP', 'GER', 'IRN', 'PAR'] },
-  { letra: 'G', equipos: ['FRA', 'ITA', 'EGY', 'CIV'] },
-  { letra: 'H', equipos: ['HUN', 'SUI', 'SEN', 'UZB'] },
-  { letra: 'I', equipos: ['COL', 'DEN', 'NGA', 'QAT'] },
-  { letra: 'J', equipos: ['URU', 'AUT', 'GHA', 'KSA'] },
-  { letra: 'K', equipos: ['NOR', 'TUR', 'CMR', 'JOR'] },
-  { letra: 'L', equipos: ['SVK', 'TUN', 'ALG', 'HON'] },
+  { letra: 'A', equipos: ['MEX', 'RSA', 'KOR', 'CZE'] }, // anfitrión 1: México
+  { letra: 'B', equipos: ['CAN', 'BIH', 'SUI', 'QAT'] }, // anfitrión 2: Canadá
+  { letra: 'C', equipos: ['BRA', 'MAR', 'SCO', 'HAI'] },
+  { letra: 'D', equipos: ['USA', 'PAR', 'AUS', 'TUR'] }, // anfitrión 3: EE.UU.
+  { letra: 'E', equipos: ['GER', 'CUW', 'CIV', 'ECU'] },
+  { letra: 'F', equipos: ['NED', 'JPN', 'SWE', 'TUN'] },
+  { letra: 'G', equipos: ['BEL', 'EGY', 'IRN', 'NZL'] },
+  { letra: 'H', equipos: ['ESP', 'CPV', 'KSA', 'URU'] },
+  { letra: 'I', equipos: ['FRA', 'SEN', 'IRQ', 'NOR'] },
+  { letra: 'J', equipos: ['ARG', 'ALG', 'AUT', 'JOR'] },
+  { letra: 'K', equipos: ['POR', 'COD', 'UZB', 'COL'] },
+  { letra: 'L', equipos: ['ENG', 'CRO', 'GHA', 'PAN'] },
 ] as const;
 
 /** Lookup por letra. */

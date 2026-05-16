@@ -16,7 +16,7 @@ export const ISO3_TO_ISO2: Readonly<Record<string, string>> = {
   ESP: 'es', FRA: 'fr', ENG: 'gb-eng', GER: 'de', ITA: 'it', NED: 'nl', POR: 'pt',
   BEL: 'be', CRO: 'hr', SUI: 'ch', DEN: 'dk', AUT: 'at', POL: 'pl', NOR: 'no',
   CZE: 'cz', TUR: 'tr', SWE: 'se', SRB: 'rs', UKR: 'ua', SCO: 'gb-sct', HUN: 'hu',
-  WAL: 'gb-wls', SVK: 'sk',
+  WAL: 'gb-wls', SVK: 'sk', BIH: 'ba',
   // CONMEBOL
   ARG: 'ar', BRA: 'br', URU: 'uy', COL: 'co', ECU: 'ec', PAR: 'py', VEN: 've', BOL: 'bo',
   // AFC
@@ -24,9 +24,9 @@ export const ISO3_TO_ISO2: Readonly<Record<string, string>> = {
   UAE: 'ae', UZB: 'uz', JOR: 'jo',
   // CAF
   MAR: 'ma', SEN: 'sn', EGY: 'eg', NGA: 'ng', ALG: 'dz', TUN: 'tn', CMR: 'cm',
-  GHA: 'gh', CIV: 'ci', RSA: 'za', MLI: 'ml',
+  GHA: 'gh', CIV: 'ci', RSA: 'za', MLI: 'ml', CPV: 'cv', COD: 'cd',
   // CONCACAF
-  CRC: 'cr', PAN: 'pa', JAM: 'jm', HON: 'hn',
+  CRC: 'cr', PAN: 'pa', JAM: 'jm', HON: 'hn', HAI: 'ht', CUW: 'cw',
   // OFC
   NZL: 'nz',
 };
@@ -69,6 +69,7 @@ export const SELECCIONES: Readonly<Record<string, Team>> = {
   HUN: { code: 'HUN', iso2: 'hu',     nombre: 'Hungría',          color: '#477050', confederation: 'UEFA' },
   WAL: { code: 'WAL', iso2: 'gb-wls', nombre: 'Gales',            color: '#d30731', confederation: 'UEFA' },
   SVK: { code: 'SVK', iso2: 'sk',     nombre: 'Eslovaquia',       color: '#0b4ea2', confederation: 'UEFA' },
+  BIH: { code: 'BIH', iso2: 'ba',     nombre: 'Bosnia y Herzegovina', color: '#002395', confederation: 'UEFA' },
 
   // ─── CONMEBOL ───────────────────────────────────────────────
   ARG: { code: 'ARG', iso2: 'ar', nombre: 'Argentina',  color: '#74acdf', confederation: 'CONMEBOL' },
@@ -104,12 +105,16 @@ export const SELECCIONES: Readonly<Record<string, Team>> = {
   CIV: { code: 'CIV', iso2: 'ci', nombre: 'Costa de Marfil', color: '#ff8200', confederation: 'CAF' },
   RSA: { code: 'RSA', iso2: 'za', nombre: 'Sudáfrica',     color: '#007a4d', confederation: 'CAF' },
   MLI: { code: 'MLI', iso2: 'ml', nombre: 'Malí',          color: '#fcd116', confederation: 'CAF' },
+  CPV: { code: 'CPV', iso2: 'cv', nombre: 'Cabo Verde',    color: '#003893', confederation: 'CAF' },
+  COD: { code: 'COD', iso2: 'cd', nombre: 'RD Congo',      color: '#007fff', confederation: 'CAF' },
 
   // ─── CONCACAF (no anfitriones) ──────────────────────────────
   CRC: { code: 'CRC', iso2: 'cr', nombre: 'Costa Rica',     color: '#002b7f', confederation: 'CONCACAF' },
   PAN: { code: 'PAN', iso2: 'pa', nombre: 'Panamá',         color: '#005aa7', confederation: 'CONCACAF' },
   JAM: { code: 'JAM', iso2: 'jm', nombre: 'Jamaica',        color: '#009b3a', confederation: 'CONCACAF' },
   HON: { code: 'HON', iso2: 'hn', nombre: 'Honduras',       color: '#0073cf', confederation: 'CONCACAF' },
+  HAI: { code: 'HAI', iso2: 'ht', nombre: 'Haití',          color: '#00209f', confederation: 'CONCACAF' },
+  CUW: { code: 'CUW', iso2: 'cw', nombre: 'Curazao',        color: '#002b7f', confederation: 'CONCACAF' },
 
   // ─── OFC ────────────────────────────────────────────────────
   NZL: { code: 'NZL', iso2: 'nz', nombre: 'Nueva Zelanda',  color: '#012169', confederation: 'OFC' },
