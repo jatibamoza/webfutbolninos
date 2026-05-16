@@ -1,0 +1,27 @@
+name = "minigolclub-encuesta-mundial"
+main = "src/index.ts"
+compatibility_date = "2026-05-01"
+
+# Sin cron — este worker responde HTTP requests, no tareas programadas.
+
+[vars]
+# Origins permitidos para CORS. Editar antes de deploy.
+ALLOWED_ORIGINS = "https://minigolclub.com,https://www.minigolclub.com,http://localhost:4321,http://localhost:4322"
+
+# Días que el ID de votante queda registrado en KV. Tras este TTL puede votar
+# de nuevo (o cambiar voto). 90 días cubre el periodo pre-Mundial + torneo.
+VOTER_TTL_DAYS = "90"
+
+# KV para contadores por equipo (key `count:<ISO3>`) y registro de votantes
+# (key `voter:<sha256-of-ip-ua>`). Crear con:
+#   wrangler kv namespace create ENCUESTA_MUNDIAL
+# Luego pegar el `id` devuelto debajo (sin cambiar el `binding`).
+[[kv_namespaces]]
+binding = "ENCUESTA_MUNDIAL"
+id = "REEMPLAZAR_TRAS_CREAR_KV"
+
+# Para deploy bajo un dominio propio (recomendado, evita CORS):
+#   uncomment + editar el bloque [[routes]] antes de `wrangler deploy`.
+# [[routes]]
+# pattern = "minigolclub.com/api/encuesta-campeon*"
+# zone_name = "minigolclub.com"

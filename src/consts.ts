@@ -3,6 +3,11 @@ export const GA_ID = 'G-705L75RTFB';
 export const ADSENSE_CLIENT = import.meta.env.PUBLIC_ADSENSE_CLIENT ?? '';
 export const AMAZON_TAG = import.meta.env.PUBLIC_AMAZON_TAG ?? '';
 
+// URL del Worker de Cloudflare que aloja la encuesta del Mundial.
+// Si está vacía, la encuesta cae al modo offline (localStorage + mock counts).
+// Ver workers/encuesta-mundial/README.md para deploy + cómo obtener la URL.
+export const ENCUESTA_API_URL = import.meta.env.PUBLIC_ENCUESTA_API_URL ?? '';
+
 export function amazonUrl(asin: string): string {
   const base = `https://www.amazon.es/dp/${asin}`;
   return AMAZON_TAG ? `${base}?tag=${AMAZON_TAG}` : base;

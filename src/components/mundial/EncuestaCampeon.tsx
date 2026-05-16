@@ -1,19 +1,21 @@
 import { useEffect, useMemo, useState } from 'preact/hooks';
 import { SELECCIONES } from '@/lib/mundial/selecciones';
 import { SELECCIONES_DEL_TORNEO } from '@/lib/mundial/grupos';
+import { ENCUESTA_API_URL } from '@/consts';
 import type { Vote } from '@/lib/mundial/types';
 import { Flag } from './FlagPreact';
 
 /**
  * Encuesta "¿quién crees que ganará el Mundial 2026?".
  *
- * Estado:
- * - Cada usuario vota UNA vez (cambiable). Persistido en localStorage.
- * - Los counts agregados son MOCK por ahora — distribución plausible que
- *   favorece a las grandes potencias. Cuando exista backend (Fase 6),
- *   sustituir `INITIAL_COUNTS` por un fetch a `/api/encuesta-campeon`.
- * - El voto del usuario se suma client-side a los counts visibles para que
- *   "su" voto se refleje en el podium inmediatamente.
+ * Modo online (recomendado): si `ENCUESTA_API_URL` está configurada, los
+ * counts agregados vienen del Worker `workers/encuesta-mundial/`. Los votos
+ * se suman en KV y todos los usuarios ven el mismo podium en tiempo real.
+ *
+ * Modo offline (fallback): si la API no responde o no está configurada,
+ * la encuesta sigue funcionando contra `INITIAL_COUNTS` (mock local) y
+ * localStorage. El usuario ve su voto reflejado en SU vista, pero no se
+ * agrega entre dispositivos.
  *
  * Vista A (sin voto): grid con las 48 selecciones, clic para elegir.
  * Vista B (con voto): podium top 3 + ranking completo con barras + "cambiar voto".
@@ -22,9 +24,9 @@ import { Flag } from './FlagPreact';
 const LS_KEY = 'mg.mundial.encuesta-campeon';
 
 /**
- * Mock de votos pre-cargados — escenario realista que el usuario verá la primera
- * vez que entre. Total ~1200 votos. Distribución basada en favoritismo histórico
- * + países anfitriones. Sustituir por fetch real en Fase 6.
+ * Seed inicial — mismo objeto debe estar en `workers/encuesta-mundial/src/index.ts`.
+ * Se usa cuando el backend no responde (modo offline) o como base inicial
+ * antes del primer fetch. Distribución por favoritismo histórico + anfitriones.
  */
 const INITIAL_COUNTS: Record<string, number> = {
   // Favoritos absolutos
@@ -40,6 +42,38 @@ const INITIAL_COUNTS: Record<string, number> = {
   CZE: 5, SCO: 5, IRN: 5, TUN: 4, KSA: 4, PAR: 4, IRQ: 4, QAT: 4, UZB: 4,
   JOR: 3, BIH: 3, HAI: 3, CUW: 3, CPV: 3, COD: 3, PAN: 3, NZL: 2,
 };
+
+type CountsBy = Record<string, number>;
+
+/** GET counts del backend. Devuelve null si la API no está configurada o falla. */
+async function fetchCounts(): Promise<CountsBy | null> {
+  if (!ENCUESTA_API_URL) return null;
+  try {
+    const r = await fetch(ENCUESTA_API_URL, { method: 'GET' });
+    if (!r.ok) return null;
+    const data = (await r.json()) as { counts?: CountsBy };
+    return data.counts ?? null;
+  } catch {
+    return null;
+  }
+}
+
+/** POST voto al backend. Devuelve los counts actualizados o null si falla. */
+async function postVote(team: string): Promise<CountsBy | null> {
+  if (!ENCUESTA_API_URL) return null;
+  try {
+    const r = await fetch(ENCUESTA_API_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ team }),
+    });
+    if (!r.ok) return null;
+    const data = (await r.json()) as { counts?: CountsBy };
+    return data.counts ?? null;
+  } catch {
+    return null;
+  }
+}
 
 function loadVote(): Vote | null {
   try {
@@ -65,33 +99,58 @@ function saveVote(v: Vote | null) {
 export function EncuestaCampeon() {
   const [voto, setVoto] = useState<Vote | null>(null);
   const [hidratado, setHidratado] = useState(false);
+  /**
+   * Counts agregados desde el backend. `null` mientras no hayan llegado del
+   * servidor o si la API falla. El render combina estos con el seed local
+   * y con el voto del usuario para reflejar su elección al instante.
+   */
+  const [serverCounts, setServerCounts] = useState<CountsBy | null>(null);
 
-  // Cargar voto desde localStorage en mount (no en SSR — el componente es client-only).
+  // Cargar voto local + fetch inicial de counts. Side effects client-only.
   useEffect(() => {
     setVoto(loadVote());
     setHidratado(true);
+    void fetchCounts().then(setServerCounts);
   }, []);
 
-  function elegir(team: string) {
+  async function elegir(team: string) {
     const v: Vote = { team, at: new Date().toISOString() };
     setVoto(v);
     saveVote(v);
+    // POST en background: si funciona, refrescamos counts del servidor.
+    // Si falla, el voto sigue guardado localmente — el podium se calcula
+    // con seed + voto, así que la UX no se rompe.
+    const fresh = await postVote(team);
+    if (fresh) setServerCounts(fresh);
   }
 
   function cambiar() {
     setVoto(null);
     saveVote(null);
+    // No mandamos POST para "revertir voto" — el siguiente voto del usuario
+    // hará que el backend decremente el anterior y sume el nuevo en una
+    // sola operación. Mientras tanto su counter del antiguo queda intacto
+    // en el servidor (visible para otros), lo cual es aceptable.
   }
 
-  // Counts agregados = mock + 1 al voto del usuario.
+  /**
+   * Counts a mostrar: prioridad serverCounts (si hay) sobre INITIAL_COUNTS.
+   * Si el voto del usuario aún no se ha confirmado por el backend (POST en
+   * vuelo o falló), añadimos +1 client-side al equipo elegido — pero NO si
+   * el server ya refleja el voto (evita doble conteo cuando el POST vuelve).
+   */
   const counts = useMemo(() => {
+    const base = serverCounts ?? null;
     const c: Record<string, number> = {};
     for (const code of SELECCIONES_DEL_TORNEO) {
-      c[code] = INITIAL_COUNTS[code] ?? 0;
+      c[code] = base ? (base[code] ?? 0) : (INITIAL_COUNTS[code] ?? 0);
     }
-    if (voto) c[voto.team] = (c[voto.team] ?? 0) + 1;
+    if (voto && !base) {
+      // Sin server (offline o pending): sumar voto local al podium.
+      c[voto.team] = (c[voto.team] ?? 0) + 1;
+    }
     return c;
-  }, [voto]);
+  }, [voto, serverCounts]);
 
   const ranking = useMemo(() => {
     return SELECCIONES_DEL_TORNEO
@@ -116,7 +175,7 @@ export function EncuestaCampeon() {
 
 // ───────────────────────────── Vista A: sin voto ─────────────────────────────
 
-function SinVoto({ onElegir }: { onElegir: (code: string) => void }) {
+function SinVoto({ onElegir }: { onElegir: (code: string) => void | Promise<void> }) {
   return (
     <section class="encuesta encuesta--sin-voto" aria-labelledby="enc-titulo">
       <header class="encuesta__header">
