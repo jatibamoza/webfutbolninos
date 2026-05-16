@@ -18,7 +18,7 @@ VOTER_TTL_DAYS = "90"
 # Luego pegar el `id` devuelto debajo (sin cambiar el `binding`).
 [[kv_namespaces]]
 binding = "ENCUESTA_MUNDIAL"
-id = "REEMPLAZAR_TRAS_CREAR_KV"
+id = "9da405c876a74055b4e78839928b050c"
 
 # Para deploy bajo un dominio propio (recomendado, evita CORS):
 #   uncomment + editar el bloque [[routes]] antes de `wrangler deploy`.
