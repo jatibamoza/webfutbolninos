@@ -18,6 +18,7 @@ export const ca = {
   'nav-juegos': 'Jocs',
   'nav-equipamiento': 'Equipament',
   'nav-iniciacion': 'Iniciació',
+  'nav-mundial': 'Mundial 26',
   'nav-recursos': 'Recursos',
   'nav-aria-primary': 'Navegació principal',
   'nav-aria-mobile-menu': 'Menú de navegació',

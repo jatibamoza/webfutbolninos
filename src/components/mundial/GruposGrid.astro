@@ -1,0 +1,145 @@
+---
+import { GRUPOS } from '@/lib/mundial/grupos';
+import { getTeam } from '@/lib/mundial/selecciones';
+import Flag from './Flag.astro';
+
+/**
+ * Los 12 grupos del Mundial 2026, con sus 4 selecciones cada uno.
+ * Pre-torneo: muestra solo banderas + nombres. Cuando empiece, la tabla
+ * de clasificación va en `TablaGrupo.astro` (componente separado).
+ */
+---
+
+<section class="grupos" aria-labelledby="grupos-titulo">
+  <div class="grupos__header">
+    <span class="mono grupos__eyebrow">03 · LAS 48 SELECCIONES</span>
+    <h2 id="grupos-titulo" class="display grupos__titulo">
+      Los <span class="marker">12 grupos</span> del Mundial
+    </h2>
+    <p class="grupos__intro">
+      Los 48 equipos se repartieron por sorteo en 12 grupos de 4. Cada grupo se identifica con una
+      letra de la <strong>A</strong> a la <strong>L</strong>. Estos son los rivales de cada selección:
+    </p>
+  </div>
+
+  <div class="grupos__grid">
+    {GRUPOS.map((g) => (
+      <article class="card-paper grupos__card" aria-labelledby={`grupo-${g.letra}-titulo`}>
+        <header class="grupos__card-header">
+          <span class="display grupos__letra" aria-hidden="true">{g.letra}</span>
+          <span id={`grupo-${g.letra}-titulo`} class="mono grupos__nombre">GRUPO {g.letra}</span>
+        </header>
+        <ul class="grupos__equipos" role="list">
+          {g.equipos.map((code) => {
+            const team = getTeam(code);
+            return (
+              <li class="grupos__equipo">
+                <Flag code={code} size={28} />
+                <span class="display grupos__equipo-nombre">{team?.nombre ?? code}</span>
+              </li>
+            );
+          })}
+        </ul>
+      </article>
+    ))}
+  </div>
+
+  <p class="hand grupos__nota">
+    los <strong>2 primeros</strong> de cada grupo pasan a la siguiente fase, junto a los 8 mejores terceros.
+  </p>
+</section>
+
+<style>
+  .grupos {
+    margin-top: 56px;
+  }
+  .grupos__header {
+    max-width: 60ch;
+    margin-bottom: 24px;
+  }
+  .grupos__eyebrow {
+    display: inline-block;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    color: var(--color-foreground-subtle);
+    margin-bottom: 8px;
+  }
+  .grupos__titulo {
+    font-size: clamp(1.75rem, 4vw, 2.75rem);
+    margin: 0 0 14px;
+  }
+  .grupos__intro {
+    color: var(--color-foreground-muted);
+    font-size: 1rem;
+    line-height: 1.55;
+    margin: 0;
+  }
+  .grupos__grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 12px;
+    margin-top: 22px;
+  }
+  .grupos__card {
+    padding: 16px 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .grupos__card-header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    padding-bottom: 10px;
+    border-bottom: 1px dashed var(--color-border);
+  }
+  .grupos__letra {
+    font-size: clamp(1.75rem, 4vw, 2.25rem);
+    line-height: 1;
+    color: var(--color-energy);
+  }
+  .grupos__nombre {
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    color: var(--color-foreground-subtle);
+  }
+  .grupos__equipos {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 10px;
+  }
+  .grupos__equipo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .grupos__equipo-nombre {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--color-foreground);
+  }
+  .grupos__nota {
+    margin-top: 22px;
+    font-size: 22px;
+    color: var(--color-handwritten);
+    text-align: center;
+    transform: rotate(-1deg);
+  }
+  .grupos__nota strong {
+    background-image: linear-gradient(180deg, transparent 60%, var(--color-marker) 60%, var(--color-marker) 92%, transparent 92%);
+    padding: 0 0.1em;
+  }
+
+  @media (min-width: 640px) {
+    .grupos__grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  @media (min-width: 1024px) {
+    .grupos__grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+</style>

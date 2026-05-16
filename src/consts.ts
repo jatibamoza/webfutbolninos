@@ -31,11 +31,18 @@ export const AUTHOR = {
   email: 'hola@minigolclub.com',
 } as const;
 
+/**
+ * Navegación principal. `featured: true` renderiza un punto rojo a la
+ * derecha del enlace — usado para destacar contenido temporal de alta
+ * relevancia (ej. Mundial mientras está caliente). Tras el 21-jul-2026
+ * (post-final), quitar la entrada de Mundial o el flag `featured`.
+ */
 export const NAV_PRIMARY = [
   { label: 'Ejercicios', href: '/ejercicios/' },
   { label: 'Juegos', href: '/juegos/' },
   { label: 'Equipamiento', href: '/equipamiento/' },
   { label: 'Iniciación', href: '/iniciacion/' },
+  { label: 'Mundial 26', href: '/mundial-2026/', featured: true },
   { label: 'Recursos', href: '/recursos/' },
 ] as const;
 

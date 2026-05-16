@@ -1,0 +1,142 @@
+---
+import type { Scorer } from '@/lib/mundial/types';
+import { getTeam } from '@/lib/mundial/selecciones';
+import Flag from './Flag.astro';
+
+interface Props {
+  goleadores: ReadonlyArray<Scorer>;
+  /** Cuántos mostrar (top N). Default 10. */
+  limit?: number;
+}
+
+const { goleadores, limit = 10 } = Astro.props;
+const top = goleadores.slice(0, limit);
+---
+
+<section class="goleadores card-paper" aria-label="Bota de oro del Mundial">
+  <header class="goleadores__header">
+    <span class="display goleadores__titulo">Bota de oro</span>
+    <span class="hand goleadores__sub">¿quién mete más goles?</span>
+  </header>
+
+  <ol class="goleadores__lista" role="list">
+    {top.map((g, i) => {
+      const team = getTeam(g.team);
+      const isPodium = i < 3;
+      const medalColor = i === 0 ? '#facc15' : i === 1 ? '#cbd5e1' : '#f97316';
+      return (
+        <li class="goleadores__item" data-podium={isPodium ? 'true' : 'false'}>
+          <span
+            class="display goleadores__pos"
+            style={isPodium ? `--podium-color:${medalColor};` : undefined}
+            aria-label={`Posición ${i + 1}`}
+          >
+            {String(i + 1).padStart(2, '0')}
+          </span>
+          <div class="goleadores__info">
+            <div class="goleadores__cabecera">
+              <Flag code={g.team} size={22} />
+              <span class="display goleadores__nombre">{g.player}</span>
+            </div>
+            <p class="hand goleadores__curio">{g.curiosidad}</p>
+            <span class="mono goleadores__pais">{team?.nombre ?? g.team}</span>
+          </div>
+          <div class="goleadores__goles">
+            <span class="display goleadores__cifra">{g.goles}</span>
+            <span class="mono goleadores__unidad">{g.goles === 1 ? 'GOL' : 'GOLES'}</span>
+          </div>
+        </li>
+      );
+    })}
+  </ol>
+</section>
+
+<style>
+  .goleadores {
+    padding: 0;
+    overflow: hidden;
+  }
+  .goleadores__header {
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--color-border);
+    background: var(--color-surface-alt);
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .goleadores__titulo {
+    font-size: 1.25rem;
+  }
+  .goleadores__sub {
+    font-size: 20px;
+    color: var(--color-handwritten);
+    transform: rotate(-2deg);
+    display: inline-block;
+  }
+  .goleadores__lista {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  .goleadores__item {
+    display: grid;
+    grid-template-columns: 48px 1fr auto;
+    gap: 14px;
+    align-items: center;
+    padding: 14px 18px;
+    border-top: 1px solid var(--color-border);
+  }
+  .goleadores__item:first-child {
+    border-top: 0;
+  }
+  .goleadores__pos {
+    font-size: 1.5rem;
+    color: var(--color-foreground-subtle);
+    text-align: center;
+  }
+  .goleadores__item[data-podium='true'] .goleadores__pos {
+    color: var(--podium-color);
+  }
+  .goleadores__info {
+    min-width: 0;
+  }
+  .goleadores__cabecera {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .goleadores__nombre {
+    font-size: 1rem;
+  }
+  .goleadores__curio {
+    margin: 4px 0 2px;
+    font-size: 18px;
+    color: var(--color-handwritten);
+    line-height: 1.1;
+  }
+  .goleadores__pais {
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    color: var(--color-foreground-subtle);
+    text-transform: uppercase;
+  }
+  .goleadores__goles {
+    text-align: right;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+  }
+  .goleadores__cifra {
+    font-size: 1.75rem;
+    line-height: 1;
+    color: var(--color-secondary);
+  }
+  .goleadores__unidad {
+    font-size: 9px;
+    letter-spacing: 0.12em;
+    color: var(--color-foreground-subtle);
+    margin-top: 2px;
+  }
+</style>

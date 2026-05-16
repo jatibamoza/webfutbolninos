@@ -1,0 +1,162 @@
+---
+import type { Standing } from '@/lib/mundial/types';
+import { getTeam } from '@/lib/mundial/selecciones';
+import Flag from './Flag.astro';
+
+interface Props {
+  letra: string;
+  tabla: ReadonlyArray<Standing>;
+  /** Jornada actual / total. Si no hay partidos jugados todavía, usar `0/3`. */
+  jornada?: { actual: number; total: number };
+}
+
+const { letra, tabla, jornada = { actual: 0, total: 3 } } = Astro.props;
+const sinJugar = tabla.every((s) => s.pj === 0);
+---
+
+<div class="tabla card-paper" aria-label={`Tabla del Grupo ${letra}`}>
+  <header class="tabla__header">
+    <span class="display tabla__titulo">Grupo {letra}</span>
+    <span class="mono tabla__jornada">JORNADA {jornada.actual}/{jornada.total}</span>
+  </header>
+
+  <table class="tabla__tabla">
+    <thead>
+      <tr>
+        <th scope="col" class="mono tabla__th tabla__th--num">#</th>
+        <th scope="col" class="mono tabla__th tabla__th--equipo">Equipo</th>
+        <th scope="col" class="mono tabla__th">PJ</th>
+        <th scope="col" class="mono tabla__th">G</th>
+        <th scope="col" class="mono tabla__th">E</th>
+        <th scope="col" class="mono tabla__th">P</th>
+        <th scope="col" class="mono tabla__th">GF</th>
+        <th scope="col" class="mono tabla__th">GC</th>
+        <th scope="col" class="mono tabla__th tabla__th--pts">PTS</th>
+      </tr>
+    </thead>
+    <tbody>
+      {tabla.map((row, i) => {
+        const t = getTeam(row.team);
+        const clasifica = i < 2;
+        return (
+          <tr data-clasifica={clasifica ? 'true' : 'false'}>
+            <td class="mono tabla__td tabla__td--num">{i + 1}</td>
+            <td class="tabla__td tabla__td--equipo">
+              <Flag code={row.team} size={22} />
+              <span class="display tabla__nombre">{t?.nombre ?? row.team}</span>
+            </td>
+            <td class="mono tabla__td">{sinJugar ? '–' : row.pj}</td>
+            <td class="mono tabla__td tabla__td--g">{sinJugar ? '–' : row.g}</td>
+            <td class="mono tabla__td">{sinJugar ? '–' : row.e}</td>
+            <td class="mono tabla__td tabla__td--p">{sinJugar ? '–' : row.p}</td>
+            <td class="mono tabla__td">{sinJugar ? '–' : row.gf}</td>
+            <td class="mono tabla__td tabla__td--gc">{sinJugar ? '–' : row.gc}</td>
+            <td class="display tabla__td tabla__td--pts">{sinJugar ? '–' : row.pts}</td>
+          </tr>
+        );
+      })}
+    </tbody>
+  </table>
+
+  <p class="mono tabla__leyenda">
+    <span class="tabla__leyenda-dot" aria-hidden="true"></span>
+    primeros 2 clasifican
+  </p>
+</div>
+
+<style>
+  .tabla {
+    padding: 0;
+    overflow: hidden;
+  }
+  .tabla__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--color-border);
+    background: var(--color-surface-alt);
+  }
+  .tabla__titulo {
+    font-size: 1.1rem;
+  }
+  .tabla__jornada {
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    color: var(--color-foreground-subtle);
+  }
+  .tabla__tabla {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+  .tabla__th {
+    padding: 8px 6px;
+    text-align: center;
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    color: var(--color-foreground-subtle);
+    font-weight: 600;
+  }
+  .tabla__th--equipo {
+    text-align: left;
+    padding-left: 10px;
+  }
+  .tabla__th--pts,
+  .tabla__th--num {
+    background: color-mix(in oklab, var(--color-surface-alt), transparent 50%);
+  }
+  .tabla__td {
+    padding: 9px 6px;
+    text-align: center;
+    font-size: 12px;
+    border-top: 1px solid var(--color-border);
+  }
+  .tabla__td--equipo {
+    text-align: left;
+    padding-left: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .tabla__nombre {
+    font-size: 0.875rem;
+    font-weight: 600;
+  }
+  .tabla__td--num {
+    color: var(--color-foreground-subtle);
+    font-weight: 700;
+  }
+  tr[data-clasifica='true'] .tabla__td--num {
+    color: var(--color-secondary);
+  }
+  .tabla__td--g {
+    color: var(--color-secondary);
+  }
+  .tabla__td--p {
+    color: var(--color-energy);
+  }
+  .tabla__td--gc {
+    color: var(--color-foreground-subtle);
+  }
+  .tabla__td--pts {
+    font-size: 0.95rem;
+    font-weight: 700;
+  }
+  .tabla__leyenda {
+    padding: 8px 16px;
+    font-size: 9px;
+    color: var(--color-foreground-subtle);
+    border-top: 1px solid var(--color-border);
+    background: var(--color-paper);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .tabla__leyenda-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 999px;
+    background: var(--color-secondary);
+  }
+</style>

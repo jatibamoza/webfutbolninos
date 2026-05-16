@@ -16,11 +16,12 @@ const currentPath = Astro.url.pathname;
 const locale = (Astro.currentLocale ?? 'es') as Locale;
 const t = useTranslations(locale);
 
-const navLabelKey: Record<string, 'nav-ejercicios' | 'nav-juegos' | 'nav-equipamiento' | 'nav-iniciacion' | 'nav-recursos'> = {
+const navLabelKey: Record<string, 'nav-ejercicios' | 'nav-juegos' | 'nav-equipamiento' | 'nav-iniciacion' | 'nav-mundial' | 'nav-recursos'> = {
   '/ejercicios/': 'nav-ejercicios',
   '/juegos/': 'nav-juegos',
   '/equipamiento/': 'nav-equipamiento',
   '/iniciacion/': 'nav-iniciacion',
+  '/mundial-2026/': 'nav-mundial',
   '/recursos/': 'nav-recursos',
 };
 ---
@@ -50,8 +51,16 @@ const navLabelKey: Record<string, 'nav-ejercicios' | 'nav-juegos' | 'nav-equipam
         {
           NAV_PRIMARY.map((item) => {
             const isActive = currentPath.startsWith(item.href);
+            const isFeatured = 'featured' in item && item.featured === true;
             const labelKey = navLabelKey[item.href as keyof typeof navLabelKey];
             const label = labelKey ? t(labelKey) : item.label;
+            // Punto a la derecha: amarillo si la página está activa, rojo si es
+            // entrada destacada (Mundial). Activa gana sobre destacada para no duplicar.
+            const dotColor = isActive
+              ? 'var(--color-accent)'
+              : isFeatured
+                ? 'var(--color-energy)'
+                : null;
             return (
               <li>
                 <a
@@ -63,10 +72,10 @@ const navLabelKey: Record<string, 'nav-ejercicios' | 'nav-juegos' | 'nav-equipam
                   aria-current={isActive ? 'page' : undefined}
                 >
                   {label}
-                  {isActive && (
+                  {dotColor && (
                     <span
                       class="ml-2 inline-block h-1.5 w-1.5 rounded-full"
-                      style="background: var(--color-accent);"
+                      style={`background: ${dotColor};`}
                       aria-hidden="true"
                     ></span>
                   )}
@@ -121,6 +130,7 @@ const navLabelKey: Record<string, 'nav-ejercicios' | 'nav-juegos' | 'nav-equipam
         {
           NAV_PRIMARY.map((item) => {
             const isActive = currentPath.startsWith(item.href);
+            const isFeatured = 'featured' in item && item.featured === true;
             const labelKey = navLabelKey[item.href as keyof typeof navLabelKey];
             const label = labelKey ? t(labelKey) : item.label;
             return (
@@ -131,7 +141,16 @@ const navLabelKey: Record<string, 'nav-ejercicios' | 'nav-juegos' | 'nav-equipam
                   style={`color: ${isActive ? 'var(--color-foreground)' : 'var(--color-foreground-muted)'}; background: ${isActive ? 'var(--color-surface-alt)' : 'transparent'};`}
                   aria-current={isActive ? 'page' : undefined}
                 >
-                  <span class="display text-base font-semibold">{label}</span>
+                  <span class="display text-base font-semibold inline-flex items-center gap-2">
+                    {label}
+                    {isFeatured && !isActive && (
+                      <span
+                        class="inline-block h-2 w-2 rounded-full"
+                        style="background: var(--color-energy);"
+                        aria-hidden="true"
+                      ></span>
+                    )}
+                  </span>
                   <Icon name="lucide:chevron-right" class="h-4 w-4 opacity-50" aria-hidden="true" />
                 </a>
               </li>

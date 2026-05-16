@@ -1,0 +1,81 @@
+---
+import { getTeam } from '@/lib/mundial/selecciones';
+
+interface Props {
+  code: string;
+  size?: number;
+  rounded?: boolean;
+  /** Tamaño del texto del chip de fallback. Si no se pasa, se calcula. */
+  fallbackFontSize?: number;
+  class?: string;
+}
+
+const { code, size = 24, rounded = true, fallbackFontSize, class: className } = Astro.props;
+const team = getTeam(code);
+
+const width = size;
+const height = Math.round(size * 0.72);
+const radius = rounded ? Math.max(2, Math.round(size * 0.1)) : 0;
+const fallbackSize = fallbackFontSize ?? Math.max(8, Math.round(size * 0.32));
+
+const src = team ? `https://flagcdn.com/${team.iso2}.svg` : '';
+const alt = team?.nombre ?? code;
+const fallbackColor = team?.color ?? '#5a6172';
+---
+
+{team && (
+  <span
+    class:list={['flag', className]}
+    style={`--w:${width}px;--h:${height}px;--r:${radius}px;--fb-color:${fallbackColor};--fb-fs:${fallbackSize}px;`}
+  >
+    <img
+      src={src}
+      alt={alt}
+      width={width}
+      height={height}
+      loading="lazy"
+      decoding="async"
+      onerror="this.classList.add('flag__img--failed')"
+    />
+    <span class="flag__fallback mono" aria-hidden="true">{code}</span>
+  </span>
+)}
+
+<style>
+  .flag {
+    position: relative;
+    display: inline-block;
+    width: var(--w);
+    height: var(--h);
+    flex-shrink: 0;
+    vertical-align: middle;
+  }
+  .flag img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: var(--r);
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.15);
+  }
+  /* Fallback solo visible si la imagen falla (onerror añade la clase). */
+  .flag__fallback {
+    position: absolute;
+    inset: 0;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    background: var(--fb-color);
+    color: #fff;
+    font-size: var(--fb-fs);
+    font-weight: 700;
+    border-radius: var(--r);
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.15);
+  }
+  .flag img.flag__img--failed {
+    display: none;
+  }
+  .flag img.flag__img--failed + .flag__fallback {
+    display: flex;
+  }
+</style>

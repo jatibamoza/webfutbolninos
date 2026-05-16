@@ -125,6 +125,77 @@ export function personJsonLd({
   return JSON.stringify(schema);
 }
 
+interface FaqEntry {
+  q: string;
+  a: string;
+}
+
+/**
+ * JSON-LD `FAQPage` para páginas con secciones explicativas (¿qué es X?).
+ * Google puede mostrar las preguntas como featured snippets / rich results.
+ * Las preguntas y respuestas deben ser texto plano sin HTML.
+ */
+export function faqJsonLd(entries: ReadonlyArray<FaqEntry>): string {
+  return JSON.stringify({
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: entries.map(({ q, a }) => ({
+      '@type': 'Question',
+      name: q,
+      acceptedAnswer: { '@type': 'Answer', text: a },
+    })),
+  });
+}
+
+interface SportsEventProps {
+  name: string;
+  description: string;
+  url: string;
+  startDate: Date;
+  endDate: Date;
+  /** Lista de países anfitriones (nombres legibles). */
+  hostCountries: ReadonlyArray<string>;
+  /** Estado del evento. Por defecto `EventScheduled`. */
+  status?: 'EventScheduled' | 'EventPostponed' | 'EventRescheduled' | 'EventCancelled';
+}
+
+/**
+ * JSON-LD `SportsEvent` para representar el torneo completo. Los partidos
+ * individuales se añadirán como `subEvents` cuando se conozcan las
+ * alineaciones y la API esté integrada (Fase 6).
+ */
+export function sportsEventJsonLd({
+  name,
+  description,
+  url,
+  startDate,
+  endDate,
+  hostCountries,
+  status = 'EventScheduled',
+}: SportsEventProps): string {
+  return JSON.stringify({
+    '@context': 'https://schema.org',
+    '@type': 'SportsEvent',
+    name,
+    description,
+    url,
+    startDate: startDate.toISOString(),
+    endDate: endDate.toISOString(),
+    eventStatus: `https://schema.org/${status}`,
+    eventAttendanceMode: 'https://schema.org/OfflineEventAttendanceMode',
+    sport: 'Football',
+    location: hostCountries.map((country) => ({
+      '@type': 'Country',
+      name: country,
+    })),
+    organizer: {
+      '@type': 'SportsOrganization',
+      name: 'FIFA',
+      url: 'https://www.fifa.com/',
+    },
+  });
+}
+
 export function getReadingTime(content: string): number {
   const wordsPerMinute = 200;
   const words = content.trim().split(/\s+/).length;
