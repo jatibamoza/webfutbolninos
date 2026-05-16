@@ -1,0 +1,188 @@
+---
+import { MUNDIAL_2026, daysToKickoff } from '@/lib/mundial/dates';
+import { fmtDate } from '@/lib/mundial/format';
+
+/**
+ * Timeline vertical con los 8 hitos del Mundial. Cada hito tiene fecha,
+ * nombre y microcopy infantil. Marca cuál ya pasó y cuál es el próximo.
+ *
+ * Calculado en SSR/SSG: la página se rebuildea cada push, por lo que
+ * "próximo hito" no es 100% en tiempo real, pero sí lo suficientemente
+ * cerca para no engañar al niño que entra en mayo y ve "faltan 25 días".
+ */
+
+const now = new Date();
+const dias = daysToKickoff(now);
+const hitos = MUNDIAL_2026.hitos.map((h) => ({
+  ...h,
+  pasado: h.fecha.getTime() < now.getTime(),
+}));
+const proximoIdx = hitos.findIndex((h) => !h.pasado);
+---
+
+<section class="cal" aria-labelledby="cal-titulo">
+  <div class="cal__header">
+    <span class="mono cal__eyebrow">04 · CALENDARIO</span>
+    <h2 id="cal-titulo" class="display cal__titulo">
+      Las <span class="marker">fechas clave</span> del torneo
+    </h2>
+    <p class="cal__intro">
+      Del <strong>11 de junio</strong> al <strong>19 de julio</strong> de 2026. Más de un mes de
+      fútbol sin parar. Apunta estas fechas en el calendario de la nevera.
+    </p>
+    {dias > 0 && (
+      <p class="hand cal__countdown" aria-live="polite">
+        faltan <strong>{dias}</strong> {dias === 1 ? 'día' : 'días'} para la inauguración
+      </p>
+    )}
+  </div>
+
+  <ol class="cal__timeline" role="list">
+    {hitos.map((h, i) => (
+      <li
+        class="cal__hito"
+        data-pasado={h.pasado ? 'true' : 'false'}
+        data-proximo={i === proximoIdx ? 'true' : 'false'}
+      >
+        <div class="cal__marca" aria-hidden="true">
+          <span class="cal__punto"></span>
+        </div>
+        <div class="card-paper cal__card">
+          <time class="mono cal__fecha" datetime={h.fecha.toISOString()}>
+            {fmtDate(h.fecha)}
+          </time>
+          <h3 class="display cal__nombre">{h.nombre}</h3>
+          <p class="cal__desc">{h.descripcion}</p>
+          {i === proximoIdx && (
+            <span class="hand cal__badge">¡es el próximo!</span>
+          )}
+        </div>
+      </li>
+    ))}
+  </ol>
+</section>
+
+<style>
+  .cal {
+    margin-top: 56px;
+  }
+  .cal__header {
+    max-width: 60ch;
+    margin-bottom: 24px;
+  }
+  .cal__eyebrow {
+    display: inline-block;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    color: var(--color-foreground-subtle);
+    margin-bottom: 8px;
+  }
+  .cal__titulo {
+    font-size: clamp(1.75rem, 4vw, 2.75rem);
+    margin: 0 0 14px;
+  }
+  .cal__intro {
+    color: var(--color-foreground-muted);
+    font-size: 1rem;
+    line-height: 1.55;
+    margin: 0;
+  }
+  .cal__countdown {
+    font-size: 24px;
+    color: var(--color-energy);
+    margin: 12px 0 0;
+    transform: rotate(-2deg);
+    transform-origin: left center;
+    display: inline-block;
+  }
+  .cal__countdown strong {
+    background-image: linear-gradient(180deg, transparent 60%, var(--color-marker) 60%, var(--color-marker) 92%, transparent 92%);
+    padding: 0 0.1em;
+  }
+
+  .cal__timeline {
+    list-style: none;
+    padding: 0;
+    margin: 22px 0 0;
+    position: relative;
+  }
+  .cal__timeline::before {
+    content: '';
+    position: absolute;
+    left: 13px;
+    top: 12px;
+    bottom: 12px;
+    width: 2px;
+    background: repeating-linear-gradient(
+      to bottom,
+      var(--color-border-strong) 0,
+      var(--color-border-strong) 4px,
+      transparent 4px,
+      transparent 8px
+    );
+  }
+  .cal__hito {
+    display: grid;
+    grid-template-columns: 28px 1fr;
+    gap: 14px;
+    padding-bottom: 14px;
+  }
+  .cal__marca {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-top: 18px;
+  }
+  .cal__punto {
+    width: 14px;
+    height: 14px;
+    border-radius: 999px;
+    background: var(--color-background);
+    border: 2.5px solid var(--color-border-strong);
+    z-index: 1;
+  }
+  .cal__hito[data-pasado='true'] .cal__punto {
+    background: var(--color-foreground-subtle);
+    border-color: var(--color-foreground-subtle);
+  }
+  .cal__hito[data-proximo='true'] .cal__punto {
+    background: var(--color-energy);
+    border-color: var(--color-energy);
+    box-shadow: 0 0 0 4px color-mix(in oklab, var(--color-energy), transparent 80%);
+  }
+  .cal__card {
+    padding: 14px 18px;
+    position: relative;
+  }
+  .cal__hito[data-pasado='true'] .cal__card {
+    opacity: 0.6;
+  }
+  .cal__fecha {
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    color: var(--color-foreground-subtle);
+    text-transform: uppercase;
+  }
+  .cal__nombre {
+    font-size: 1.15rem;
+    margin: 4px 0 6px;
+  }
+  .cal__desc {
+    margin: 0;
+    color: var(--color-foreground-muted);
+    font-size: 0.95rem;
+    line-height: 1.5;
+  }
+  .cal__badge {
+    position: absolute;
+    top: -10px;
+    right: 14px;
+    background: var(--color-paper);
+    color: var(--color-handwritten);
+    font-size: 20px;
+    padding: 2px 12px;
+    border-radius: 999px;
+    border: 1px dashed var(--color-handwritten);
+    transform: rotate(-4deg);
+  }
+</style>

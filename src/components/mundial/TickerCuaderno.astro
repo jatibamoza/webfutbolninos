@@ -1,0 +1,140 @@
+---
+import type { Match } from '@/lib/mundial/types';
+import { fmtCountdown, fmtTime } from '@/lib/mundial/format';
+import Flag from './Flag.astro';
+
+interface Props {
+  partidos: ReadonlyArray<Match>;
+  /** Cuántos partidos mostrar. Default 4. */
+  limit?: number;
+  /** Fecha humana del banner ("11 jun 26"). Si no, se omite. */
+  fecha?: string;
+}
+
+const { partidos, limit = 4, fecha } = Astro.props;
+const top = partidos.slice(0, limit);
+---
+
+<div class="cuaderno" aria-label="Marcador del día">
+  <header class="cuaderno__header">
+    <span class="hand cuaderno__titulo">marcador del día</span>
+    <span class="cuaderno__sep" aria-hidden="true"></span>
+    {fecha && <span class="mono cuaderno__fecha">MUNDIAL · {fecha}</span>}
+  </header>
+
+  <ul class="cuaderno__lista" role="list">
+    {top.map((p) => {
+      const isLive = p.status === 'live';
+      const isFin = p.status === 'finished';
+      const tieneMarcador = p.homeScore !== null && p.awayScore !== null;
+      return (
+        <li class="cuaderno__fila" data-live={isLive ? 'true' : 'false'}>
+          <div class="cuaderno__lado cuaderno__lado--home">
+            <span class="mono cuaderno__codigo">{p.home}</span>
+            <Flag code={p.home} size={22} />
+          </div>
+          <div class="cuaderno__centro">
+            {tieneMarcador ? (
+              <span class="hand cuaderno__marcador">{p.homeScore} - {p.awayScore}</span>
+            ) : (
+              <span class="mono cuaderno__hora">{fmtCountdown(p.kickoff) ?? fmtTime(p.kickoff)}</span>
+            )}
+            {isLive && <span class="mono cuaderno__estado cuaderno__estado--live">● {p.minute}'</span>}
+            {isFin && <span class="mono cuaderno__estado">FINAL</span>}
+          </div>
+          <div class="cuaderno__lado">
+            <Flag code={p.away} size={22} />
+            <span class="mono cuaderno__codigo">{p.away}</span>
+          </div>
+        </li>
+      );
+    })}
+  </ul>
+</div>
+
+<style>
+  .cuaderno {
+    background: var(--color-foreground);
+    color: #fffcf1;
+    border-radius: var(--radius-lg);
+    padding: 18px 22px;
+    position: relative;
+    overflow: hidden;
+  }
+  .cuaderno__header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+  .cuaderno__titulo {
+    font-size: 1.4rem;
+    color: var(--color-marker);
+  }
+  .cuaderno__sep {
+    flex: 1;
+    height: 1px;
+    border-top: 1px dashed rgba(255, 252, 241, 0.2);
+  }
+  .cuaderno__fecha {
+    font-size: 9px;
+    letter-spacing: 0.15em;
+    opacity: 0.6;
+  }
+  .cuaderno__lista {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 8px;
+  }
+  .cuaderno__fila {
+    display: grid;
+    grid-template-columns: 1fr 90px 1fr;
+    gap: 12px;
+    align-items: center;
+    padding: 6px 10px;
+    border-radius: 6px;
+  }
+  .cuaderno__fila[data-live='true'] {
+    background: rgba(220, 38, 38, 0.15);
+  }
+  .cuaderno__lado {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .cuaderno__lado--home {
+    justify-content: flex-end;
+  }
+  .cuaderno__codigo {
+    font-size: 12px;
+    font-weight: 600;
+  }
+  .cuaderno__centro {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+  }
+  .cuaderno__marcador {
+    font-size: 1.5rem;
+    color: var(--color-marker);
+    line-height: 1;
+  }
+  .cuaderno__hora {
+    font-size: 11px;
+    color: var(--color-marker);
+    opacity: 0.85;
+  }
+  .cuaderno__estado {
+    font-size: 8px;
+    letter-spacing: 0.1em;
+    opacity: 0.5;
+  }
+  .cuaderno__estado--live {
+    color: #4ade80;
+    opacity: 1;
+  }
+</style>

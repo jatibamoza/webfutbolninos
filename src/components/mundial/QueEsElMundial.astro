@@ -1,0 +1,155 @@
+---
+import { Icon } from 'astro-icon/components';
+
+/**
+ * Sección explicativa "¿qué es el Mundial?" para 4-12 años.
+ * Tres cards con datos esenciales + microcopy manuscrito.
+ * Lenguaje sencillo: nada de "FIFA", "ranking", "draw" — esos van en HistoriaCuriosa.
+ */
+
+const cards = [
+  {
+    icon: 'lucide:trophy',
+    titulo: '48 selecciones',
+    dato: '48',
+    unidad: 'países',
+    explicacion: 'Es la primera vez en la historia que juegan tantos. Antes eran 32. Ahora ¡16 más!',
+    manuscrito: '¡más equipos que nunca!',
+  },
+  {
+    icon: 'lucide:calendar-days',
+    titulo: 'Una vez cada 4 años',
+    dato: '4',
+    unidad: 'años',
+    explicacion: 'El Mundial solo pasa cada 4 años. El anterior fue en Catar 2022. El próximo, en 2030.',
+    manuscrito: 'la espera vale la pena',
+  },
+  {
+    icon: 'lucide:globe',
+    titulo: 'Tres países anfitriones',
+    dato: '3',
+    unidad: 'países',
+    explicacion: 'Se juega en Estados Unidos, México y Canadá. En 16 ciudades distintas, ¡todo a la vez!',
+    manuscrito: 'tres países, un mundial',
+  },
+];
+---
+
+<section class="que-es" aria-labelledby="que-es-titulo">
+  <div class="que-es__header">
+    <span class="mono que-es__eyebrow">01 · LO BÁSICO</span>
+    <h2 id="que-es-titulo" class="display que-es__titulo">
+      ¿Qué es <span class="marker">el Mundial</span>?
+    </h2>
+    <p class="que-es__intro">
+      El Mundial de fútbol es el torneo más importante del planeta. Cada cuatro años, los mejores
+      equipos de cada país juegan para ver quién es <strong>el campeón del mundo</strong>. Este año
+      hay algo nuevo y muy especial.
+    </p>
+  </div>
+
+  <div class="que-es__grid">
+    {cards.map((c) => (
+      <article class="card-paper que-es__card">
+        <div class="que-es__icon" aria-hidden="true">
+          <Icon name={c.icon} class="h-5 w-5" />
+        </div>
+        <div class="mono que-es__label">{c.titulo}</div>
+        <div class="display que-es__dato">
+          {c.dato}<span class="que-es__unidad">{c.unidad}</span>
+        </div>
+        <p class="que-es__explicacion">{c.explicacion}</p>
+        <p class="hand que-es__manuscrito">{c.manuscrito}</p>
+      </article>
+    ))}
+  </div>
+</section>
+
+<style>
+  .que-es {
+    margin-top: 48px;
+  }
+  .que-es__header {
+    max-width: 60ch;
+    margin-bottom: 24px;
+  }
+  .que-es__eyebrow {
+    display: inline-block;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    color: var(--color-foreground-subtle);
+    margin-bottom: 8px;
+  }
+  .que-es__titulo {
+    font-size: clamp(1.75rem, 4vw, 2.75rem);
+    margin: 0 0 14px;
+    line-height: 1.05;
+  }
+  .que-es__intro {
+    color: var(--color-foreground-muted);
+    font-size: 1rem;
+    line-height: 1.55;
+    margin: 0;
+  }
+  .que-es__grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 14px;
+    margin-top: 22px;
+  }
+  .que-es__card {
+    padding: 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .que-es__icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 999px;
+    background: var(--color-surface-alt);
+    color: var(--color-energy);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 4px;
+  }
+  .que-es__label {
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    color: var(--color-foreground-subtle);
+    text-transform: uppercase;
+  }
+  .que-es__dato {
+    font-size: clamp(2.5rem, 6vw, 3.5rem);
+    line-height: 0.9;
+    color: var(--color-energy);
+    margin-top: 2px;
+  }
+  .que-es__unidad {
+    font-size: 0.4em;
+    color: var(--color-foreground-muted);
+    margin-left: 0.3em;
+    letter-spacing: 0;
+  }
+  .que-es__explicacion {
+    color: var(--color-foreground-muted);
+    font-size: 0.95rem;
+    line-height: 1.5;
+    margin: 8px 0 0;
+  }
+  .que-es__manuscrito {
+    font-size: 20px;
+    color: var(--color-handwritten);
+    margin: 0;
+    transform: rotate(-2deg);
+    transform-origin: left center;
+    align-self: flex-start;
+  }
+
+  @media (min-width: 640px) {
+    .que-es__grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+</style>

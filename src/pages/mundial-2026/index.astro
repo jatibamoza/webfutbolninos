@@ -1,0 +1,393 @@
+---
+import { getCollection, getEntry, type CollectionEntry } from 'astro:content';
+import '@/styles/mundial.css';
+
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Header from '@/components/Header.astro';
+import Footer from '@/components/Footer.astro';
+import Breadcrumb from '@/components/Breadcrumb.astro';
+import ArticleCard from '@/components/ArticleCard.astro';
+import AdSlot from '@/components/AdSlot.astro';
+
+import QueEsElMundial from '@/components/mundial/QueEsElMundial.astro';
+import ComoFunciona from '@/components/mundial/ComoFunciona.astro';
+import GruposGrid from '@/components/mundial/GruposGrid.astro';
+import CalendarioHitos from '@/components/mundial/CalendarioHitos.astro';
+import HistoriaCuriosa from '@/components/mundial/HistoriaCuriosa.astro';
+import EncuestaCampeon from '@/components/mundial/EncuestaCampeon';
+
+import { SITE_URL } from '@/consts';
+import { categoryColorVar } from '@/lib/categories';
+import { faqJsonLd, sportsEventJsonLd } from '@/lib/seo';
+import {
+  MUNDIAL_2026,
+  daysToKickoff,
+  daysToFinal,
+  isMundialActive,
+  nextHito,
+} from '@/lib/mundial/dates';
+
+const categoria = await getEntry('categorias', 'mundial-2026');
+if (!categoria) {
+  throw new Error('Falta la categoría mundial-2026 en src/content/categorias/');
+}
+
+const articulos = await getCollection(
+  'articulos',
+  ({ data }: CollectionEntry<'articulos'>) =>
+    !data.draft && data.categoria === 'mundial-2026',
+);
+const articulosOrdenados = [...articulos].sort(
+  (a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime(),
+);
+
+const now = new Date();
+const dias = Math.max(0, daysToKickoff(now));
+const diasFinal = Math.max(0, daysToFinal(now));
+const torneoActivo = isMundialActive(now);
+const proximo = nextHito(now);
+
+const colorVar = categoryColorVar(categoria.data.color);
+const dorsalNumber = String(categoria.data.orden).padStart(2, '0');
+
+const canonicalUrl = new URL('/mundial-2026/', SITE_URL).toString();
+const metaTitle = 'Mundial 2026 explicado para niños';
+const metaDescription =
+  'El Mundial 2026 contado a tu peque: qué es, cómo funciona, los 12 grupos, el calendario y la historia del torneo más importante del fútbol.';
+
+// Schema.org: las 6 preguntas más buscadas sobre el Mundial. Las respuestas
+// están sincronizadas con el cuerpo de la página — si cambia una sección,
+// actualizar también aquí para mantener consistencia.
+const faqLd = faqJsonLd([
+  {
+    q: '¿Qué es el Mundial de fútbol?',
+    a: 'El Mundial es el torneo de selecciones de fútbol más importante del planeta. Se juega cada cuatro años y enfrenta a las mejores selecciones nacionales del mundo. La selección que gana se proclama campeona del mundo durante los siguientes cuatro años.',
+  },
+  {
+    q: '¿Cuándo empieza el Mundial 2026?',
+    a: 'El Mundial 2026 comienza el 11 de junio de 2026 con el partido inaugural en el Estadio Azteca de México. La final se juega el 19 de julio de 2026 en el estadio MetLife de Nueva Jersey, Estados Unidos.',
+  },
+  {
+    q: '¿Cuántas selecciones juegan el Mundial 2026?',
+    a: 'El Mundial 2026 es el primero de la historia con 48 selecciones, repartidas en 12 grupos de 4 equipos. Hasta el Mundial de Catar 2022 jugaban 32 selecciones.',
+  },
+  {
+    q: '¿Dónde se juega el Mundial 2026?',
+    a: 'El Mundial 2026 se juega en tres países a la vez: Canadá, México y Estados Unidos. Es la primera vez en la historia del Mundial que el torneo se organiza en tres países simultáneamente, repartido en 16 ciudades.',
+  },
+  {
+    q: '¿Cómo se clasifica a la siguiente fase?',
+    a: 'En la fase de grupos, las 4 selecciones de cada grupo se enfrentan entre sí. Se llevan 3 puntos por victoria, 1 por empate y 0 por derrota. Pasan a la siguiente fase los 2 primeros de cada grupo y los 8 mejores terceros, completando los 32 clasificados a dieciseisavos.',
+  },
+  {
+    q: '¿Quién es el último campeón del Mundial?',
+    a: 'Argentina ganó el Mundial de Catar 2022 al vencer a Francia en la final. Es el tercer Mundial de Argentina, después de los ganados en 1978 y 1986.',
+  },
+]);
+
+// SportsEvent del torneo completo. Los partidos individuales se sumarán
+// como subEvents cuando la API real esté integrada (Fase 6).
+const eventLd = sportsEventJsonLd({
+  name: 'Mundial de Fútbol 2026',
+  description: metaDescription,
+  url: canonicalUrl,
+  startDate: MUNDIAL_2026.inauguracion,
+  endDate: MUNDIAL_2026.final,
+  hostCountries: ['Canadá', 'México', 'Estados Unidos'],
+});
+---
+
+<BaseLayout
+  title={metaTitle}
+  description={metaDescription}
+  canonical={canonicalUrl}
+  ogType="website"
+>
+  <Fragment slot="head">
+    <!-- flagcdn.com sirve los SVG de las 48 banderas — preconnect ahorra ~250ms de TLS. -->
+    <link rel="preconnect" href="https://flagcdn.com" crossorigin />
+    <script is:inline type="application/ld+json" set:html={faqLd} />
+    <script is:inline type="application/ld+json" set:html={eventLd} />
+  </Fragment>
+
+  <Header />
+
+  <div class="mx-auto max-w-7xl px-4 md:px-12">
+    <Breadcrumb items={[{ label: 'Mundial 2026' }]} />
+  </div>
+
+  <!-- ============ HERO ============ -->
+  <section class="mh" style={`--cat-color:${colorVar};`} aria-labelledby="mh-titulo">
+    <div class="mh__inner mx-auto max-w-7xl px-4 md:px-12">
+      <span class="mh__dorsal" aria-hidden="true">{dorsalNumber}</span>
+
+      <div class="mh__content">
+        <div class="mh__eyebrow-row">
+          <span class="mono mh__eyebrow">CANADÁ · MÉXICO · EE. UU.</span>
+          <span class="hand mh__tag">¡48 selecciones!</span>
+        </div>
+
+        <h1 id="mh-titulo" class="mh__titulo display">
+          Mundial <span class="mh__year">2026</span>.<br />
+          <span class="marker mh__marker">explicado</span> para tu peque.
+        </h1>
+
+        <p class="mh__subtitulo">
+          Del <strong>11 de junio</strong> al <strong>19 de julio</strong> de 2026.
+          Resultados, grupos, calendario e historia. Sin tecnicismos, sin spoilers.
+          Pensado para vivirlo <strong>en familia</strong>.
+        </p>
+
+        <div class="mh__stats" role="list">
+          <div class="mh__stat card-paper" role="listitem">
+            <span class="mono mh__stat-label">FALTAN</span>
+            <span class="display mh__stat-num">{dias}</span>
+            <span class="hand mh__stat-hand">días para la inauguración</span>
+          </div>
+          <div class="mh__stat card-paper" role="listitem">
+            <span class="mono mh__stat-label">SELECCIONES</span>
+            <span class="display mh__stat-num">48</span>
+            <span class="hand mh__stat-hand">países compitiendo</span>
+          </div>
+          <div class="mh__stat card-paper" role="listitem">
+            <span class="mono mh__stat-label">GRUPOS</span>
+            <span class="display mh__stat-num">12</span>
+            <span class="hand mh__stat-hand">de la A a la L</span>
+          </div>
+          <div class="mh__stat card-paper" role="listitem">
+            <span class="mono mh__stat-label">FINAL</span>
+            <span class="display mh__stat-num">{diasFinal}</span>
+            <span class="hand mh__stat-hand">días para la copa</span>
+          </div>
+        </div>
+
+        {!torneoActivo && proximo && (
+          <p class="mh__proximo mono">
+            PRÓXIMO HITO · <strong>{proximo.nombre}</strong> · {proximo.descripcion}
+          </p>
+        )}
+      </div>
+    </div>
+    <div class="divider-pitch"></div>
+  </section>
+
+  <main id="main" class="mx-auto max-w-7xl px-4 pb-14 md:px-12 md:pb-20">
+    <!-- ============ SECCIONES EDUCATIVAS ============ -->
+    <QueEsElMundial />
+    <ComoFunciona />
+
+    <AdSlot id="mundial-mid-1" format="horizontal" />
+
+    <GruposGrid />
+    <CalendarioHitos />
+    <HistoriaCuriosa />
+
+    <AdSlot id="mundial-mid-2" format="horizontal" />
+
+    <!-- ============ ENCUESTA (isla Preact) ============ -->
+    <EncuestaCampeon client:visible />
+
+    <!-- ============ ARTÍCULOS EDITORIALES ============ -->
+    {articulosOrdenados.length > 0 && (
+      <section class="mh-articulos" aria-labelledby="mh-articulos-titulo">
+        <div class="mh-articulos__header">
+          <span class="mono mh-articulos__eyebrow">07 · MÁS SOBRE EL MUNDIAL</span>
+          <h2 id="mh-articulos-titulo" class="display mh-articulos__titulo">
+            Artículos para <span class="marker">leer juntos</span>
+          </h2>
+          <p class="mh-articulos__intro">
+            Guías y curiosidades que hemos preparado para que tu peque entienda
+            cada rincón del torneo.
+          </p>
+        </div>
+
+        <div class="mh-articulos__grid">
+          {articulosOrdenados.map((article, i) => (
+            <ArticleCard
+              article={article}
+              categoriaColor={categoria.data.color}
+              categoriaNombre={categoria.data.nombre}
+              loading={i < 3 ? 'eager' : 'lazy'}
+              hideCategoryChip
+            />
+          ))}
+        </div>
+      </section>
+    )}
+
+    <AdSlot id="mundial-bottom" format="horizontal" />
+  </main>
+
+  <Footer />
+</BaseLayout>
+
+<style>
+  /* ───────── Hero del Mundial ───────── */
+  .mh {
+    position: relative;
+    border-bottom: 2px solid var(--color-foreground);
+    background:
+      radial-gradient(circle at 0% 0%, color-mix(in oklab, var(--cat-color), transparent 88%) 0%, transparent 55%),
+      radial-gradient(circle at 100% 100%, color-mix(in oklab, var(--color-accent), transparent 92%) 0%, transparent 55%),
+      var(--color-background);
+    overflow: hidden;
+  }
+  .mh__inner {
+    display: grid;
+    grid-template-columns: 1fr;
+    align-items: center;
+    gap: 16px;
+    padding-top: 28px;
+    padding-bottom: 36px;
+  }
+  .mh__dorsal {
+    font-family: var(--font-display);
+    font-weight: 700;
+    color: var(--cat-color);
+    line-height: 0.85;
+    font-size: clamp(96px, 24vw, 240px);
+    letter-spacing: -0.04em;
+    user-select: none;
+    display: block;
+  }
+  .mh__content {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    min-width: 0;
+  }
+  .mh__eyebrow-row {
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+    flex-wrap: wrap;
+  }
+  .mh__eyebrow {
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    color: var(--color-foreground-subtle);
+  }
+  .mh__tag {
+    font-size: 22px;
+    color: var(--color-handwritten);
+    transform: rotate(-3deg);
+    display: inline-block;
+  }
+  .mh__titulo {
+    font-size: clamp(2.5rem, 7vw, 5rem);
+    line-height: 0.95;
+    margin: 0;
+    letter-spacing: -0.025em;
+  }
+  .mh__year {
+    color: var(--cat-color);
+  }
+  .mh__marker {
+    /* heredada de .marker global — aquí solo sobre-escribimos si hace falta */
+  }
+  .mh__subtitulo {
+    margin: 0;
+    color: var(--color-foreground-muted);
+    font-size: 1rem;
+    line-height: 1.55;
+    max-width: 60ch;
+  }
+  .mh__stats {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    margin-top: 8px;
+  }
+  .mh__stat {
+    padding: 14px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    align-items: flex-start;
+  }
+  .mh__stat-label {
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    color: var(--color-foreground-subtle);
+  }
+  .mh__stat-num {
+    font-size: clamp(2.25rem, 5vw, 3rem);
+    line-height: 0.95;
+    color: var(--cat-color);
+  }
+  .mh__stat:nth-child(2) .mh__stat-num { color: var(--color-foreground); }
+  .mh__stat:nth-child(3) .mh__stat-num { color: var(--color-secondary); }
+  .mh__stat:nth-child(4) .mh__stat-num { color: var(--color-accent); }
+  .mh__stat-hand {
+    font-size: 16px;
+    color: var(--color-handwritten);
+    line-height: 1.1;
+    margin-top: 2px;
+  }
+  .mh__proximo {
+    margin-top: 8px;
+    padding: 10px 14px;
+    background: var(--color-surface-alt);
+    border-radius: var(--radius-md);
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    color: var(--color-foreground-muted);
+  }
+  .mh__proximo strong {
+    color: var(--color-foreground);
+    text-transform: uppercase;
+    margin-right: 4px;
+  }
+
+  @media (min-width: 768px) {
+    .mh__inner {
+      grid-template-columns: auto 1fr;
+      gap: 28px;
+      padding-top: 56px;
+      padding-bottom: 56px;
+    }
+    .mh__stats {
+      grid-template-columns: repeat(4, 1fr);
+    }
+    .mh__subtitulo {
+      font-size: 1.1rem;
+    }
+  }
+
+  /* ───────── Bloque de artículos editoriales ───────── */
+  .mh-articulos {
+    margin-top: 64px;
+  }
+  .mh-articulos__header {
+    max-width: 60ch;
+    margin-bottom: 24px;
+  }
+  .mh-articulos__eyebrow {
+    display: inline-block;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    color: var(--color-foreground-subtle);
+    margin-bottom: 8px;
+  }
+  .mh-articulos__titulo {
+    font-size: clamp(1.75rem, 4vw, 2.75rem);
+    margin: 0 0 14px;
+  }
+  .mh-articulos__intro {
+    color: var(--color-foreground-muted);
+    font-size: 1rem;
+    line-height: 1.55;
+    margin: 0;
+  }
+  .mh-articulos__grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+    margin-top: 22px;
+  }
+  @media (min-width: 1024px) {
+    .mh-articulos__grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+</style>

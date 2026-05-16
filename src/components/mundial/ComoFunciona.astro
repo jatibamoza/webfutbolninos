@@ -1,0 +1,184 @@
+---
+/**
+ * "Cómo funciona": camino del Mundial 2026 explicado paso a paso.
+ * Embudo visual 48→32→16→8→4→2→1 con descripción para niños.
+ * Mobile-first: stack vertical. Desktop: pasos horizontales con flecha entre cada uno.
+ */
+
+const fases = [
+  {
+    n: '48',
+    titulo: 'Fase de grupos',
+    descripcion: 'Los 48 equipos se reparten en 12 grupos de 4. Cada equipo juega 3 partidos.',
+    color: 'var(--color-energy)',
+  },
+  {
+    n: '32',
+    titulo: 'Dieciseisavos',
+    descripcion: 'Pasan los 2 primeros de cada grupo + los 8 mejores terceros. ¡Ya hay eliminatorias!',
+    color: 'var(--color-accent)',
+  },
+  {
+    n: '16',
+    titulo: 'Octavos de final',
+    descripcion: 'Si pierdes, te vas a casa. Si ganas, sigues. Sin segundas oportunidades.',
+    color: 'var(--color-info)',
+  },
+  {
+    n: '8',
+    titulo: 'Cuartos de final',
+    descripcion: 'Los 8 mejores del mundo se juegan el pase a semifinales.',
+    color: 'var(--color-secondary)',
+  },
+  {
+    n: '4',
+    titulo: 'Semifinales',
+    descripcion: 'Solo quedan 4. Dos ganan y juegan la final. Dos pierden y juegan por el bronce.',
+    color: 'var(--color-primary)',
+  },
+  {
+    n: '2',
+    titulo: 'La gran final',
+    descripcion: 'El día más esperado. Un solo partido decide quién es el nuevo campeón del mundo.',
+    color: 'var(--color-fun)',
+  },
+  {
+    n: '1',
+    titulo: '¡Campeón!',
+    descripcion: 'Levanta la copa más famosa del fútbol. La próxima vez será en 2030.',
+    color: 'var(--color-energy)',
+    final: true,
+  },
+];
+---
+
+<section class="como" aria-labelledby="como-titulo">
+  <div class="como__header">
+    <span class="mono como__eyebrow">02 · CAMINO AL CAMPEÓN</span>
+    <h2 id="como-titulo" class="display como__titulo">
+      ¿Cómo se llega a <span class="marker">levantar la copa</span>?
+    </h2>
+    <p class="como__intro">
+      De los 48 equipos que empiezan, solo uno gana. El camino tiene <strong>7 fases</strong>.
+      Mira cómo se va reduciendo el grupo en cada parada.
+    </p>
+  </div>
+
+  <ol class="como__lista" role="list">
+    {fases.map((f, i) => (
+      <li class="como__paso card-paper" style={`--paso-color:${f.color};`}>
+        <span class="display como__numero" aria-hidden="true">{f.n}</span>
+        <div class="como__contenido">
+          <span class="mono como__step">FASE {String(i + 1).padStart(2, '0')}</span>
+          <h3 class="display como__paso-titulo">{f.titulo}</h3>
+          <p class="como__paso-desc">{f.descripcion}</p>
+        </div>
+        {!f.final && (
+          <span class="como__flecha" aria-hidden="true">↓</span>
+        )}
+        {f.final && (
+          <span class="hand como__final" aria-hidden="true">¡el más grande!</span>
+        )}
+      </li>
+    ))}
+  </ol>
+</section>
+
+<style>
+  .como {
+    margin-top: 56px;
+  }
+  .como__header {
+    max-width: 60ch;
+    margin-bottom: 24px;
+  }
+  .como__eyebrow {
+    display: inline-block;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    color: var(--color-foreground-subtle);
+    margin-bottom: 8px;
+  }
+  .como__titulo {
+    font-size: clamp(1.75rem, 4vw, 2.75rem);
+    margin: 0 0 14px;
+  }
+  .como__intro {
+    color: var(--color-foreground-muted);
+    font-size: 1rem;
+    line-height: 1.55;
+    margin: 0;
+  }
+  .como__lista {
+    list-style: none;
+    padding: 0;
+    margin: 22px 0 0;
+    display: grid;
+    gap: 14px;
+  }
+  .como__paso {
+    position: relative;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    align-items: center;
+    gap: 18px;
+    padding: 18px 20px;
+    border-left: 4px solid var(--paso-color);
+  }
+  .como__numero {
+    font-size: clamp(2.5rem, 6vw, 3.25rem);
+    line-height: 0.9;
+    color: var(--paso-color);
+    min-width: 80px;
+    text-align: center;
+  }
+  .como__contenido {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .como__step {
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    color: var(--color-foreground-subtle);
+  }
+  .como__paso-titulo {
+    font-size: 1.25rem;
+    margin: 0;
+    line-height: 1.15;
+  }
+  .como__paso-desc {
+    margin: 4px 0 0;
+    color: var(--color-foreground-muted);
+    font-size: 0.95rem;
+    line-height: 1.5;
+  }
+  .como__flecha {
+    position: absolute;
+    bottom: -18px;
+    left: 50px;
+    width: 28px;
+    height: 28px;
+    border-radius: 999px;
+    background: var(--color-background);
+    border: 1.5px solid var(--color-border-strong);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-foreground-muted);
+    font-size: 14px;
+    z-index: 1;
+  }
+  .como__final {
+    position: absolute;
+    top: -10px;
+    right: 18px;
+    font-size: 22px;
+    color: var(--color-handwritten);
+    transform: rotate(-4deg);
+    background: var(--color-paper);
+    padding: 2px 10px;
+    border-radius: 999px;
+    border: 1px dashed var(--color-handwritten);
+  }
+</style>

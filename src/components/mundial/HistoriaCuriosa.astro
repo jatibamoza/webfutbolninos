@@ -1,0 +1,203 @@
+---
+import Flag from './Flag.astro';
+
+/**
+ * Sección de historia + datos curiosos del Mundial.
+ * - Lista de últimos 5 campeones (más memorables para padres y peques).
+ * - 4-5 datos curiosos con microcopy manuscrito.
+ *
+ * Pensado para ser narrativo: el padre lo lee con el peque al lado.
+ */
+
+const campeones = [
+  { ano: '2022', sede: 'Catar',                    campeon: 'ARG', curiosidad: 'Messi por fin la levantó. Tercer Mundial para Argentina.' },
+  { ano: '2018', sede: 'Rusia',                    campeon: 'FRA', curiosidad: 'Mbappé tenía 19 años y ya era campeón del mundo.' },
+  { ano: '2014', sede: 'Brasil',                   campeon: 'GER', curiosidad: 'Le ganaron 7-1 a Brasil en su propia casa. Histórico.' },
+  { ano: '2010', sede: 'Sudáfrica',                campeon: 'ESP', curiosidad: 'Primer Mundial de España. Iniesta marcó en la final.' },
+  { ano: '2006', sede: 'Alemania',                 campeon: 'ITA', curiosidad: 'Italia ganó por penales. Cabezazo legendario de Zidane.' },
+];
+
+const curiosidades = [
+  {
+    titulo: '¿Sabías que…?',
+    texto: 'El Mundial se juega cada 4 años desde 1930. Solo se paró dos veces, durante la Segunda Guerra Mundial.',
+  },
+  {
+    titulo: 'Brasil mandona',
+    texto: 'Brasil es la selección que más mundiales ha ganado: 5. El último fue en 2002.',
+  },
+  {
+    titulo: 'El más grande',
+    texto: 'El Mundial 2026 es el primero con 48 selecciones. El de 1930 solo tuvo 13.',
+  },
+  {
+    titulo: 'Estadios para 80.000 personas',
+    texto: 'La final se juega en el estadio MetLife de Nueva Jersey. Caben más de 80.000 aficionados.',
+  },
+  {
+    titulo: 'La mascota oficial',
+    texto: 'El Mundial 2026 tiene tres mascotas: Maple (alce canadiense), Zayu (jaguar mexicano) y Clutch (águila americana).',
+  },
+];
+---
+
+<section class="hist" aria-labelledby="hist-titulo">
+  <div class="hist__header">
+    <span class="mono hist__eyebrow">05 · UN POCO DE HISTORIA</span>
+    <h2 id="hist-titulo" class="display hist__titulo">
+      Los últimos <span class="marker">campeones del mundo</span>
+    </h2>
+    <p class="hist__intro">
+      Solo 8 países han ganado un Mundial en toda la historia. Estos son los últimos 5 que
+      levantaron la copa.
+    </p>
+  </div>
+
+  <ul class="hist__campeones" role="list">
+    {campeones.map((c) => (
+      <li class="card-paper hist__campeon">
+        <div class="hist__campeon-top">
+          <span class="display hist__ano">{c.ano}</span>
+          <span class="mono hist__sede">{c.sede.toUpperCase()}</span>
+        </div>
+        <div class="hist__campeon-info">
+          <Flag code={c.campeon} size={48} />
+          <p class="hist__campeon-texto">{c.curiosidad}</p>
+        </div>
+      </li>
+    ))}
+  </ul>
+
+  <div class="hist__curio">
+    <h3 class="display hist__curio-titulo">
+      Datos <span class="hand hist__curio-acento">¡súper curiosos!</span>
+    </h3>
+    <div class="hist__curio-grid">
+      {curiosidades.map((c) => (
+        <article class="card-paper hist__curio-card">
+          <h4 class="display hist__curio-card-titulo">{c.titulo}</h4>
+          <p class="hist__curio-texto">{c.texto}</p>
+        </article>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .hist {
+    margin-top: 56px;
+  }
+  .hist__header {
+    max-width: 60ch;
+    margin-bottom: 24px;
+  }
+  .hist__eyebrow {
+    display: inline-block;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    color: var(--color-foreground-subtle);
+    margin-bottom: 8px;
+  }
+  .hist__titulo {
+    font-size: clamp(1.75rem, 4vw, 2.75rem);
+    margin: 0 0 14px;
+  }
+  .hist__intro {
+    color: var(--color-foreground-muted);
+    font-size: 1rem;
+    line-height: 1.55;
+    margin: 0;
+  }
+
+  .hist__campeones {
+    list-style: none;
+    padding: 0;
+    margin: 22px 0 0;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  .hist__campeon {
+    padding: 16px 18px;
+    display: grid;
+    gap: 12px;
+  }
+  .hist__campeon-top {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    padding-bottom: 8px;
+    border-bottom: 1px dashed var(--color-border);
+  }
+  .hist__ano {
+    font-size: 1.75rem;
+    line-height: 1;
+    color: var(--color-energy);
+  }
+  .hist__sede {
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    color: var(--color-foreground-subtle);
+  }
+  .hist__campeon-info {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .hist__campeon-texto {
+    margin: 0;
+    color: var(--color-foreground-muted);
+    font-size: 0.95rem;
+    line-height: 1.5;
+  }
+
+  .hist__curio {
+    margin-top: 40px;
+  }
+  .hist__curio-titulo {
+    font-size: clamp(1.5rem, 3.5vw, 2rem);
+    margin: 0 0 18px;
+  }
+  .hist__curio-acento {
+    font-size: 1.4em;
+    color: var(--color-handwritten);
+    display: inline-block;
+    transform: rotate(-2deg);
+  }
+  .hist__curio-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  .hist__curio-card {
+    padding: 16px 18px;
+  }
+  .hist__curio-card-titulo {
+    font-size: 1.05rem;
+    margin: 0 0 6px;
+    color: var(--color-foreground);
+  }
+  .hist__curio-texto {
+    margin: 0;
+    color: var(--color-foreground-muted);
+    font-size: 0.95rem;
+    line-height: 1.5;
+  }
+
+  @media (min-width: 640px) {
+    .hist__campeones {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    .hist__curio-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  @media (min-width: 1024px) {
+    .hist__campeones {
+      grid-template-columns: repeat(5, 1fr);
+    }
+    .hist__curio-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+</style>
