@@ -18,6 +18,7 @@ export const es = {
   'nav-juegos': 'Juegos',
   'nav-equipamiento': 'Equipamiento',
   'nav-iniciacion': 'Iniciación',
+  'nav-mundial': 'Mundial 26',
   'nav-recursos': 'Recursos',
   'nav-aria-primary': 'Navegación principal',
   'nav-aria-mobile-menu': 'Menú de navegación',
