@@ -15,6 +15,7 @@ import GruposGrid from '@/components/mundial/GruposGrid.astro';
 import CalendarioHitos from '@/components/mundial/CalendarioHitos.astro';
 import HistoriaCuriosa from '@/components/mundial/HistoriaCuriosa.astro';
 import EncuestaCampeon from '@/components/mundial/EncuestaCampeon';
+import ResultadosLive from '@/components/mundial/ResultadosLive';
 
 import { SITE_URL } from '@/consts';
 import { categoryColorVar } from '@/lib/categories';
@@ -172,6 +173,13 @@ const eventLd = sportsEventJsonLd({
   </section>
 
   <main id="main" class="mx-auto max-w-7xl px-4 pb-14 md:px-12 md:pb-20">
+    <!-- ============ RESULTADOS EN VIVO (isla Preact) ============
+         Solo se renderiza desde 7 días antes del kickoff hasta 2 días tras
+         la final (isMundialActive() client-side). Antes de eso devuelve
+         null y la sección queda invisible.
+    -->
+    <ResultadosLive client:visible />
+
     <!-- ============ SECCIONES EDUCATIVAS ============ -->
     <QueEsElMundial />
     <ComoFunciona />

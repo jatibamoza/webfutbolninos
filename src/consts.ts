@@ -8,6 +8,12 @@ export const AMAZON_TAG = import.meta.env.PUBLIC_AMAZON_TAG ?? '';
 // Ver workers/encuesta-mundial/README.md para deploy + cómo obtener la URL.
 export const ENCUESTA_API_URL = import.meta.env.PUBLIC_ENCUESTA_API_URL ?? '';
 
+// URL del Worker que sirve resultados/tablas/goleadores en vivo del Mundial.
+// Si está vacía, la sección live no muestra datos del servidor (cae en el
+// modo "el torneo aún no ha empezado" / skeleton).
+// Ver workers/mundial-data/README.md para deploy + setup token football-data.
+export const MUNDIAL_API_URL = import.meta.env.PUBLIC_MUNDIAL_API_URL ?? '';
+
 export function amazonUrl(asin: string): string {
   const base = `https://www.amazon.es/dp/${asin}`;
   return AMAZON_TAG ? `${base}?tag=${AMAZON_TAG}` : base;
