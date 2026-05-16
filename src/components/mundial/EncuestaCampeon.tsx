@@ -27,12 +27,18 @@ const LS_KEY = 'mg.mundial.encuesta-campeon';
  * + países anfitriones. Sustituir por fetch real en Fase 6.
  */
 const INITIAL_COUNTS: Record<string, number> = {
-  ARG: 187, BRA: 152, FRA: 124, ESP: 118, ENG: 96, GER: 84, POR: 71, NED: 58,
-  MEX: 54, USA: 47, ITA: 42, URU: 38, COL: 35, BEL: 31, CRO: 28, JPN: 24,
-  MAR: 22, KOR: 19, CAN: 18, SUI: 16, DEN: 14, AUS: 13, SEN: 11, NOR: 10,
-  POL: 9,  AUT: 8,  ECU: 8,  TUR: 7, EGY: 7, NGA: 6, IRN: 6, KSA: 5,
-  PAR: 5,  CIV: 4,  GHA: 4,  ALG: 4, TUN: 3, CMR: 3, JAM: 3, QAT: 3,
-  CRC: 2,  PAN: 2,  HON: 2,  HUN: 2, SVK: 2, UZB: 1, NZL: 1, IRQ: 1,
+  // Favoritos absolutos
+  ARG: 195, BRA: 145, FRA: 105, ESP: 90,
+  // Favoritos
+  ENG: 80, GER: 70, POR: 65, NED: 55,
+  // Anfitriones + competitivos
+  MEX: 50, USA: 45, BEL: 28, URU: 28, CRO: 25, COL: 24,
+  // Competitivos
+  JPN: 22, KOR: 18, MAR: 15, SEN: 14, ECU: 12, AUS: 11, SUI: 10, NOR: 8,
+  // Resto del torneo (las 48 selecciones cubiertas)
+  CAN: 12, RSA: 8, AUT: 7, TUR: 7, EGY: 7, SWE: 7, CIV: 6, GHA: 6, ALG: 6,
+  CZE: 5, SCO: 5, IRN: 5, TUN: 4, KSA: 4, PAR: 4, IRQ: 4, QAT: 4, UZB: 4,
+  JOR: 3, BIH: 3, HAI: 3, CUW: 3, CPV: 3, COD: 3, PAN: 3, NZL: 2,
 };
 
 function loadVote(): Vote | null {
