@@ -24,7 +24,7 @@ CACHE_TTL_SECONDS = "60"
 # Y pegar el id devuelto:
 [[kv_namespaces]]
 binding = "MUNDIAL_DATA_CACHE"
-id = "REEMPLAZAR_TRAS_CREAR_KV"
+id = "1c31448d7dfb4dd38dacac03145a297c"
 
 # Para configurar el token de football-data.org (cuando llegue el email
 # de aprobación, ~2-3 días tras registro en https://www.football-data.org/):
