@@ -524,3 +524,348 @@
 .encuesta__cambiar {
   margin-top: 24px;
 }
+
+/* ────────────────────────────────────────────────────────────────
+ * ResultadosLive — sección con datos en vivo del Mundial.
+ * ──────────────────────────────────────────────────────────────── */
+
+.rlive {
+  margin-top: 32px;
+  margin-bottom: 32px;
+}
+
+.rlive--loading .rlive__skeleton {
+  height: 240px;
+  border-radius: var(--radius-lg);
+  background: linear-gradient(
+    90deg,
+    var(--color-surface-alt) 0%,
+    var(--color-paper) 50%,
+    var(--color-surface-alt) 100%
+  );
+  background-size: 200% 100%;
+  animation: rlive-shimmer 1.6s ease-in-out infinite;
+}
+@keyframes rlive-shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .rlive--loading .rlive__skeleton { animation: none; }
+}
+
+.rlive__header {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 18px;
+  position: relative;
+}
+.rlive__eyebrow {
+  font-size: 10px;
+  letter-spacing: 0.15em;
+  color: var(--color-foreground-subtle);
+}
+.rlive__titulo {
+  font-size: clamp(1.75rem, 4vw, 2.5rem);
+  margin: 0;
+  line-height: 1.1;
+}
+.rlive__dias {
+  color: var(--color-energy);
+}
+.rlive__previa-hand {
+  font-size: 22px;
+  color: var(--color-handwritten);
+  transform: rotate(-2deg);
+  display: inline-block;
+  margin: 6px 0 0;
+}
+.rlive__mock-badge {
+  position: absolute;
+  top: 0;
+  right: 0;
+  font-size: 9px;
+  letter-spacing: 0.12em;
+  color: var(--color-foreground-subtle);
+  border: 1px dashed var(--color-border-strong);
+  padding: 3px 8px;
+  border-radius: 999px;
+  background: color-mix(in oklab, var(--color-accent), transparent 90%);
+}
+
+.rlive--previa {
+  padding: 24px;
+  border-radius: var(--radius-lg);
+  background: color-mix(in oklab, var(--color-energy), transparent 95%);
+  border: 1px solid color-mix(in oklab, var(--color-energy), transparent 80%);
+}
+.rlive--offline {
+  padding: 18px;
+  border-radius: var(--radius-md);
+  background: var(--color-surface-alt);
+  text-align: center;
+}
+.rlive__offline-text {
+  margin: 0;
+  font-size: 18px;
+  color: var(--color-foreground-muted);
+}
+
+.rlive__live-cards {
+  display: grid;
+  gap: 14px;
+  margin-bottom: 18px;
+}
+@media (min-width: 768px) {
+  .rlive__live-cards {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.rlive__tabs {
+  display: flex;
+  gap: 4px;
+  border-bottom: 1px solid var(--color-border);
+  margin-bottom: 18px;
+  overflow-x: auto;
+}
+.rlive__tab {
+  font-family: var(--font-mono);
+  padding: 12px 16px;
+  min-height: 44px;
+  border: 0;
+  background: transparent;
+  color: var(--color-foreground-muted);
+  border-bottom: 2px solid transparent;
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition:
+    color var(--duration-fast) var(--ease-out),
+    border-color var(--duration-fast) var(--ease-out);
+}
+.rlive__tab:hover { color: var(--color-foreground); }
+.rlive__tab--active {
+  color: var(--color-foreground);
+  border-bottom-color: var(--color-accent);
+}
+.rlive__tab:focus-visible {
+  outline: 2px solid var(--color-energy);
+  outline-offset: 2px;
+}
+
+.rlive__partidos {
+  display: grid;
+  gap: 18px;
+}
+@media (min-width: 768px) {
+  .rlive__partidos { grid-template-columns: 1fr 1fr; }
+}
+.rlive__col-title {
+  font-size: 1.25rem;
+  margin: 0 0 12px;
+}
+.rlive__col {
+  display: grid;
+  gap: 10px;
+}
+.rlive__empty {
+  margin: 0;
+  font-size: 18px;
+  color: var(--color-handwritten);
+  transform: rotate(-1deg);
+  display: inline-block;
+}
+
+.rlive__fila {
+  padding: 12px 14px;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: 12px;
+  align-items: center;
+}
+.rlive__fila-lado {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+.rlive__fila-lado--home { justify-content: flex-end; }
+.rlive__fila-nombre {
+  font-size: 0.95rem;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.rlive__fila-centro {
+  min-width: 80px;
+  text-align: center;
+}
+.rlive__fila-marcador {
+  font-size: 1.5rem;
+  line-height: 1;
+}
+.rlive__fila-marcador--live { color: var(--color-energy); }
+.rlive__sep {
+  color: var(--color-foreground-subtle);
+  margin: 0 6px;
+}
+.rlive__fila-cuenta {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--color-accent);
+}
+.rlive__fila-estado {
+  font-size: 9px;
+  color: var(--color-foreground-subtle);
+  letter-spacing: 0.08em;
+  margin-top: 4px;
+}
+.rlive__fila[data-status='live'] .rlive__fila-estado {
+  color: var(--color-energy);
+}
+
+.rlive__tablas {
+  display: grid;
+  gap: 14px;
+}
+@media (min-width: 768px) {
+  .rlive__tablas { grid-template-columns: repeat(2, 1fr); }
+}
+.rlive__tabla {
+  padding: 0;
+  overflow: hidden;
+}
+.rlive__tabla-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--color-border);
+  background: var(--color-surface-alt);
+}
+.rlive__tabla-titulo { font-size: 1.05rem; }
+.rlive__tabla-jornada {
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  color: var(--color-foreground-subtle);
+}
+.rlive__tabla-tabla {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+.rlive__tabla-th {
+  padding: 8px 6px;
+  text-align: center;
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  color: var(--color-foreground-subtle);
+  font-weight: 600;
+}
+.rlive__tabla-tabla td {
+  padding: 9px 6px;
+  text-align: center;
+  font-size: 12px;
+  border-top: 1px solid var(--color-border);
+}
+.rlive__tabla-num {
+  color: var(--color-foreground-subtle);
+  font-weight: 700;
+}
+.rlive__tabla-tabla tr[data-clasifica='true'] .rlive__tabla-num {
+  color: var(--color-secondary);
+}
+.rlive__tabla-equipo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  text-align: left !important;
+  padding-left: 10px !important;
+}
+.rlive__tabla-pts {
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+
+.rlive__goleadores {
+  padding: 0;
+  overflow: hidden;
+}
+.rlive__gol-header {
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--color-border);
+  background: var(--color-surface-alt);
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.rlive__gol-titulo { font-size: 1.15rem; }
+.rlive__gol-sub {
+  font-size: 18px;
+  color: var(--color-handwritten);
+  transform: rotate(-2deg);
+  display: inline-block;
+}
+.rlive__gol-lista {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.rlive__gol-item {
+  display: grid;
+  grid-template-columns: 40px 1fr auto;
+  gap: 12px;
+  align-items: center;
+  padding: 12px 16px;
+  border-top: 1px solid var(--color-border);
+}
+.rlive__gol-item:first-child { border-top: 0; }
+.rlive__gol-pos {
+  font-size: 1.25rem;
+  color: var(--color-foreground-subtle);
+  text-align: center;
+}
+.rlive__gol-info { min-width: 0; }
+.rlive__gol-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.rlive__gol-nombre { font-size: 0.95rem; }
+.rlive__gol-curio {
+  margin: 4px 0 2px;
+  font-size: 16px;
+  color: var(--color-handwritten);
+  line-height: 1.1;
+}
+.rlive__gol-pais {
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  color: var(--color-foreground-subtle);
+  text-transform: uppercase;
+}
+.rlive__gol-cifra-box {
+  text-align: right;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+.rlive__gol-cifra {
+  font-size: 1.5rem;
+  line-height: 1;
+  color: var(--color-secondary);
+}
+.rlive__gol-unidad {
+  font-size: 9px;
+  letter-spacing: 0.12em;
+  color: var(--color-foreground-subtle);
+  margin-top: 2px;
+}

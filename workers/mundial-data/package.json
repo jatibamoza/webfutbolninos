@@ -1,0 +1,16 @@
+{
+  "name": "minigolclub-mundial-data",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "deploy": "wrangler deploy",
+    "dev": "wrangler dev",
+    "tail": "wrangler tail",
+    "secret:token": "wrangler secret put FOOTBALL_DATA_TOKEN"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20250419.0",
+    "typescript": "^6.0.3",
+    "wrangler": "^4.42.0"
+  }
+}

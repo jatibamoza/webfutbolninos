@@ -1,0 +1,38 @@
+name = "minigolclub-mundial-data"
+main = "src/index.ts"
+compatibility_date = "2026-05-01"
+
+[vars]
+# Origins permitidos para CORS. Editar antes de deploy si añades dominios
+# (preview deploys de Cloudflare Pages, staging, etc.).
+ALLOWED_ORIGINS = "https://minigolclub.com,https://www.minigolclub.com,http://localhost:4321,http://localhost:4322"
+
+# Fuente de datos:
+#   "football-data" → fetch real a https://api.football-data.org/v4/...
+#   "mock"          → devuelve siempre datos mock embebidos en el worker
+# Útil para testar sin consumir cuota de la API. Default: mock (hasta tener token).
+DATA_SOURCE = "mock"
+
+# TTL del cache KV. Cuando `DATA_SOURCE=football-data` el worker cachea la
+# respuesta cruda de la API. 60s es buen balance: tráfico medio (~5-10
+# req/min al pico) bajo el límite gratis (10/min), y la latencia para el
+# usuario final no se nota.
+CACHE_TTL_SECONDS = "60"
+
+# KV para cachear respuestas de football-data.org. Crear con:
+#   wrangler kv namespace create MUNDIAL_DATA_CACHE
+# Y pegar el id devuelto:
+[[kv_namespaces]]
+binding = "MUNDIAL_DATA_CACHE"
+id = "REEMPLAZAR_TRAS_CREAR_KV"
+
+# Para configurar el token de football-data.org (cuando llegue el email
+# de aprobación, ~2-3 días tras registro en https://www.football-data.org/):
+#   pnpm secret:token
+# (equivale a: wrangler secret put FOOTBALL_DATA_TOKEN)
+# Luego cambiar DATA_SOURCE a "football-data".
+
+# Para deploy bajo dominio propio (recomendado tras smoke-test):
+# [[routes]]
+# pattern = "minigolclub.com/api/mundial-data*"
+# zone_name = "minigolclub.com"
