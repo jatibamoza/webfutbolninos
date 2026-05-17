@@ -10,8 +10,8 @@ ALLOWED_ORIGINS = "https://minigolclub.com,https://www.minigolclub.com,http://lo
 # Fuente de datos:
 #   "football-data" → fetch real a https://api.football-data.org/v4/...
 #   "mock"          → devuelve siempre datos mock embebidos en el worker
-# Útil para testar sin consumir cuota de la API. Default: mock (hasta tener token).
-DATA_SOURCE = "mock"
+# Token FOOTBALL_DATA_TOKEN configurado vía `wrangler secret put` el 2026-05-17.
+DATA_SOURCE = "football-data"
 
 # TTL del cache KV. Cuando `DATA_SOURCE=football-data` el worker cachea la
 # respuesta cruda de la API. 60s es buen balance: tráfico medio (~5-10
