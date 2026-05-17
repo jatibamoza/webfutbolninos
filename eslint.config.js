@@ -53,6 +53,8 @@ const browserGlobals = {
   DOMRect: 'readonly',
   preact: 'readonly',
   performance: 'readonly',
+  AbortController: 'readonly',
+  AbortSignal: 'readonly',
 };
 
 const nodeGlobals = {
