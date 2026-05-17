@@ -208,6 +208,16 @@ interface FdScorersResponse {
   }>;
 }
 
+/**
+ * Normaliza la letra del grupo. La API de football-data.org no es consistente:
+ * a veces devuelve `"GROUP_A"` (matches), a veces `"Group A"` (standings).
+ * Ambos casos los reducimos a `"A"`.
+ */
+function normalizeGroupLetter(raw: string | null | undefined): string | undefined {
+  if (!raw) return undefined;
+  return raw.replace(/^group[_\s]?/i, '').trim() || undefined;
+}
+
 function mapMatch(m: FdMatchesResponse['matches'][number]): Match {
   const status: MatchStatus =
     m.status === 'IN_PLAY' || m.status === 'PAUSED' ? 'live' :
@@ -216,7 +226,7 @@ function mapMatch(m: FdMatchesResponse['matches'][number]): Match {
   return {
     id: String(m.id),
     fase: fase || 'Grupos',
-    grupo: m.group?.replace('GROUP_', '') ?? undefined,
+    grupo: normalizeGroupLetter(m.group),
     home: m.homeTeam.tla,
     away: m.awayTeam.tla,
     homeScore: m.score.fullTime.home,
@@ -231,8 +241,9 @@ function mapMatch(m: FdMatchesResponse['matches'][number]): Match {
 function mapStandings(s: FdStandingsResponse): Record<string, Standing[]> {
   const out: Record<string, Standing[]> = {};
   for (const standing of s.standings) {
-    if (standing.type !== 'TOTAL' || !standing.group) continue;
-    const letter = standing.group.replace('GROUP_', '');
+    if (standing.type !== 'TOTAL') continue;
+    const letter = normalizeGroupLetter(standing.group);
+    if (!letter) continue;
     out[letter] = standing.table.map((row) => ({
       team: row.team.tla,
       pj: row.playedGames,
