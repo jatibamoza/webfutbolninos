@@ -54,3 +54,4 @@ ci-*.html
 
 # Handoffs de diseño (no forman parte del repo de producción)
 design_handoff_minigol_v3/
+docs/web futbol ni_os/
