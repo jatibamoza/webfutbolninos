@@ -14,7 +14,7 @@ export async function GET(context: APIContext) {
       b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
   );
 
-  return rss({
+  const response = await rss({
     title: SITE.name,
     description: SITE.description,
     site: context.site?.toString() ?? SITE_URL,
@@ -28,4 +28,10 @@ export async function GET(context: APIContext) {
     customData: `<language>es-es</language>`,
     stylesheet: false,
   });
+
+  // RSS no es página HTML — pedimos a Google que no la trate como tal. Sin
+  // esto, GSC se queja con "duplicada sin canonical" porque busca un
+  // <link rel="canonical"> que un XML no puede tener.
+  response.headers.set('X-Robots-Tag', 'noindex');
+  return response;
 }
