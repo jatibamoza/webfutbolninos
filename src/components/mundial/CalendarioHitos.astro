@@ -31,11 +31,36 @@ const proximoIdx = hitos.findIndex((h) => !h.pasado);
       fútbol sin parar. Apunta estas fechas en el calendario de la nevera.
     </p>
     {dias > 0 && (
-      <p class="hand cal__countdown" aria-live="polite">
-        faltan <strong>{dias}</strong> {dias === 1 ? 'día' : 'días'} para la inauguración
+      <p
+        class="hand cal__countdown"
+        aria-live="polite"
+        data-mundial-countdown
+        data-target={MUNDIAL_2026.inauguracion.toISOString()}
+      >
+        faltan <strong data-mundial-countdown-num>{dias}</strong>{' '}
+        <span data-mundial-countdown-unit>{dias === 1 ? 'día' : 'días'}</span> para la inauguración
       </p>
     )}
   </div>
+
+  <script>
+    // El número se calcula en build-time (SSG) y queda congelado entre deploys.
+    // Este script recalcula con el reloj del navegador para que avance día a día.
+    (() => {
+      const el = document.querySelector<HTMLElement>('[data-mundial-countdown]');
+      if (!el || !el.dataset.target) return;
+      const targetMs = new Date(el.dataset.target).getTime();
+      const dias = Math.ceil((targetMs - Date.now()) / 86_400_000);
+      const num = el.querySelector<HTMLElement>('[data-mundial-countdown-num]');
+      const unit = el.querySelector<HTMLElement>('[data-mundial-countdown-unit]');
+      if (dias <= 0) {
+        el.remove();
+        return;
+      }
+      if (num) num.textContent = String(dias);
+      if (unit) unit.textContent = dias === 1 ? 'día' : 'días';
+    })();
+  </script>
 
   <ol class="cal__timeline" role="list">
     {hitos.map((h, i) => (

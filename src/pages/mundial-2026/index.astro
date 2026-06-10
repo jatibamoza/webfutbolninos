@@ -142,7 +142,10 @@ const eventLd = sportsEventJsonLd({
         <div class="mh__stats" role="list">
           <div class="mh__stat card-paper" role="listitem">
             <span class="mono mh__stat-label">FALTAN</span>
-            <span class="display mh__stat-num">{dias}</span>
+            <span
+              class="display mh__stat-num"
+              data-mundial-kickoff
+              data-target={MUNDIAL_2026.inauguracion.toISOString()}>{dias}</span>
             <span class="hand mh__stat-hand">días para la inauguración</span>
           </div>
           <div class="mh__stat card-paper" role="listitem">
@@ -157,7 +160,10 @@ const eventLd = sportsEventJsonLd({
           </div>
           <div class="mh__stat card-paper" role="listitem">
             <span class="mono mh__stat-label">FINAL</span>
-            <span class="display mh__stat-num">{diasFinal}</span>
+            <span
+              class="display mh__stat-num"
+              data-mundial-final
+              data-target={MUNDIAL_2026.final.toISOString()}>{diasFinal}</span>
             <span class="hand mh__stat-hand">días para la copa</span>
           </div>
         </div>
@@ -170,6 +176,21 @@ const eventLd = sportsEventJsonLd({
       </div>
     </div>
     <div class="divider-pitch"></div>
+
+    <script>
+      // Los contadores se calculan en build-time (SSG) y quedan congelados
+      // entre deploys. Este script recalcula con el reloj del navegador.
+      (() => {
+        const MS_DAY = 86_400_000;
+        document.querySelectorAll<HTMLElement>('[data-mundial-kickoff], [data-mundial-final]')
+          .forEach((el) => {
+            const target = el.dataset.target;
+            if (!target) return;
+            const dias = Math.max(0, Math.ceil((new Date(target).getTime() - Date.now()) / MS_DAY));
+            el.textContent = String(dias);
+          });
+      })();
+    </script>
   </section>
 
   <main id="main" class="mx-auto max-w-7xl px-4 pb-14 md:px-12 md:pb-20">
