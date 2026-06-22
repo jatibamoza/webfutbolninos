@@ -36,7 +36,7 @@ jobs:
     name: Run scheduler
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           # PAT del owner para poder pushear directo a main bypaseando
           # branch protection. Si no hay BOT_PAT, fallback a GITHUB_TOKEN
