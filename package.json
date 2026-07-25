@@ -35,7 +35,7 @@
     "astro": "^6.3.3",
     "astro-icon": "^1.1.5",
     "preact": "^10.29.1",
-    "sharp": "^0.34.5",
+    "sharp": "^0.35.0",
     "tailwindcss": "^4.3.0",
     "typescript": "^6.0.3",
     "vanilla-cookieconsent": "^3.1.0",
