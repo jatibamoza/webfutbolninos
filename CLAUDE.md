@@ -31,7 +31,7 @@ Sitio de contenido SEO sobre fútbol infantil para padres con hijos de 4 a 12 a�
 - [docs/PlanTrabajoPizarra.md](docs/PlanTrabajoPizarra.md) — Fase 2 (MVP gratis, ~24h), Fase 2.5 (URLs evergreen por preset), Fase 3a/b/c (cuentas, pagos, PDF/oEmbed) con criterios de avance entre fases
 
 **Redes sociales (scheduler automatizado):**
-- [docs/SchedulerPubler.md](docs/SchedulerPubler.md) — sistema GitHub Actions + Publer API + JSON versionado. Source of truth: [content/social/calendar.json](content/social/calendar.json). Cron cada 30min lee posts approved y los programa en Publer.
+- [docs/SchedulerInstagram.md](docs/SchedulerInstagram.md) — sistema GitHub Actions + Instagram Graph API (Meta) + JSON versionado. Source of truth: [content/social/calendar.json](content/social/calendar.json). Cron cada 30min lee posts approved y los publica directo en Instagram. (Migrado desde Publer.)
 - [docs/seo/EstrategiaSocialVideo.md](docs/seo/EstrategiaSocialVideo.md) — estrategia de contenido (Reels, hashtags, cadencia, integración Pizarra)
 
 **Estado vivo:**

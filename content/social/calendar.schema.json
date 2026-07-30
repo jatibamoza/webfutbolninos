@@ -1,7 +1,7 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "title": "MiniGol Club — Social Calendar",
-  "description": "Calendario editorial de publicaciones a redes sociales. Source of truth versionada en Git. El scheduler de GitHub Actions lee este archivo, filtra los posts approved cuyo scheduled_at ya llegó, los publica via Publer y actualiza status a published.",
+  "description": "Calendario editorial de publicaciones a redes sociales. Source of truth versionada en Git. El scheduler de GitHub Actions lee este archivo, filtra los posts approved cuyo scheduled_at ya llegó, los publica via Instagram Graph API (Meta) y actualiza status a published.",
   "type": "object",
   "required": ["version", "posts"],
   "properties": {
@@ -87,7 +87,7 @@
               "type": { "enum": ["image", "video"] },
               "path": {
                 "type": "string",
-                "description": "Path relativo desde la raíz del repo. Sube a R2/CDN o usa raw GitHub para Publer."
+                "description": "Path relativo desde la raíz del repo. Sube a R2/CDN o usa raw GitHub para que IG Graph API pueda descargarlo."
               },
               "alt": { "type": "string" }
             }
@@ -104,7 +104,11 @@
         },
         "publer_post_id": {
           "type": ["string", "null"],
-          "description": "ID Publer devuelto. Útil para debugging."
+          "description": "Histórico — ID Publer cuando se publicaba vía Publer. Nuevos posts usan instagram_media_id."
+        },
+        "instagram_media_id": {
+          "type": ["string", "null"],
+          "description": "Media ID devuelto por Instagram Graph API tras publicar. Útil para enlazar a la URL del post o consultar métricas."
         },
         "error": {
           "type": ["string", "null"],
